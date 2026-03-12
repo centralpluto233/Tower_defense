@@ -51,7 +51,7 @@ public abstract class MovingEntity extends Entity{
      * @param velocityY the y-component of the entity's velocity
      * @param speed the speed of the entity
      */
-    public MovingEntity(int x, int y, double width, double height, double velocityX, double velocityY, double speed) {
+    public MovingEntity(double x, double y, double width, double height, double velocityX, double velocityY, double speed) {
         super(x, y, width, height);
         this.velocityX = velocityX;
         this.velocityY = velocityY;

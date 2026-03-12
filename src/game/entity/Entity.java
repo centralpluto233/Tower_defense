@@ -5,7 +5,7 @@ public abstract class Entity {
 
     private double width;
     private double height;
-    Vector2D position;
+    private Vector2D position;
 
     /**
      * Constructs an Entity with the specified position and dimensions.
