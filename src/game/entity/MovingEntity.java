@@ -1,12 +1,12 @@
 package game.entity;
+import game.util.Vector2D;
 
 /**
  * An abstract class representing a moving entity in the game.
  */
 public abstract class MovingEntity extends Entity{
     
-    private double velocityX;
-    private double velocityY;
+    private Vector2D velocity;
     private double speed;
     
     /**
@@ -14,7 +14,7 @@ public abstract class MovingEntity extends Entity{
      * @return the x-component of the velocity
      */
     public double getVelocityX() {
-        return velocityX;
+        return velocity.x();
     }
 
     /**
@@ -22,7 +22,7 @@ public abstract class MovingEntity extends Entity{
      * @return the y-component of the velocity
      */
     public double getVelocityY() {
-        return velocityY;
+        return velocity.y();
     }
 
     /**
@@ -53,8 +53,7 @@ public abstract class MovingEntity extends Entity{
      */
     public MovingEntity(double x, double y, double width, double height, double velocityX, double velocityY, double speed) {
         super(x, y, width, height);
-        this.velocityX = velocityX;
-        this.velocityY = velocityY;
+        this.velocity = new Vector2D(velocityX, velocityY);
         this.speed = speed;
     }
 
@@ -64,8 +63,7 @@ public abstract class MovingEntity extends Entity{
      * @param directionY the y-component of the direction
      */
     public void setDirection(double directionX, double directionY) {
-        this.velocityX = directionX;
-        this.velocityY = directionY;
+        this.velocity = new Vector2D(directionX, directionY);
     }
 
     /**
@@ -73,8 +71,8 @@ public abstract class MovingEntity extends Entity{
      * @param deltaTime the time elapsed since the last update
      */
     public void move(double deltaTime) {
-        setX(getX() + velocityX * speed * deltaTime);
-        setY(getY() + velocityY * speed * deltaTime);
+        setX(getX() + velocity.x() * speed * deltaTime);
+        setY(getY() + velocity.y() * speed * deltaTime);
     }
 
 }
