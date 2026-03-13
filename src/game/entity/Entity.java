@@ -84,4 +84,10 @@ public abstract class Entity {
     public String toString() {
         return "Entity{ (x,y)=" + getPosition() + ", width=" + width + ", height=" + height + " }";
     }
+
+    /**
+     * Updates the entity's state based on the time elapsed.
+     * @param deltaTime the time elapsed since the last update
+     */
+    public abstract void update(double deltaTime);
 }

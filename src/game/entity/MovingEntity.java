@@ -8,22 +8,6 @@ public abstract class MovingEntity extends Entity{
     
     private Vector2D velocity;
     private double speed;
-    
-    /**
-     * Returns the x-component of the entity's velocity.
-     * @return the x-component of the velocity
-     */
-    public double getVelocityX() {
-        return velocity.x();
-    }
-
-    /**
-     * Returns the y-component of the entity's velocity.
-     * @return the y-component of the velocity
-     */
-    public double getVelocityY() {
-        return velocity.y();
-    }
 
     /**
      * Returns the speed of the entity.
@@ -39,6 +23,14 @@ public abstract class MovingEntity extends Entity{
      */
     public void setSpeed(double speed) {
         this.speed = speed;
+    }
+
+    /**
+     * Returns the velocity of the entity.
+     * @return the velocity
+     */
+    public Vector2D getVelocity() {
+        return velocity;
     }
 
     /**
@@ -70,9 +62,24 @@ public abstract class MovingEntity extends Entity{
      * Moves the entity based on its velocity and the time elapsed.
      * @param deltaTime the time elapsed since the last update
      */
-    public void move(double deltaTime) {
+    protected void move(double deltaTime) {
         setX(getX() + velocity.x() * speed * deltaTime);
         setY(getY() + velocity.y() * speed * deltaTime);
+    }
+
+    /**
+     * Follows a path based on the time elapsed.
+     * @param deltaTime the time elapsed since the last update
+     */
+    protected abstract void followPath(double deltaTime);
+
+    /**
+     * Returns a string representation of the moving entity.
+     * @return the string representation
+     */
+    @Override
+    public String toString() {
+        return "MovingEntity{ (x,y)=" + getPosition() + ", width=" + getWidth() + ", height=" + getHeight() + ", velocity=" + velocity + ", speed=" + speed + " }";
     }
 
 }
