@@ -1,4 +1,4 @@
-package config;
+package system.config;
 
 public class Constants {
 
