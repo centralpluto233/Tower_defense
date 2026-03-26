@@ -1,24 +1,23 @@
-package system.config;
+package towerdefence.system.config;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.Properties;
+import java.util.logging.Level;
 
 /**
  * Loads configuration properties from a file and provides access to them.
  */
-public class ConfigLoader {
+public class Config {
     private final Properties properties;
 
     /**
      * Constructs a ConfigLoader and loads the config file from resources.
      */
-    public ConfigLoader() {
+    public Config() {
         properties = new Properties();
-        try (InputStream input = ConfigLoader.class.getResourceAsStream(Constants.Paths.CONFIG)) {
+        try (InputStream input = Config.class.getResourceAsStream(Constants.Paths.CONFIG)) {
             if (input == null) {
                 throw new RuntimeException("config.properties not found in resources.");
             }
@@ -46,7 +45,7 @@ public class ConfigLoader {
      * @param key the property key to look up
      * @return the value of the property (never null)
      */
-    public String get(String key) {
+    private String get(String key) {
         return lookup(key);
     }
 
@@ -55,7 +54,7 @@ public class ConfigLoader {
      * @param key the property key to look up
      * @return the integer value of the property
      */
-    public int getInt(String key) {
+    private int getInt(String key) {
         String value = lookup(key);
         try {
             return Integer.parseInt(value);
@@ -69,7 +68,7 @@ public class ConfigLoader {
      * @param key the property key to look up
      * @return the double value of the property
      */
-    public double getDouble(String key) {
+    private double getDouble(String key) {
         String value = lookup(key);
         try {
             return Double.parseDouble(value);
@@ -83,7 +82,7 @@ public class ConfigLoader {
      * @param key the property key to look up
      * @return the boolean value of the property
      */
-    public boolean getBoolean(String key) {
+    private boolean getBoolean(String key) {
     String value = lookup(key).trim();
 
     if (value.equalsIgnoreCase("true") || value.equals("1")) {
@@ -103,7 +102,7 @@ public class ConfigLoader {
      * @param key the key to set
      * @param value the value to set
      */
-    public void set(String key, String value) {
+    private void set(String key, String value) {
         properties.setProperty(key, value);
     }
 
@@ -112,10 +111,15 @@ public class ConfigLoader {
      */
     public void save() {
         try (OutputStream output = new FileOutputStream(
-                ConfigLoader.class.getResource(Constants.Paths.CONFIG).getPath())) {
+                Config.class.getResource(Constants.Paths.CONFIG).getPath())) {
             properties.store(output, "Game Configuration");
         } catch (IOException e) {
             throw new RuntimeException("Failed to save config: " + e.getMessage());
         }
+    }
+
+    public Level getLogLevel() {
+        String level = get("logging.level");
+        return Level.parse(level);
     }
 }

@@ -1,4 +1,4 @@
-package lua;
+package towerdefence.lua;
 
 public class LuaEngine {
 }

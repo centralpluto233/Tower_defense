@@ -1,5 +1,5 @@
-package game.entity;
-import game.util.Vector2D;
+package towerdefence.game.entity;
+import towerdefence.game.util.Vector2D;
 
 public abstract class Entity {
 

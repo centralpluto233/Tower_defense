@@ -1,4 +1,4 @@
-package game.interfaces;
+package towerdefence.game.interfaces;
 
 /**
  * Interface for entities that can attack other entities.

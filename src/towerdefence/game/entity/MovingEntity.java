@@ -1,5 +1,5 @@
-package game.entity;
-import game.util.Vector2D;
+package towerdefence.game.entity;
+import towerdefence.game.util.Vector2D;
 
 /**
  * An abstract class representing a moving entity in the game.

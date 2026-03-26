@@ -1,4 +1,4 @@
-package game.util;
+package towerdefence.game.util;
 
 public record Vector2D (double x, double y) {
     

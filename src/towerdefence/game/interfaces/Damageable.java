@@ -1,4 +1,4 @@
-package game.interfaces;
+package towerdefence.game.interfaces;
 
 /**
  * Interface for objects that can take damage and be killed.
