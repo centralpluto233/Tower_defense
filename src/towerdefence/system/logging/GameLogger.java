@@ -2,6 +2,7 @@ package towerdefence.system.logging;
 
 import java.io.IOException;
 import java.util.logging.*;
+import towerdefence.system.config.Constants;
 
 /**
  * Utility class for setting up and providing a game logger.
@@ -29,7 +30,7 @@ public class GameLogger {
 
         // File handler
         try {
-            FileHandler fileHandler = new FileHandler("logs/game.log", true);
+            FileHandler fileHandler = new FileHandler(Constants.Paths.LOG_FILE, true);
             fileHandler.setLevel(logLevel);
             fileHandler.setFormatter(new SimpleFormatter());
             LOGGER.addHandler(fileHandler);
