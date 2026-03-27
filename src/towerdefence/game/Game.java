@@ -13,6 +13,14 @@ public class Game {
     private boolean running = false;
 
     /**
+     * Returns if game is running
+     * @return true if game is running, else false
+     */
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
      * Initializes Game
      */
     public void init() {
@@ -36,9 +44,9 @@ public class Game {
         if (!running) {
             return;
         }
-        logger.info("Updating Game");
+        logger.finest("Updating Game");
         for (Entity entity: entities) {
-            logger.fine("Updating Entity "+entity.toString());
+            logger.finest("Updating Entity "+entity.toString());
             entity.update(deltaTime);
         }
 

@@ -4,6 +4,7 @@ import towerdefence.system.config.Config;
 import towerdefence.system.config.Constants;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.game.Game;
+import towerdefence.system.time.Stopwatch;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,9 +22,22 @@ public class Main {
             logger.fine("Config loaded from: " + Constants.Paths.CONFIG);
             logger.fine("Window: " + config.getWindowWidth() + "x" + config.getWindowHeight() + " | FPS: " + config.getTargetFps());
 
+            // Initialize and start game
             Game game = new Game();
             game.init();
             game.start();
+
+            // Game loop
+            Stopwatch stopwatch = new Stopwatch(config.getTargetFps());
+            logger.info("Game loop started");
+
+            while (game.isRunning()) {
+                double deltaTime = stopwatch.tick();
+                game.update(deltaTime);
+            }
+
+            game.stop();
+            logger.info("Game loop stopped");
 
         } catch (RuntimeException e) {
             if (logger == null) {
