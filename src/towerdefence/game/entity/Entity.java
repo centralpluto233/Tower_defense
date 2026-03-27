@@ -6,6 +6,7 @@ public abstract class Entity {
     private double width;
     private double height;
     private Vector2D position;
+    private boolean markedForRemoval= false;
 
     /**
      * Constructs an Entity with the specified position and dimensions.
@@ -90,4 +91,19 @@ public abstract class Entity {
      * @param deltaTime the time elapsed since the last update
      */
     public abstract void update(double deltaTime);
+
+    /**
+     * Marks entity for removal (dead or out of bounds)
+     */
+    public void markForRemoval() {
+        this.markedForRemoval = true;
+    }
+
+    /**
+     * Returns a boolean indicating whether the entity is marked for removal.
+     * @return true if the entity is marked for removal, false otherwise
+     */
+    public boolean isMarkedForRemoval() {
+        return this.markedForRemoval;
+    }
 }
