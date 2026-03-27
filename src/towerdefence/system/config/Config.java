@@ -110,16 +110,36 @@ public class Config {
      * Saves the current config back to the file.
      */
     public void save() {
-        try (OutputStream output = new FileOutputStream(
-                Config.class.getResource(Constants.Paths.CONFIG).getPath())) {
+        try (OutputStream output = new FileOutputStream(Config.class.getResource(Constants.Paths.CONFIG).getPath())) {
             properties.store(output, "Game Configuration");
         } catch (IOException e) {
             throw new RuntimeException("Failed to save config: " + e.getMessage());
         }
     }
 
-    public Level getLogLevel() {
-        String level = get("logging.level");
+    public Level getLogLevelConsole() {
+        String level = get("logging.level.console");
         return Level.parse(level);
+    }
+
+    public Level getLogLevelFile() {
+        String level = get("logging.level.file");
+        return Level.parse(level);
+    }
+
+    public String getSelectedLevel() {
+        return get("selected.level");
+    }
+
+    public int getWindowWidth() {
+        return getInt("window.width");
+    }
+
+    public int getWindowHeight() {
+        return getInt("window.height");
+    }
+
+    public int getTargetFps() {
+        return getInt("target.fps");
     }
 }
