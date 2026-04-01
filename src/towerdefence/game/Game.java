@@ -152,12 +152,4 @@ public class Game {
         return entities;
     }
 
-    /**
-     * return the config that is in the game
-     * @return the config
-     */
-    public Config getConfig() {
-        return config;
-    }
-
 }
