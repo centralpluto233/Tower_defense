@@ -1,6 +1,9 @@
 package towerdefence.game;
 
+import towerdefence.game.interfaces.GameView;
 import towerdefence.system.logging.GameLogger;
+import towerdefence.system.config.Config;
+import towerdefence.system.time.Stopwatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +15,18 @@ public class Game {
     private static final Logger logger = GameLogger.getLogger();
     private final List<Entity> entities = new ArrayList<>();
     private boolean running = false;
+    private Config config;
+    private GameView view;
+    private AbstractGameFactory factory;
 
     private Game() {
         logger.info("Game created");
     }
 
+    /**
+     * singleton game
+     * @return game instance
+     */
     public static Game getInstance() {
         if (instance == null) {
             instance = new Game();
@@ -33,10 +43,33 @@ public class Game {
     }
 
     /**
-     * Initializes Game
+     * initialise the game with the config and the graphics
+     * @param config configuration for the game
+     * @param view abstract graphics for the game
      */
-    public void init() {
+    public void init(Config config, GameView view, AbstractGameFactory factory) {
         logger.info("Initializing Game");
+        this.config = config;
+        this.view = view;
+        this.factory = factory;
+    }
+
+    /**
+     * run the game loop
+     */
+    public void run() {
+        start();
+        Stopwatch stopwatch = new Stopwatch(config.getTargetFps());
+        logger.info("Game loop started");
+
+        while (isRunning()) {
+            double deltaTime = stopwatch.tick();
+            update(deltaTime);
+            view.render();
+        }
+
+        stop();
+        logger.info("Game loop finished");
     }
 
     /**
@@ -109,6 +142,22 @@ public class Game {
         }
         logger.info("Removing Entity "+entity);
         entities.remove(entity);
+    }
+
+    /**
+     * returns all entities
+     * @return list of entities
+     */
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
+    /**
+     * return the config that is in the game
+     * @return the config
+     */
+    public Config getConfig() {
+        return config;
     }
 
 }

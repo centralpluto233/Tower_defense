@@ -142,4 +142,8 @@ public class Config {
     public int getTargetFps() {
         return getInt("target.fps");
     }
+
+    public String getWindowTitle() {
+        return get("window.title");
+    }
 }

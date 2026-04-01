@@ -106,4 +106,9 @@ public abstract class Entity {
     public boolean isMarkedForRemoval() {
         return this.markedForRemoval;
     }
+
+    /**
+     * abstract draw method
+     */
+    public abstract void draw();
 }
