@@ -39,13 +39,11 @@ public abstract class MovingEntity extends Entity{
      * @param y the y-coordinate of the entity's position
      * @param width the width of the entity
      * @param height the height of the entity
-     * @param velocityX the x-component of the entity's velocity
-     * @param velocityY the y-component of the entity's velocity
      * @param speed the speed of the entity
      */
-    public MovingEntity(double x, double y, double width, double height, double velocityX, double velocityY, double speed) {
+    public MovingEntity(double x, double y, double width, double height, double speed) {
         super(x, y, width, height);
-        this.velocity = new Vector2D(velocityX, velocityY);
+        this.velocity = new Vector2D(0, 0);
         this.speed = speed;
     }
 
@@ -54,7 +52,7 @@ public abstract class MovingEntity extends Entity{
      * @param directionX the x-component of the direction
      * @param directionY the y-component of the direction
      */
-    public void setDirection(double directionX, double directionY) {
+    protected void setDirection(double directionX, double directionY) {
         this.velocity = new Vector2D(directionX, directionY);
     }
 
@@ -66,12 +64,6 @@ public abstract class MovingEntity extends Entity{
         setX(getX() + velocity.x() * speed * deltaTime);
         setY(getY() + velocity.y() * speed * deltaTime);
     }
-
-    /**
-     * Follows a path based on the time elapsed.
-     * @param deltaTime the time elapsed since the last update
-     */
-    protected abstract void followPath(double deltaTime);
 
     /**
      * Returns a string representation of the moving entity.
