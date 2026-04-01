@@ -8,9 +8,21 @@ import java.util.logging.Logger;
 import towerdefence.game.entity.Entity;
 
 public class Game {
+    private static Game instance;
     private static final Logger logger = GameLogger.getLogger();
     private final List<Entity> entities = new ArrayList<>();
     private boolean running = false;
+
+    private Game() {
+        logger.info("Game created");
+    }
+
+    public static Game getInstance() {
+        if (instance == null) {
+            instance = new Game();
+        }
+        return instance;
+    }
 
     /**
      * Returns if game is running
@@ -33,7 +45,6 @@ public class Game {
     public void start() {
         running = true;
         logger.info("Starting Game");
-
     }
 
     /**

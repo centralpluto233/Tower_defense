@@ -10,10 +10,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main {
-	static void main(String[] args) {
+	public static void main(String[] args) {
         Logger logger = null;
         try {
+            // config
             Config config = new Config();
+
+            // logging
             GameLogger.setup(config.getLogLevelFile(),config.getLogLevelConsole());
             logger = GameLogger.getLogger();
 
@@ -23,9 +26,7 @@ public class Main {
             logger.fine("Window: " + config.getWindowWidth() + "x" + config.getWindowHeight() + " | FPS: " + config.getTargetFps());
 
             // Initialize and start game
-            Game game = new Game();
-            game.init();
-            game.start();
+            Game game = Game.getInstance();
 
             // Game loop
             Stopwatch stopwatch = new Stopwatch(config.getTargetFps());

@@ -3,8 +3,8 @@ import towerdefence.game.util.Vector2D;
 
 public abstract class Entity {
 
-    private double width;
-    private double height;
+    private final double width;
+    private final double height;
     private Vector2D position;
     private boolean markedForRemoval= false;
 
@@ -33,7 +33,7 @@ public abstract class Entity {
      * Sets the x-coordinate of the entity's position.
      * @param x the new x-coordinate
      */
-    public void setX(double x) {
+    protected void setX(double x) {
         this.position = new Vector2D(x, this.position.y());
     }
 
@@ -41,7 +41,7 @@ public abstract class Entity {
      * Returns the y-coordinate of the entity's position.
      * @return the y-coordinate
      */
-    public double getY() {
+    protected double getY() {
         return position.y();
     }
 
@@ -95,7 +95,7 @@ public abstract class Entity {
     /**
      * Marks entity for removal (dead or out of bounds)
      */
-    public void markForRemoval() {
+    protected void markForRemoval() {
         this.markedForRemoval = true;
     }
 
