@@ -11,6 +11,7 @@ public class J2dGoblinEnemy extends GoblinEnemy {
         this.g2d=g2d;
     }
 
+    @Override
     public void draw() {
         g2d.setColor(Color.GREEN);
         g2d.fillRect((int)getX(), (int)getY(), (int)getWidth(), (int)getHeight());

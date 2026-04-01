@@ -41,7 +41,7 @@ public abstract class Entity {
      * Returns the y-coordinate of the entity's position.
      * @return the y-coordinate
      */
-    protected double getY() {
+    public double getY() {
         return position.y();
     }
 

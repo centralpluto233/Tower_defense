@@ -5,12 +5,6 @@ package towerdefence.game.interfaces;
  */
 public interface Attacker {
     /**
-     * Attacks the specified target.
-     * @param target the target to attack
-     */
-    void attack(Damageable target);
-
-    /**
      * Gets the damage dealt by the attacker.
      * @return the damage amount
      */
@@ -21,10 +15,4 @@ public interface Attacker {
      * @return the range
      */
     double getRange();
-
-    /**
-     * Checks if the attacker can attack.
-     * @return true if the attacker can attack, false otherwise
-     */
-    boolean canAttack();
 }

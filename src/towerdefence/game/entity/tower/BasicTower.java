@@ -1,0 +1,13 @@
+package towerdefence.game.entity.tower;
+
+public abstract class BasicTower extends Tower{
+    private static final double RANGE = 50.0;
+    private static final int DAMAGE = 5;
+    private static final double COOLDOWN = 0.5;
+    private static final double WIDTH = 50.0;
+    private static final double HEIGHT = 50.0;
+
+    public BasicTower(double x, double y) {
+        super(x,y,WIDTH,HEIGHT,RANGE,DAMAGE,COOLDOWN);
+    }
+}
