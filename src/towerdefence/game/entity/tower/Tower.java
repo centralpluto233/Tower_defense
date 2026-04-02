@@ -72,16 +72,9 @@ public abstract class Tower extends Entity implements Attacker {
     }
 
     private Optional<EnemyEntity> findTargetInRange(List<EnemyEntity> enemies) {
-        double towerX = getX();
-        double towerY = getY();
-        double rangeSq = range*range;
-
         return enemies.stream()
-                .filter(enemy -> {
-                    double dx = enemy.getX() - towerX;
-                    double dy = enemy.getY() - towerY;
-                    return dx * dx + dy * dy <= rangeSq;
-                }).findFirst();
+                .filter(enemy -> getPosition().
+                        distanceTo(enemy.getPosition())<= range).findFirst();
     }
 
     @Override
