@@ -1,9 +1,12 @@
 package towerdefence.j2d;
 
 import towerdefence.game.AbstractGameFactory;
+import towerdefence.game.entity.enemy.EnemyEntity;
 import towerdefence.game.entity.enemy.GoblinEnemy;
+import towerdefence.game.entity.projectile.HomingProjectile;
 import towerdefence.game.entity.tower.BasicTower;
 import towerdefence.j2d.entity.enemy.J2dGoblinEnemy;
+import towerdefence.j2d.entity.projectile.J2dHomingProjectile;
 import towerdefence.j2d.entity.tower.J2dBasicTower;
 
 import java.awt.*;
@@ -23,5 +26,10 @@ public class J2dFactory extends AbstractGameFactory {
     @Override
     public BasicTower createBasicTower(double x, double y) {
         return new J2dBasicTower(x,y,g2d);
+    }
+
+    @Override
+    public HomingProjectile createHomingProjectile(double x, double y, int damage, EnemyEntity target) {
+        return new J2dHomingProjectile(x,y,damage,target,g2d);
     }
 }
