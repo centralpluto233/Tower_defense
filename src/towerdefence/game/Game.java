@@ -1,6 +1,9 @@
 package towerdefence.game;
 
 import towerdefence.game.interfaces.GameView;
+import towerdefence.game.util.Vector2D;
+import towerdefence.lua.LevelData;
+import towerdefence.lua.LuaEngine;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.system.config.Config;
 import towerdefence.system.time.Stopwatch;
@@ -18,6 +21,8 @@ public class Game {
     private Config config;
     private GameView view;
     private AbstractGameFactory factory;
+    private LuaEngine levelEngine;
+    private LevelData currentLevel;
 
     private Game() {
         logger.info("Game created");
@@ -47,11 +52,13 @@ public class Game {
      * @param config configuration for the game
      * @param view abstract graphics for the game
      */
-    public void init(Config config, GameView view, AbstractGameFactory factory) {
+    public void init(Config config, GameView view, AbstractGameFactory factory, LuaEngine engine) {
         logger.info("Initializing Game");
         this.config = config;
         this.view = view;
         this.factory = factory;
+        this.levelEngine = engine;
+        this.currentLevel= levelEngine.loadLevelData();
     }
 
     /**
@@ -152,4 +159,11 @@ public class Game {
         return entities;
     }
 
+    public List<Vector2D> getPath() {
+        return currentLevel.getPath();
+    }
+
+    public List<Vector2D> getTowerSpots() {
+        return currentLevel.getTowerSpots();
+    }
 }

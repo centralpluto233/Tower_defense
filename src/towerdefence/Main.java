@@ -4,6 +4,7 @@ import towerdefence.game.Game;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.j2d.J2dFactory;
 import towerdefence.j2d.J2dGamePanel;
+import towerdefence.lua.LuaEngine;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
 
@@ -25,10 +26,12 @@ public class Main {
 
             J2dFactory factory = new J2dFactory();
 
+            LuaEngine engine = new LuaEngine(config);
+
             Game game = Game.getInstance();
             GameView view = new J2dGamePanel(game, config, factory);
 
-            game.init(config, view, factory);
+            game.init(config, view, factory, engine);
             game.run();
 
         } catch (RuntimeException e) {
