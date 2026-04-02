@@ -16,6 +16,10 @@ public class J2dGamePanel extends JPanel implements GameView {
     private final Config config;
     private final J2dFactory factory;
 
+    private long fpsLastTime = System.currentTimeMillis();
+    private int fpsFrames = 0;
+    private int fps = 0;
+
     public J2dGamePanel(Game game, Config config, J2dFactory factory) {
         this.game = game;
         this.config = config;
@@ -43,7 +47,19 @@ public class J2dGamePanel extends JPanel implements GameView {
     @Override
     public void render() {
         ensureWindow();
+        updateFps();
         repaint();
+    }
+
+    private void updateFps() {
+        fpsFrames++;
+        long now = System.currentTimeMillis();
+
+        if (now - fpsLastTime >= 1000) {
+            fps = fpsFrames;
+            fpsFrames = 0;
+            fpsLastTime = now;
+        }
     }
 
     @Override
@@ -56,6 +72,9 @@ public class J2dGamePanel extends JPanel implements GameView {
         drawPath(g2d);
         drawTowerSpots(g2d);
         drawEntities(g2d);
+        if (config.getDebug()) {
+            drawFps(g2d);
+        }
     }
 
     private void drawPath(Graphics2D g2d) {
@@ -94,5 +113,15 @@ public class J2dGamePanel extends JPanel implements GameView {
         for (Entity e : game.getEntities()) {
             e.draw();
         }
+    }
+
+    private void drawFps(Graphics2D g2d) {
+        g2d.setFont(new Font("Consolas", Font.BOLD, 18));
+
+        g2d.setColor(new Color(0, 0, 0, 128));
+        g2d.fillRoundRect(8, 8, 90, 28, 8, 8);
+
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("FPS: " + fps, 18, 28);
     }
 }

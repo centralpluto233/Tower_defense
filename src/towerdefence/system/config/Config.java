@@ -146,4 +146,6 @@ public class Config {
     public String getWindowTitle() {
         return get("window.title");
     }
+
+    public boolean getDebug() {return getBoolean("debugmode.enabled");}
 }
