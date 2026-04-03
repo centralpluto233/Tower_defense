@@ -17,6 +17,7 @@ public abstract class Tower extends Entity implements Attacker {
     private final int damage;
     private final double cooldown;
     private double timeSinceLastAttack;
+    private int cost;
 
     /**
      * constructs a tower
@@ -28,12 +29,13 @@ public abstract class Tower extends Entity implements Attacker {
      * @param damage damage dealt in attack
      * @param cooldown cooldown between attacks
      */
-    public Tower(double x, double y, double width, double height, double range, int damage, double cooldown) {
+    public Tower(double x, double y, double width, double height, double range, int damage, double cooldown, int cost) {
         super(x, y, width, height);
         this.range = range;
         this.damage = damage;
         this.cooldown = cooldown;
         this.timeSinceLastAttack= cooldown;
+        this.cost = cost;
     }
 
     protected void attack(Damageable target) {
@@ -84,6 +86,10 @@ public abstract class Tower extends Entity implements Attacker {
                 + ", damage=" + damage
                 + ", cooldown=" + cooldown
                 + ", timeSinceLastAttack=" + timeSinceLastAttack;
+    }
+
+    public int get_cost(){
+        return cost;
     }
     
 }

@@ -5,10 +5,12 @@ import towerdefence.game.entity.enemy.EnemyEntity;
 import towerdefence.game.entity.enemy.GoblinEnemy;
 import towerdefence.game.entity.projectile.HomingProjectile;
 import towerdefence.game.entity.tower.BasicTower;
+import towerdefence.game.util.Vector2D;
 import towerdefence.j2d.entity.enemy.J2dGoblinEnemy;
 import towerdefence.j2d.entity.projectile.J2dHomingProjectile;
 import towerdefence.j2d.entity.tower.J2dBasicTower;
 
+import java.util.List;
 import java.awt.*;
 
 public class J2dFactory extends AbstractGameFactory {
@@ -19,8 +21,8 @@ public class J2dFactory extends AbstractGameFactory {
     }
 
     @Override
-    public GoblinEnemy createGoblin(double x, double y) {
-        return new J2dGoblinEnemy(x,y,g2d);
+    public GoblinEnemy createGoblin(double x, double y, List<Vector2D> path) {
+        return new J2dGoblinEnemy(x,y,path,g2d);
     }
 
     @Override

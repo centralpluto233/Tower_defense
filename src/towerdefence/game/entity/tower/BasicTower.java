@@ -6,8 +6,9 @@ public abstract class BasicTower extends Tower{
     private static final double COOLDOWN = 0.5;
     private static final double WIDTH = 50.0;
     private static final double HEIGHT = 50.0;
+    private static final int COST = 20;
 
     public BasicTower(double x, double y) {
-        super(x,y,WIDTH,HEIGHT,RANGE,DAMAGE,COOLDOWN);
+        super(x,y,WIDTH,HEIGHT,RANGE,DAMAGE,COOLDOWN,COST);
     }
 }

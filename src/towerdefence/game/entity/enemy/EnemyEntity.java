@@ -34,12 +34,13 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
      * @param scoreValue score when killed
      * @param damage damage dealt to base wen reaching end
      */
-    public EnemyEntity(double x, double y, double width, double height, double speed, int health, int scoreValue, int damage) {
+    public EnemyEntity(double x, double y, double width, double height, double speed, int health, int scoreValue, int damage, List<Vector2D> path) {
         super(x, y, width, height, speed);
         this.health = health;
         this.maxHealth = health;
         this.scoreValue = scoreValue;
         this.damage = damage;
+        this.path = path;
     }
 
     /**
@@ -89,15 +90,6 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         } else {
             move(dt);
         }
-    }
-
-    /**
-     * sets the path for this enemy to follow (waypoints)
-     * @param path list of vector2D waypoints
-     */
-    public void setPath(List<Vector2D> path) {
-        this.path = path;
-        this.currentWaypointIndex = 0;
     }
 
     /**
