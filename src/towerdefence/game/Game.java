@@ -69,6 +69,10 @@ public class Game {
         Stopwatch stopwatch = new Stopwatch(config.getTargetFps());
         logger.info("Game loop started");
 
+        var enemy = factory.createGoblin(currentLevel.getPath().getFirst().x(), currentLevel.getPath().getFirst().y(),currentLevel.getPath());
+        entities.add(enemy);
+
+
         while (isRunning()) {
             double deltaTime = stopwatch.tick();
             update(deltaTime);
