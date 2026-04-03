@@ -3,6 +3,7 @@ package towerdefence.j2d;
 import towerdefence.game.Game;
 import towerdefence.game.entity.Entity;
 import towerdefence.game.interfaces.GameView;
+import towerdefence.game.interfaces.RenderContext;
 import towerdefence.game.util.Vector2D;
 import towerdefence.system.config.Config;
 
@@ -67,11 +68,11 @@ public class J2dGamePanel extends JPanel implements GameView {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
-        factory.setGraphics2D(g2d);
+        RenderContext ctx = new J2dRenderContext(g2d);
 
         drawPath(g2d);
         drawTowerSpots(g2d);
-        drawEntities(g2d);
+        drawEntities(ctx);
         if (config.getDebug()) {
             drawFps(g2d);
         }
@@ -109,9 +110,9 @@ public class J2dGamePanel extends JPanel implements GameView {
         }
     }
 
-    private void drawEntities(Graphics2D g2d) {
+    private void drawEntities(RenderContext ctx) {
         for (Entity e : game.getEntities()) {
-            e.draw();
+            e.draw(ctx);
         }
     }
 

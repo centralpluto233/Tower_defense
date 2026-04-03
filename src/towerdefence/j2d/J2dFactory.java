@@ -14,24 +14,19 @@ import java.util.List;
 import java.awt.*;
 
 public class J2dFactory extends AbstractGameFactory {
-    private Graphics2D g2d;
-
-    public void setGraphics2D(Graphics2D g2d) {
-        this.g2d = g2d;
-    }
 
     @Override
     public GoblinEnemy createGoblin(double x, double y, List<Vector2D> path) {
-        return new J2dGoblinEnemy(x,y,path,g2d);
+        return new J2dGoblinEnemy(x,y,path);
     }
 
     @Override
     public BasicTower createBasicTower(double x, double y) {
-        return new J2dBasicTower(x,y,g2d);
+        return new J2dBasicTower(x,y);
     }
 
     @Override
     public HomingProjectile createHomingProjectile(double x, double y, int damage, EnemyEntity target) {
-        return new J2dHomingProjectile(x,y,damage,target,g2d);
+        return new J2dHomingProjectile(x,y,damage,target);
     }
 }
