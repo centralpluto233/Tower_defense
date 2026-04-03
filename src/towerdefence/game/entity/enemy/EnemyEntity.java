@@ -66,31 +66,46 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
             return;
         }
 
-        Vector2D target = path.get(currentWaypointIndex);
-        Vector2D current = getPosition();
+        double remaining = getSpeed() * dt;
+        double x = getX();
+        double y = getY();
 
-        double dx = target.x() - current.x();
-        double dy = target.y() - current.y();
-        double distance = Math.sqrt(dx * dx + dy * dy);
+        while (remaining > 0.0 && currentWaypointIndex < path.size()) {
+            Vector2D target = path.get(currentWaypointIndex);
 
-        if (distance <= 0.001) {
-            setX(target.x());
-            setY(target.y());
-            currentWaypointIndex++;
-            return;
+            double dx = target.x() - x;
+            double dy = target.y() - y;
+            double distance = Math.hypot(dx, dy);
+
+            // Sta je exact op dit waypoint? Dan direct naar de volgende.
+            if (distance < 1e-9) {
+                currentWaypointIndex++;
+                continue;
+            }
+
+            if (remaining >= distance) {
+                // Bereik waypoint binnen dit frame, gebruik restbudget verder.
+                x = target.x();
+                y = target.y();
+                remaining -= distance;
+                currentWaypointIndex++;
+            } else {
+                // Beweeg richting waypoint met exact resterende afstand.
+                double t = remaining / distance;
+                x += dx * t;
+                y += dy * t;
+                remaining = 0.0;
+            }
         }
 
-        setDirection(dx/ distance, dy/ distance);
+        setX(x);
+        setY(y);
 
-        double maxStep = getSpeed() * dt;
-        if (distance <= maxStep) {
-            setX(target.x());
-            setY(target.y());
-            currentWaypointIndex++;
-        } else {
-            move(dt);
+        if (hasReachedEnd()) {
+            markForRemoval();
         }
     }
+
 
     /**
      * returns whether the enemy has reached the end of its path
