@@ -131,12 +131,12 @@ public class Config {
         return get("selected.level");
     }
 
-    public int getWindowWidth() {
-        return getInt("window.width");
+    public int getGameWidth() {
+        return getInt("game.width");
     }
 
-    public int getWindowHeight() {
-        return getInt("window.height");
+    public int getGameHeight() {
+        return getInt("game.height");
     }
 
     public int getTargetFps() {

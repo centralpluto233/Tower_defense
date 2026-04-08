@@ -5,6 +5,7 @@ import towerdefence.game.interfaces.RenderContext;
 import towerdefence.game.util.Vector2D;
 import towerdefence.j2d.J2dRenderContext;
 
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import java.awt.*;
@@ -18,6 +19,6 @@ public class J2dGoblinEnemy extends GoblinEnemy {
     public void draw(RenderContext ctx) {
         Graphics2D g2d = ((J2dRenderContext) ctx).getGraphics2D();
         g2d.setColor(Color.GREEN);
-        g2d.fillRect((int)getX(), (int)getY(), (int)getWidth(), (int)getHeight());
+        g2d.fill(new Rectangle2D.Double(getX(), getY(), getWidth(), getHeight()));
     }
 }

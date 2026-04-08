@@ -14,7 +14,7 @@ public class Stopwatch {
      * @param targetFps the taget frames per second
      */
     public Stopwatch(int targetFps) {
-        lastTick = System.currentTimeMillis();
+        lastTick = System.nanoTime();
         maxDeltaTime = 1.0/targetFps;
         logger.fine("Stopwatch started with max deltaTime: " + maxDeltaTime + "s");
     }
@@ -25,8 +25,8 @@ public class Stopwatch {
      * @return returns deltatime (or capped deltatime)
      */
     public double tick() {
-        long now = System.currentTimeMillis();
-        double deltaTime = (now- lastTick)/1000.0;
+        long now = System.nanoTime();
+        double deltaTime = (now- lastTick)/1_000_000_000.0;
         lastTick = now;
         double cappedDelta = Math.min(deltaTime, maxDeltaTime);
         logger.finest("DeltaTime: "+ cappedDelta + "s");
@@ -37,7 +37,7 @@ public class Stopwatch {
      * Resets the stopwatch
      */
     public void reset() {
-        lastTick = System.currentTimeMillis();
+        lastTick = System.nanoTime();
         logger.fine("Stopwatch reset");
     }
 
@@ -46,7 +46,7 @@ public class Stopwatch {
      * @return elapsed time in seconds
      */
     public double peek() {
-        return (System.currentTimeMillis() - lastTick)/1000.0;
+        return (System.nanoTime() - lastTick)/1_000_000_000.0;
     }
 
 

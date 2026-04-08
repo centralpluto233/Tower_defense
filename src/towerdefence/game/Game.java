@@ -77,6 +77,14 @@ public class Game {
             double deltaTime = stopwatch.tick();
             update(deltaTime);
             view.render();
+
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                logger.warning("Game loop interrupted: " + e.getMessage());
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
 
         stop();

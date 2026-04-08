@@ -25,7 +25,7 @@ public class J2dGamePanel extends JPanel implements GameView {
         this.game = game;
         this.config = config;
         this.factory = factory;
-        setPreferredSize(new Dimension(config.getWindowWidth(), config.getWindowHeight()));
+        setPreferredSize(new Dimension(config.getGameWidth(), config.getGameHeight()));
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
     }
@@ -38,8 +38,8 @@ public class J2dGamePanel extends JPanel implements GameView {
         frame = new JFrame(config.getWindowTitle());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(this);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setUndecorated(true);
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setFocusable(true);
@@ -68,6 +68,7 @@ public class J2dGamePanel extends JPanel implements GameView {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d = getScaledGraphics(g2d);
         RenderContext ctx = new J2dRenderContext(g2d);
 
         drawPath(g2d);
@@ -76,6 +77,24 @@ public class J2dGamePanel extends JPanel implements GameView {
         if (config.getDebug()) {
             drawFps(g2d);
         }
+        g2d.dispose();
+    }
+
+    private Graphics2D getScaledGraphics(Graphics2D g2d) {
+        double virtualW = config.getGameWidth();
+        double virtualH = config.getGameHeight();
+        double screenW = this.getWidth();
+        double screenH = this.getHeight();
+
+        double scale = Math.min(screenW / virtualW, screenH / virtualH);
+        double offsetX = (screenW - virtualW * scale) / 2;
+        double offsetY = (screenH - virtualH * scale) / 2;
+
+        Graphics2D g2d2 = (Graphics2D) g2d.create();
+        g2d2.translate(offsetX, offsetY);
+        g2d2.scale(scale, scale);
+
+        return g2d2;
     }
 
     private void drawPath(Graphics2D g2d) {
