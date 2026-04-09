@@ -2,6 +2,9 @@ package towerdefence.j2d;
 
 import towerdefence.game.Game;
 import towerdefence.game.entity.Entity;
+import towerdefence.game.entity.enemy.EnemyEntity;
+import towerdefence.game.entity.projectile.Projectile;
+import towerdefence.game.entity.tower.Tower;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.RenderContext;
 import towerdefence.game.util.Vector2D;
@@ -74,6 +77,7 @@ public class J2dGamePanel extends JPanel implements GameView {
         drawPath(g2d);
         drawTowerSpots(g2d);
         drawEntities(ctx);
+        drawStats(g2d);
         if (config.getDebug()) {
             drawFps(g2d);
         }
@@ -130,18 +134,31 @@ public class J2dGamePanel extends JPanel implements GameView {
     }
 
     private void drawEntities(RenderContext ctx) {
-        for (Entity e : game.getEntities()) {
+        for (EnemyEntity e : game.getEnemies()) {
             e.draw(ctx);
         }
+        for (Tower t : game.getTowers()) {
+            t.draw(ctx);
+        }
+        for (Projectile p : game.getProjectiles()) {
+            p.draw(ctx);
+        }
+
     }
 
     private void drawFps(Graphics2D g2d) {
         g2d.setFont(new Font("Consolas", Font.BOLD, 18));
 
-        g2d.setColor(new Color(0, 0, 0, 128));
-        g2d.fillRoundRect(8, 8, 90, 28, 8, 8);
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("FPS: " + fps, 750, 28);
+    }
+
+    private void drawStats(Graphics2D g2d) {
+        g2d.setFont(new Font("Consolas", Font.BOLD, 18));
 
         g2d.setColor(Color.WHITE);
-        g2d.drawString("FPS: " + fps, 18, 28);
+        g2d.drawString("Lives: " + game.getLives(), 18, 30);
+        g2d.drawString("Resources: " + game.getResources(), 18, 50);
     }
+
 }

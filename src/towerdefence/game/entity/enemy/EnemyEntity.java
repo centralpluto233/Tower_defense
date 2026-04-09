@@ -157,6 +157,14 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         return maxHealth;
     }
 
+    public int getScoreValue() {
+        return scoreValue;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
     /**
      * gives string representation of enemy
      * @return string to print nicely

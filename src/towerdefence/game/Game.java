@@ -2,7 +2,11 @@ package towerdefence.game;
 
 import towerdefence.game.ecs.ECSManager;
 import towerdefence.game.ecs.systems.WaveSpawnSystem;
+import towerdefence.game.entity.enemy.EnemyEntity;
+import towerdefence.game.entity.projectile.Projectile;
+import towerdefence.game.entity.tower.Tower;
 import towerdefence.game.interfaces.GameView;
+import towerdefence.game.stats.RunStats;
 import towerdefence.game.util.Vector2D;
 import towerdefence.lua.LevelData;
 import towerdefence.lua.LuaEngine;
@@ -18,15 +22,18 @@ import towerdefence.game.entity.Entity;
 public class Game {
     private static Game instance;
     private static final Logger logger = GameLogger.getLogger();
-    private final List<Entity> entities = new ArrayList<>();
+    private final List<EnemyEntity> enemies = new ArrayList<>();
+    private final List<Tower> towers = new ArrayList<>();
+    private final List<Projectile> projectiles = new ArrayList<>();
     private boolean running = false;
     private Config config;
     private GameView view;
     private AbstractGameFactory factory;
     private LuaEngine levelEngine;
     private LevelData currentLevel;
-    private final ECSManager manager = new ECSManager();
-    private final WaveSpawnSystem waveSpawnSystem = new WaveSpawnSystem();
+    private ECSManager manager;
+    private WaveSpawnSystem waveSpawnSystem;
+    private RunStats stats;
 
     private Game() {
         logger.info("Game created");
@@ -63,7 +70,10 @@ public class Game {
         this.factory = factory;
         this.levelEngine = engine;
         this.currentLevel= levelEngine.loadLevelData();
-        waveSpawnSystem.init(currentLevel,manager);
+        this.manager = new ECSManager();
+        this.waveSpawnSystem = new WaveSpawnSystem();
+        this.waveSpawnSystem.init(currentLevel,manager);
+        this.stats = new RunStats(currentLevel.getLives(),currentLevel.getResources());
     }
 
     /**
@@ -99,7 +109,6 @@ public class Game {
         running = true;
         logger.info("Starting Game");
     }
-    //TODO wavemanager verder implementer in game vooral, rest zou normaal in orde moeten zijn
     //TODO game wat uitdunnen, niet alles moet in game gebeuren
     //TODO code opkuisen, onnodige functies?
 
@@ -115,13 +124,25 @@ public class Game {
 
         waveSpawnSystem.update(deltaTime,manager,this,factory);
 
-        for (Entity entity: entities) {
-            logger.finest("Updating Entity "+entity.toString());
-            entity.update(deltaTime);
+        for (EnemyEntity enemy: enemies) {
+            logger.finest("Updating Enemy "+enemy.toString());
+            enemy.update(deltaTime);
         }
 
         // cleanup phase after update
-        entities.removeIf(this::shouldRemove);
+        for (EnemyEntity enemy: enemies) {
+            if (enemy.isMarkedForRemoval()) {
+                if (enemy.isDead()) {
+                    stats.onEnemyKilled(enemy.getScoreValue());
+                } else {
+                    stats.onEnemyEscaped(enemy.getDamage());
+                    if (stats.isDefeated()) {
+                        stop();
+                    }
+                }
+            }
+        }
+        enemies.removeIf(this::shouldRemove);
     }
 
     /**
@@ -140,12 +161,14 @@ public class Game {
      * Stops Game
      */
     public void stop() {
-        running = false;
-        logger.info("Stopping Game");
+        if (running) {
+            running = false;
+            logger.info("Stopping Game");
+        }
     }
 
     /**
-     * Adds entity to entity-list
+     * Adds entity to one of the entities lists
      * @param entity entity to add to list
      */
     public void addEntity(Entity entity) {
@@ -153,12 +176,13 @@ public class Game {
             logger.warning("Attempted to add null entity to game");
             return;
         }
-        logger.info("Adding Entity "+entity);
-        entities.add(entity);
+        if (entity instanceof Tower) {towers.add((Tower) entity);}
+        if (entity instanceof Projectile) {projectiles.add((Projectile) entity);}
+        if (entity instanceof EnemyEntity) {enemies.add((EnemyEntity) entity);}
     }
 
     /**
-     * Removes entity from entity-list
+     * Removes entity from correct entity-list
      * @param entity entity to remove from list
      */
     public void removeEntity(Entity entity) {
@@ -166,16 +190,21 @@ public class Game {
             logger.warning("Attempted to remove null entity from game");
             return;
         }
-        logger.info("Removing Entity "+entity);
-        entities.remove(entity);
+        if (entity instanceof Tower) {towers.remove((Tower) entity);}
+        if (entity instanceof Projectile) {projectiles.remove((Projectile) entity);}
+        if (entity instanceof EnemyEntity) {enemies.remove((EnemyEntity) entity);}
     }
 
-    /**
-     * returns all entities
-     * @return list of entities
-     */
-    public List<Entity> getEntities() {
-        return entities;
+    public List<EnemyEntity> getEnemies() {
+        return enemies;
+    }
+
+    public List<Tower> getTowers() {
+        return towers;
+    }
+
+    public List<Projectile> getProjectiles() {
+        return projectiles;
     }
 
     public List<Vector2D> getPath() {
@@ -184,5 +213,13 @@ public class Game {
 
     public List<Vector2D> getTowerSpots() {
         return currentLevel.getTowerSpots();
+    }
+
+    public int getLives() {
+        return stats.getLives();
+    }
+
+    public int getResources() {
+        return stats.getResources();
     }
 }
