@@ -20,5 +20,5 @@ tower_spots = {
 
 waves = {
     { count = 8, interval = 0.8, startDelay = 0.0},
-    { count = 14, interval = 0.6, startDelay = 10.0}
+    { count = 10, interval = 0.6, startDelay = 10.0}
 }

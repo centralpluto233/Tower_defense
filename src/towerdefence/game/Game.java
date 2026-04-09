@@ -86,6 +86,10 @@ public class Game {
 
         while (isRunning()) {
             double deltaTime = stopwatch.tick();
+            if (config.getDebug()) {
+                double speedup = Math.clamp(config.getDebugSpeedup(), 0.1, 20.0);
+                deltaTime *= speedup;
+            }
             update(deltaTime);
             view.render();
 
@@ -124,6 +128,14 @@ public class Game {
 
         waveSpawnSystem.update(deltaTime,manager,this,factory);
 
+        for (Tower tower: towers) {
+            logger.finest("Updating Tower "+tower.toString());
+            tower.update(deltaTime);
+        }
+        for (Projectile projectile: projectiles) {
+            logger.finest("Updating Projectile "+projectile.toString());
+            projectile.update(deltaTime);
+        }
         for (EnemyEntity enemy: enemies) {
             logger.finest("Updating Enemy "+enemy.toString());
             enemy.update(deltaTime);
@@ -143,6 +155,10 @@ public class Game {
             }
         }
         enemies.removeIf(this::shouldRemove);
+
+        if (manager.getAllEntities().isEmpty() && this.enemies.isEmpty()) {
+            stop();
+        }
     }
 
     /**

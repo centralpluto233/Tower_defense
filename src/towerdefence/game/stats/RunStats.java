@@ -34,7 +34,7 @@ public class RunStats {
     }
 
     public boolean trySpendResources(int cost) {
-        if ((resources-cost) <= 0) {
+        if ((resources-cost) < 0) {
             logger.warning("Not enough resources! Current: " + resources + ", required: " + cost);
             return false;
         } else {

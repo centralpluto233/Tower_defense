@@ -148,4 +148,6 @@ public class Config {
     }
 
     public boolean getDebug() {return getBoolean("debugmode.enabled");}
+
+    public double getDebugSpeedup() {return getDouble("debugmode.speedup");}
 }
