@@ -31,13 +31,14 @@ public class LuaEngine {
     public LevelData loadLevelData() {
         loadSelectedLevel();
 
-        String levelName = getString("level_name");
-        int lives = getInt("lives");
-        int resources = getInt("resources");
-        List<Vector2D> path = readVectorTable("main_path");
-        List<Vector2D> towerSpots = readVectorTable("tower_spots");
+        String levelName = this.getString("level_name");
+        int lives = this.getInt("lives");
+        int resources = this.getInt("resources");
+        List<Vector2D> path = this.readVectorTable("main_path");
+        List<Vector2D> towerSpots = this.readVectorTable("tower_spots");
+        List<WaveData> waves = this.readWaveTable("waves");
 
-        return new LevelData(levelName, lives, resources, path, towerSpots);
+        return new LevelData(levelName, lives, resources, path, towerSpots, waves);
     }
 
     private LuaValue getValue(String name) {
@@ -77,5 +78,21 @@ public class LuaEngine {
         }
 
         return result;
+    }
+
+    private List<WaveData> readWaveTable(String tableName) {
+        LuaTable table = getTable(tableName);
+        List<WaveData> waves = new ArrayList<>();
+
+        for (int i = 1; i <= table.length(); i++) {
+            LuaTable wave = table.get(i).checktable();
+
+            int count = wave.get("count").checkint();
+            double interval = wave.get("interval").checkdouble();
+            double startDelay = wave.get("startDelay").checkdouble();
+
+            waves.add(new WaveData(count, interval, startDelay));
+        }
+        return waves;
     }
 }

@@ -1,5 +1,7 @@
 package towerdefence.game;
 
+import towerdefence.game.ecs.ECSManager;
+import towerdefence.game.ecs.systems.WaveSpawnSystem;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.util.Vector2D;
 import towerdefence.lua.LevelData;
@@ -23,6 +25,8 @@ public class Game {
     private AbstractGameFactory factory;
     private LuaEngine levelEngine;
     private LevelData currentLevel;
+    private final ECSManager manager = new ECSManager();
+    private final WaveSpawnSystem waveSpawnSystem = new WaveSpawnSystem();
 
     private Game() {
         logger.info("Game created");
@@ -59,6 +63,7 @@ public class Game {
         this.factory = factory;
         this.levelEngine = engine;
         this.currentLevel= levelEngine.loadLevelData();
+        waveSpawnSystem.init(currentLevel,manager);
     }
 
     /**
@@ -68,10 +73,6 @@ public class Game {
         start();
         Stopwatch stopwatch = new Stopwatch(config.getTargetFps());
         logger.info("Game loop started");
-
-        var enemy = factory.createGoblin(currentLevel.getPath().getFirst().x(), currentLevel.getPath().getFirst().y(),currentLevel.getPath());
-        entities.add(enemy);
-
 
         while (isRunning()) {
             double deltaTime = stopwatch.tick();
@@ -98,6 +99,9 @@ public class Game {
         running = true;
         logger.info("Starting Game");
     }
+    //TODO wavemanager verder implementer in game vooral, rest zou normaal in orde moeten zijn
+    //TODO game wat uitdunnen, niet alles moet in game gebeuren
+    //TODO code opkuisen, onnodige functies?
 
     /**
      * Updates game and all entities
@@ -108,6 +112,9 @@ public class Game {
             return;
         }
         logger.finest("Updating Game");
+
+        waveSpawnSystem.update(deltaTime,manager,this,factory);
+
         for (Entity entity: entities) {
             logger.finest("Updating Entity "+entity.toString());
             entity.update(deltaTime);

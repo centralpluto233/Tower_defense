@@ -10,13 +10,15 @@ public class LevelData {
     private final int resources;
     private final List<Vector2D> path;
     private final List<Vector2D> towerSpots;
+    private final List<WaveData> waves;
 
-    public LevelData(String levelName, int lives, int resources, List<Vector2D> path, List<Vector2D> towerSpots) {
+    public LevelData(String levelName, int lives, int resources, List<Vector2D> path, List<Vector2D> towerSpots, List<WaveData> waves) {
         this.levelName = levelName;
         this.lives = lives;
         this.resources = resources;
         this.path = List.copyOf(path);
         this.towerSpots = List.copyOf(towerSpots);
+        this.waves = List.copyOf(waves);
     }
 
     public String getLevelName() {
@@ -39,14 +41,19 @@ public class LevelData {
         return towerSpots;
     }
 
+    public List<WaveData> getWaves() {
+        return waves;
+    }
+
     @Override
     public String toString() {
         return "LevelData{" +
                 "levelName='" + levelName + '\'' +
                 ", lives=" + lives +
                 ", resources=" + resources +
-                ", pathSize=" + path.size() +
-                ", towerSpotsSize=" + towerSpots.size() +
+                ", path=" + path +
+                ", towerSpots=" + towerSpots +
+                ", waves=" + waves +
                 '}';
     }
 }

@@ -17,3 +17,8 @@ tower_spots = {
     {x = 380, y = 320},
     {x = 620, y = 260}
 }
+
+waves = {
+    { count = 8, interval = 0.8, startDelay = 0.0},
+    { count = 12, interval = 0.6, startDelay = 10.0}
+}
