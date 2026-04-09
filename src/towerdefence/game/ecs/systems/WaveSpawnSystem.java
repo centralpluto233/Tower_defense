@@ -36,7 +36,7 @@ public class WaveSpawnSystem {
             }
 
             scheduleComp.tick(dt);
-            if (scheduleComp.getStartDelaySeconds() > 0.0) {
+            if (scheduleComp.getTimeLeftSeconds() > 0.0) {
                 continue;
             }
 

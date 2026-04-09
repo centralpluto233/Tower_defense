@@ -2,26 +2,26 @@ package towerdefence.game.ecs.components;
 
 public class SpawnScheduleComponent {
     private final double intervalSeconds;
-    private double startDelaySeconds;
+    private double timeLeftSeconds;
 
     public SpawnScheduleComponent(double intervalSeconds, double startDelaySeconds) {
         this.intervalSeconds = intervalSeconds;
-        this.startDelaySeconds = startDelaySeconds;
+        this.timeLeftSeconds = startDelaySeconds;
     }
 
     public double getIntervalSeconds() {
         return intervalSeconds;
     }
 
-    public double getStartDelaySeconds() {
-        return startDelaySeconds;
+    public double getTimeLeftSeconds() {
+        return timeLeftSeconds;
     }
 
     public void tick(double dt) {
-        startDelaySeconds -= dt;
+        timeLeftSeconds -= dt;
     }
 
     public void resetToInterval() {
-        startDelaySeconds = intervalSeconds;
+        timeLeftSeconds = intervalSeconds;
     }
 }
