@@ -1,33 +1,42 @@
 package towerdefence.j2d;
 
 import towerdefence.game.Game;
-import towerdefence.game.entity.Entity;
 import towerdefence.game.entity.enemy.EnemyEntity;
 import towerdefence.game.entity.projectile.Projectile;
 import towerdefence.game.entity.tower.Tower;
+import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
+import towerdefence.game.interfaces.InputSource;
 import towerdefence.game.interfaces.RenderContext;
 import towerdefence.game.util.Vector2D;
 import towerdefence.system.config.Config;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+//TODO panel uitdunnen en input opschonen/ andere tactiek miss?
 
-public class J2dGamePanel extends JPanel implements GameView {
+public class J2dGamePanel extends JPanel implements GameView, InputSource {
     private final Game game;
     private JFrame frame;
     private final Config config;
-    private final J2dFactory factory;
 
     private long fpsLastTime = System.currentTimeMillis();
     private int fpsFrames = 0;
     private int fps = 0;
 
-    public J2dGamePanel(Game game, Config config, J2dFactory factory) {
+    private final Queue<InputCommand> inputQueue = new ConcurrentLinkedQueue<>();
+
+    public J2dGamePanel(Game game, Config config) {
         this.game = game;
         this.config = config;
-        this.factory = factory;
         setPreferredSize(new Dimension(config.getGameWidth(), config.getGameHeight()));
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
@@ -46,6 +55,9 @@ public class J2dGamePanel extends JPanel implements GameView {
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setFocusable(true);
+
+        frame.setFocusTraversalKeysEnabled(false);
+        installInputHandlers();
     }
 
     @Override
@@ -124,7 +136,7 @@ public class J2dGamePanel extends JPanel implements GameView {
         }
 
         g2d.setColor(new Color(80, 170, 255));
-        int r = 8;
+        int r = config.getTowerSpotRadius();
 
         for (Vector2D spot : towerSpots) {
             int x = (int) spot.x() - r;
@@ -159,6 +171,83 @@ public class J2dGamePanel extends JPanel implements GameView {
         g2d.setColor(Color.WHITE);
         g2d.drawString("Lives: " + game.getLives(), 18, 30);
         g2d.drawString("Resources: " + game.getResources(), 18, 50);
+    }
+
+    @Override
+    public List<InputCommand> pollCommands() {
+        List<InputCommand> commands = new ArrayList<>();
+        InputCommand command;
+        while ((command = inputQueue.poll()) != null) {
+            commands.add(command);
+        }
+        return commands;
+    }
+
+    private void installInputHandlers() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (!SwingUtilities.isLeftMouseButton(e)) {
+                    return;
+                }
+                Integer spotIndex = findIndexFromClick(e.getPoint());
+                if (spotIndex != null) {
+                    inputQueue.add(InputCommand.placeTowerAtSpot(spotIndex));
+                }
+            }
+        });
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    inputQueue.add(InputCommand.quitGame());
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    inputQueue.add(InputCommand.pauseToggled());
+                }
+            }
+        });
+    }
+
+    private Integer findIndexFromClick(Point p) {
+        //TODO replace vector2D with point (allready existing class)
+        Vector2D pScaled = screenToWorld(p);
+        if (pScaled == null) return null;
+
+        List<Vector2D> spots = game.getTowerSpots();
+
+        int best = -1;
+        double bestD = config.getGameWidth()*2;
+
+        for (int i = 0; i< spots.size(); i++) {
+            double d = pScaled.distanceTo(spots.get(i));
+            if (d <= config.getTowerSpotRadius() && d < bestD) {
+                bestD = d;
+                best = i;
+            }
+        }
+
+        if (best >=0) {
+            return best;
+        } else {
+            return null;
+        }
+    }
+
+    private Vector2D screenToWorld(Point p) {
+        double virtualW = config.getGameWidth();
+        double virtualH = config.getGameHeight();
+        double screenW = this.getWidth();
+        double screenH = this.getHeight();
+
+        double scale = Math.min(screenW / virtualW, screenH / virtualH);
+        double offsetX = (screenW - virtualW * scale) / 2;
+        double offsetY = (screenH - virtualH * scale) / 2;
+
+        if (p.x < offsetX || p.y < offsetY || p.x > offsetX + virtualW*scale || p.y > offsetY + virtualH*scale) {
+            return null;
+        }
+        return new Vector2D((p.x - offsetX)/scale, (p.y - offsetY) / scale);
     }
 
 }

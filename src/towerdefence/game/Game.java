@@ -6,6 +6,8 @@ import towerdefence.game.entity.enemy.EnemyEntity;
 import towerdefence.game.entity.projectile.Projectile;
 import towerdefence.game.entity.tower.Tower;
 import towerdefence.game.interfaces.GameView;
+import towerdefence.game.interfaces.InputSource;
+import towerdefence.game.input.InputCommand;
 import towerdefence.game.stats.RunStats;
 import towerdefence.game.util.Vector2D;
 import towerdefence.lua.LevelData;
@@ -34,6 +36,8 @@ public class Game {
     private ECSManager manager;
     private WaveSpawnSystem waveSpawnSystem;
     private RunStats stats;
+    private InputSource inputSource;
+
 
     private Game() {
         logger.info("Game created");
@@ -63,12 +67,13 @@ public class Game {
      * @param config configuration for the game
      * @param view abstract graphics for the game
      */
-    public void init(Config config, GameView view, AbstractGameFactory factory, LuaEngine engine) {
+    public void init(Config config, GameView view, AbstractGameFactory factory, LuaEngine engine, InputSource inputSource) {
         logger.info("Initializing Game");
         this.config = config;
         this.view = view;
         this.factory = factory;
         this.levelEngine = engine;
+        this.inputSource = inputSource;
         this.currentLevel= levelEngine.loadLevelData();
         this.manager = new ECSManager();
         this.waveSpawnSystem = new WaveSpawnSystem();
@@ -124,12 +129,15 @@ public class Game {
         if (!running) {
             return;
         }
+        processInput();
+
         logger.finest("Updating Game");
 
         waveSpawnSystem.update(deltaTime,manager,this,factory);
 
         for (Tower tower: towers) {
             logger.finest("Updating Tower "+tower.toString());
+            tower.updateCombat(enemies);
             tower.update(deltaTime);
         }
         for (Projectile projectile: projectiles) {
@@ -209,6 +217,33 @@ public class Game {
         if (entity instanceof Tower) {towers.remove((Tower) entity);}
         if (entity instanceof Projectile) {projectiles.remove((Projectile) entity);}
         if (entity instanceof EnemyEntity) {enemies.remove((EnemyEntity) entity);}
+    }
+
+    private void processInput() {
+        if (inputSource == null) {
+            return;
+        }
+
+        for (InputCommand command : inputSource.pollCommands()) {
+            switch (command.action()) {
+                case PLACE_TOWER_AT_INDEX -> {
+                    int index = command.spotIndex();
+                    if (index >= 0 && index < currentLevel.getTowerSpots().size()) {
+                        Vector2D spot = currentLevel.getTowerSpots().get(index);
+                        Tower newTower = factory.createBasicTower(spot.x(),spot.y());
+                        addEntity(newTower);
+                    } else {
+                        logger.warning("Invalid tower spot index: " + index);
+                    }
+                }
+                case PAUSE_TOGGLE -> {
+                    logger.info("pause toggled");
+                }
+                case QUIT_GAME -> {
+                    this.stop();
+                }
+            }
+        }
     }
 
     public List<EnemyEntity> getEnemies() {

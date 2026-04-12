@@ -150,4 +150,8 @@ public class Config {
     public boolean getDebug() {return getBoolean("debugmode.enabled");}
 
     public double getDebugSpeedup() {return getDouble("debugmode.speedup");}
+
+    public int getTowerSpotRadius() {return getInt("interaction.towerspot.radius");}
+
+    public String getPauseKey() {return get("interaction.pause.key");}
 }

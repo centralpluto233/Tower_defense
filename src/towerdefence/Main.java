@@ -1,7 +1,6 @@
 package towerdefence;
 
 import towerdefence.game.Game;
-import towerdefence.game.interfaces.GameView;
 import towerdefence.j2d.J2dFactory;
 import towerdefence.j2d.J2dGamePanel;
 import towerdefence.lua.LuaEngine;
@@ -29,9 +28,9 @@ public class Main {
             LuaEngine engine = new LuaEngine(config);
 
             Game game = Game.getInstance();
-            GameView view = new J2dGamePanel(game, config, factory);
+            J2dGamePanel panel = new J2dGamePanel(game, config);
 
-            game.init(config, view, factory, engine);
+            game.init(config, panel, factory, engine, panel);
             game.run();
 
         } catch (RuntimeException e) {
@@ -43,5 +42,6 @@ public class Main {
             logger.log(Level.SEVERE, "Startup failed due to configuration/runtime error.", e);
             throw e;
         }
+        System.exit(0);
     }
 }

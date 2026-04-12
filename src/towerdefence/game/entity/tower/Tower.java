@@ -67,9 +67,9 @@ public abstract class Tower extends Entity implements Attacker {
             logger.finest("Attacking");
             Optional<EnemyEntity> target = findTargetInRange(enemies);
             if (target.isPresent()) {
-                logger.finest("Target found"+target);
+                logger.fine("Target found"+target);
+                attack(target.get());
             }
-            target.ifPresent(this::attack);
         }
     }
 
