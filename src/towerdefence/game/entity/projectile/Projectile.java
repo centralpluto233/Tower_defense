@@ -14,7 +14,7 @@ public abstract class Projectile extends MovingEntity {
     }
 
     public void update(double dt) {
-        if (target.isDead() || target.isDead()) {
+        if (target.isDead() || target.hasReachedEnd()) {
             markForRemoval();
             return;
         }

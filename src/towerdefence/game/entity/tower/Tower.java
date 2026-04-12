@@ -1,7 +1,10 @@
 package towerdefence.game.entity.tower;
 
+import towerdefence.game.AbstractGameFactory;
+import towerdefence.game.Game;
 import towerdefence.game.entity.Entity;
 import towerdefence.game.entity.enemy.EnemyEntity;
+import towerdefence.game.entity.projectile.Projectile;
 import towerdefence.game.interfaces.Attacker;
 import towerdefence.game.interfaces.Damageable;
 import towerdefence.system.logging.GameLogger;
@@ -62,16 +65,26 @@ public abstract class Tower extends Entity implements Attacker {
         timeSinceLastAttack += deltaTime;
     }
 
-    public void updateCombat(List<EnemyEntity> enemies) {
+    public void updateCombat(List<EnemyEntity> enemies, AbstractGameFactory factory, Game game) {
         if (canAttack()) {
             logger.finest("Attacking");
             Optional<EnemyEntity> target = findTargetInRange(enemies);
             if (target.isPresent()) {
-                logger.fine("Target found"+target);
-                attack(target.get());
+                logger.fine("Target found " + target);
+
+                Projectile projectile = factory.createHomingProjectile(
+                        getX() + getWidth() / 2.0,
+                        getY() + getHeight() / 2.0,
+                        damage,
+                        target.get()
+                );
+
+                game.addEntity(projectile);
+                timeSinceLastAttack = 0;
             }
         }
     }
+
 
     private Optional<EnemyEntity> findTargetInRange(List<EnemyEntity> enemies) {
         return enemies.stream()

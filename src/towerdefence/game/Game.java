@@ -137,7 +137,7 @@ public class Game {
 
         for (Tower tower: towers) {
             logger.finest("Updating Tower "+tower.toString());
-            tower.updateCombat(enemies);
+            tower.updateCombat(enemies, factory, this);
             tower.update(deltaTime);
         }
         for (Projectile projectile: projectiles) {
@@ -163,6 +163,7 @@ public class Game {
             }
         }
         enemies.removeIf(this::shouldRemove);
+        projectiles.removeIf(this::shouldRemove);
 
         if (manager.getAllEntities().isEmpty() && this.enemies.isEmpty()) {
             stop();
@@ -230,8 +231,18 @@ public class Game {
                     int index = command.spotIndex();
                     if (index >= 0 && index < currentLevel.getTowerSpots().size()) {
                         Vector2D spot = currentLevel.getTowerSpots().get(index);
-                        Tower newTower = factory.createBasicTower(spot.x(),spot.y());
-                        addEntity(newTower);
+
+                        if (isTowerSpotOccupied(spot)) {
+                            logger.warning("Tower spot already occupied");
+                            continue;
+                        }
+
+                        Tower newTower = factory.createBasicTower(spot.x(), spot.y());
+                        if (stats.trySpendResources(newTower.get_cost())) {
+                            addEntity(newTower);
+                        } else {
+                            logger.warning("Not enough resources to place tower");
+                        }
                     } else {
                         logger.warning("Invalid tower spot index: " + index);
                     }
@@ -245,6 +256,16 @@ public class Game {
             }
         }
     }
+
+    private boolean isTowerSpotOccupied(Vector2D spot) {
+        for (Tower tower : towers) {
+            if (tower.getX() == spot.x() && tower.getY() == spot.y()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public List<EnemyEntity> getEnemies() {
         return enemies;
