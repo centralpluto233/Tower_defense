@@ -147,6 +147,7 @@ public class Game {
                 } else {
                     stats.onEnemyEscaped(enemy.getDamage());
                     if (stats.isDefeated()) {
+                        gameState=GameState.GAME_OVER;
                         stop();
                     }
                 }
@@ -156,6 +157,7 @@ public class Game {
         projectiles.removeIf(this::shouldRemove);
 
         if (manager.getAllEntities().isEmpty() && this.enemies.isEmpty()) {
+            gameState=GameState.LEVEL_WON;
             stop();
         }
     }
