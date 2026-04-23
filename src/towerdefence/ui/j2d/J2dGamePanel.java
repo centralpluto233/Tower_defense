@@ -1,28 +1,24 @@
-package towerdefence.j2d;
+package towerdefence.ui.j2d;
 
 import towerdefence.game.Game;
 import towerdefence.game.entity.enemy.EnemyEntity;
 import towerdefence.game.entity.projectile.Projectile;
 import towerdefence.game.entity.tower.Tower;
-import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
-import towerdefence.game.interfaces.InputSource;
 import towerdefence.game.interfaces.RenderContext;
 import towerdefence.game.util.Vector2D;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
+import towerdefence.ui.input.InputMapping;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 //TODO panel uitdunnen en input opschonen/ andere tactiek miss?
 
-public class J2dGamePanel extends JPanel implements GameView, InputSource {
+public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Game game;
     private JFrame frame;
     private final Config config;
@@ -31,8 +27,6 @@ public class J2dGamePanel extends JPanel implements GameView, InputSource {
     private long fpsLastTime = System.currentTimeMillis();
     private int fpsFrames = 0;
     private int fps = 0;
-
-    private final Queue<InputCommand> inputQueue = new ConcurrentLinkedQueue<>();
 
     public J2dGamePanel(Game game, Config config) {
         this.game = game;
@@ -57,7 +51,6 @@ public class J2dGamePanel extends JPanel implements GameView, InputSource {
         frame.setFocusable(true);
 
         frame.setFocusTraversalKeysEnabled(false);
-        installInputHandlers();
         SwingUtilities.invokeLater(this::requestFocusInWindow);
     }
 
@@ -175,70 +168,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputSource {
     }
 
     @Override
-    public List<InputCommand> pollCommands() {
-        List<InputCommand> commands = new ArrayList<>();
-        InputCommand command;
-        while ((command = inputQueue.poll()) != null) {
-            commands.add(command);
-        }
-        return commands;
-    }
-
-    private void installInputHandlers() {
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-            if (!SwingUtilities.isLeftMouseButton(e)) {
-                return;
-            }
-            Integer spotIndex = findIndexFromClick(e.getPoint());
-            if (spotIndex != null) {
-                inputQueue.add(InputCommand.placeTowerAtSpot(spotIndex));
-            }
-            }
-        });
-
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                logger.finest("key pressed");
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    logger.info("Escape pressed");
-                    inputQueue.add(InputCommand.quitGame());
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    logger.info("Enter pressed");
-                    inputQueue.add(InputCommand.pauseToggled());
-                }
-            }
-        });
-    }
-
-    private Integer findIndexFromClick(Point p) {
-        //TODO replace vector2D with point (allready existing class)
-        Vector2D pScaled = screenToWorld(p);
-        if (pScaled == null) return null;
-
-        List<Vector2D> spots = game.getTowerSpots();
-
-        int best = -1;
-        double bestD = config.getGameWidth()*2;
-
-        for (int i = 0; i< spots.size(); i++) {
-            double d = pScaled.distanceTo(spots.get(i));
-            if (d <= config.getTowerSpotRadius() && d < bestD) {
-                bestD = d;
-                best = i;
-            }
-        }
-
-        if (best >=0) {
-            return best;
-        } else {
-            return null;
-        }
-    }
-
-    private Vector2D screenToWorld(Point p) {
+    public Vector2D screenToWorld(Point p) {
         double virtualW = config.getGameWidth();
         double virtualH = config.getGameHeight();
         double screenW = this.getWidth();

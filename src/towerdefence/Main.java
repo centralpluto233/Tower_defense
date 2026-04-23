@@ -1,8 +1,9 @@
 package towerdefence;
 
 import towerdefence.game.Game;
-import towerdefence.j2d.J2dFactory;
-import towerdefence.j2d.J2dGamePanel;
+import towerdefence.ui.input.SwingInputSource;
+import towerdefence.ui.j2d.J2dFactory;
+import towerdefence.ui.j2d.J2dGamePanel;
 import towerdefence.lua.LuaEngine;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
@@ -29,8 +30,10 @@ public class Main {
 
             Game game = Game.getInstance();
             J2dGamePanel panel = new J2dGamePanel(game, config);
+            SwingInputSource input = new SwingInputSource(game, config, panel, panel);
+            input.installHandlers();
 
-            game.init(config, panel, factory, engine, panel);
+            game.init(config, panel, factory, engine, input);
             game.run();
 
         } catch (RuntimeException e) {

@@ -212,6 +212,7 @@ public class Game {
 
     private void processInput() {
         if (inputSource == null) {
+            logger.warning("Input source is null, cannot process input");
             return;
         }
 

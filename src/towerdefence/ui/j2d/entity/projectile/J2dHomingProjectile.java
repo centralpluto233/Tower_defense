@@ -1,9 +1,9 @@
-package towerdefence.j2d.entity.projectile;
+package towerdefence.ui.j2d.entity.projectile;
 
 import towerdefence.game.entity.enemy.EnemyEntity;
 import towerdefence.game.entity.projectile.HomingProjectile;
 import towerdefence.game.interfaces.RenderContext;
-import towerdefence.j2d.J2dRenderContext;
+import towerdefence.ui.j2d.J2dRenderContext;
 
 import java.awt.*;
 

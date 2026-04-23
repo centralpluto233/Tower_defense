@@ -1,4 +1,4 @@
-package towerdefence.j2d;
+package towerdefence.ui.j2d;
 
 import towerdefence.game.interfaces.RenderContext;
 

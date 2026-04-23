@@ -1,4 +1,4 @@
-package towerdefence.j2d;
+package towerdefence.ui.j2d;
 
 import towerdefence.game.AbstractGameFactory;
 import towerdefence.game.entity.enemy.EnemyEntity;
@@ -6,12 +6,11 @@ import towerdefence.game.entity.enemy.GoblinEnemy;
 import towerdefence.game.entity.projectile.HomingProjectile;
 import towerdefence.game.entity.tower.BasicTower;
 import towerdefence.game.util.Vector2D;
-import towerdefence.j2d.entity.enemy.J2dGoblinEnemy;
-import towerdefence.j2d.entity.projectile.J2dHomingProjectile;
-import towerdefence.j2d.entity.tower.J2dBasicTower;
+import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
+import towerdefence.ui.j2d.entity.projectile.J2dHomingProjectile;
+import towerdefence.ui.j2d.entity.tower.J2dBasicTower;
 
 import java.util.List;
-import java.awt.*;
 
 public class J2dFactory extends AbstractGameFactory {
 

@@ -1,8 +1,8 @@
-package towerdefence.j2d.entity.tower;
+package towerdefence.ui.j2d.entity.tower;
 
 import towerdefence.game.entity.tower.BasicTower;
 import towerdefence.game.interfaces.RenderContext;
-import towerdefence.j2d.J2dRenderContext;
+import towerdefence.ui.j2d.J2dRenderContext;
 
 import java.awt.*;
 
