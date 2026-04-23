@@ -18,7 +18,12 @@ public class J2dGoblinEnemy extends GoblinEnemy {
     @Override
     public void draw(RenderContext ctx) {
         Graphics2D g2d = ((J2dRenderContext) ctx).getGraphics2D();
+
+        double x = getX() - getWidth() / 2.0;
+        double y = getY() - getHeight() / 2.0;
+
         g2d.setColor(Color.GREEN);
-        g2d.fill(new Rectangle2D.Double(getX(), getY(), getWidth(), getHeight()));
+        g2d.fill(new Rectangle2D.Double(x, y, getWidth(), getHeight()));
     }
+
 }
