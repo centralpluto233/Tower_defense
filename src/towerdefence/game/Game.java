@@ -27,16 +27,15 @@ public class Game {
     private final List<EnemyEntity> enemies = new ArrayList<>();
     private final List<Tower> towers = new ArrayList<>();
     private final List<Projectile> projectiles = new ArrayList<>();
-    private boolean running = false;
     private Config config;
     private GameView view;
     private AbstractGameFactory factory;
-    private LuaEngine levelEngine;
     private LevelData currentLevel;
     private ECSManager manager;
     private WaveSpawnSystem waveSpawnSystem;
     private RunStats stats;
     private InputSource inputSource;
+    private GameState gameState = GameState.MENU;
 
 
     private Game() {
@@ -55,14 +54,6 @@ public class Game {
     }
 
     /**
-     * Returns if game is running
-     * @return true if game is running, else false
-     */
-    public boolean isRunning() {
-        return running;
-    }
-
-    /**
      * initialise the game with the config and the graphics
      * @param config configuration for the game
      * @param view abstract graphics for the game
@@ -72,9 +63,8 @@ public class Game {
         this.config = config;
         this.view = view;
         this.factory = factory;
-        this.levelEngine = engine;
         this.inputSource = inputSource;
-        this.currentLevel= levelEngine.loadLevelData();
+        this.currentLevel= engine.loadLevelData();
         this.manager = new ECSManager();
         this.waveSpawnSystem = new WaveSpawnSystem();
         this.waveSpawnSystem.init(currentLevel,manager);
@@ -89,7 +79,7 @@ public class Game {
         Stopwatch stopwatch = new Stopwatch(config.getTargetFps());
         logger.info("Game loop started");
 
-        while (isRunning()) {
+        while (gameState!=GameState.EXIT) {
             double deltaTime = stopwatch.tick();
             if (config.getDebug()) {
                 double speedup = Math.clamp(config.getDebugSpeedup(), 0.1, 20.0);
@@ -115,7 +105,7 @@ public class Game {
      * Starts Game
      */
     public void start() {
-        running = true;
+        gameState= GameState.RUNNING;
         logger.info("Starting Game");
     }
     //TODO game wat uitdunnen, niet alles moet in game gebeuren
@@ -126,10 +116,10 @@ public class Game {
      * @param deltaTime time between frames
      */
     public void update(double deltaTime) {
-        if (!running) {
+        processInput();
+        if (!isGameRunning()) {
             return;
         }
-        processInput();
 
         logger.finest("Updating Game");
 
@@ -186,10 +176,8 @@ public class Game {
      * Stops Game
      */
     public void stop() {
-        if (running) {
-            running = false;
-            logger.info("Stopping Game");
-        }
+        gameState= GameState.EXIT;
+        logger.info("Stopping Game");
     }
 
     /**
@@ -228,26 +216,29 @@ public class Game {
         for (InputCommand command : inputSource.pollCommands()) {
             switch (command.action()) {
                 case PLACE_TOWER_AT_INDEX -> {
-                    int index = command.spotIndex();
-                    if (index >= 0 && index < currentLevel.getTowerSpots().size()) {
-                        Vector2D spot = currentLevel.getTowerSpots().get(index);
+                    if (gameState==GameState.RUNNING) {
+                        int index = command.spotIndex();
+                        if (index >= 0 && index < currentLevel.getTowerSpots().size()) {
+                            Vector2D spot = currentLevel.getTowerSpots().get(index);
 
-                        if (isTowerSpotOccupied(spot)) {
-                            logger.warning("Tower spot already occupied");
-                            continue;
-                        }
+                            if (isTowerSpotOccupied(spot)) {
+                                logger.warning("Tower spot already occupied");
+                                continue;
+                            }
 
-                        Tower newTower = factory.createBasicTower(spot.x(), spot.y());
-                        if (stats.trySpendResources(newTower.get_cost())) {
-                            addEntity(newTower);
+                            Tower newTower = factory.createBasicTower(spot.x(), spot.y());
+                            if (stats.trySpendResources(newTower.get_cost())) {
+                                addEntity(newTower);
+                            } else {
+                                logger.warning("Not enough resources to place tower");
+                            }
                         } else {
-                            logger.warning("Not enough resources to place tower");
+                            logger.warning("Invalid tower spot index: " + index);
                         }
-                    } else {
-                        logger.warning("Invalid tower spot index: " + index);
                     }
                 }
                 case PAUSE_TOGGLE -> {
+                    togglePause();
                     logger.info("pause toggled");
                 }
                 case QUIT_GAME -> {
@@ -293,5 +284,21 @@ public class Game {
 
     public int getResources() {
         return stats.getResources();
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public boolean isGameRunning() {
+        return gameState== GameState.RUNNING;
+    }
+
+    private void togglePause() {
+        if (gameState == GameState.RUNNING) {
+            gameState = GameState.PAUSE;
+        } else if (gameState == GameState.PAUSE) {
+            gameState = GameState.RUNNING;
+        }
     }
 }

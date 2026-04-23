@@ -10,23 +10,23 @@ import towerdefence.game.interfaces.InputSource;
 import towerdefence.game.interfaces.RenderContext;
 import towerdefence.game.util.Vector2D;
 import towerdefence.system.config.Config;
+import towerdefence.system.logging.GameLogger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 //TODO panel uitdunnen en input opschonen/ andere tactiek miss?
 
 public class J2dGamePanel extends JPanel implements GameView, InputSource {
     private final Game game;
     private JFrame frame;
     private final Config config;
+    private static final Logger logger = GameLogger.getLogger();
 
     private long fpsLastTime = System.currentTimeMillis();
     private int fpsFrames = 0;
@@ -58,6 +58,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputSource {
 
         frame.setFocusTraversalKeysEnabled(false);
         installInputHandlers();
+        SwingUtilities.invokeLater(this::requestFocusInWindow);
     }
 
     @Override
@@ -162,7 +163,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputSource {
         g2d.setFont(new Font("Consolas", Font.BOLD, 18));
 
         g2d.setColor(Color.WHITE);
-        g2d.drawString("FPS: " + fps, 750, 28);
+        g2d.drawString("FPS: " + fps, 650, 28);
     }
 
     private void drawStats(Graphics2D g2d) {
@@ -187,22 +188,25 @@ public class J2dGamePanel extends JPanel implements GameView, InputSource {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!SwingUtilities.isLeftMouseButton(e)) {
-                    return;
-                }
-                Integer spotIndex = findIndexFromClick(e.getPoint());
-                if (spotIndex != null) {
-                    inputQueue.add(InputCommand.placeTowerAtSpot(spotIndex));
-                }
+            if (!SwingUtilities.isLeftMouseButton(e)) {
+                return;
+            }
+            Integer spotIndex = findIndexFromClick(e.getPoint());
+            if (spotIndex != null) {
+                inputQueue.add(InputCommand.placeTowerAtSpot(spotIndex));
+            }
             }
         });
 
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                logger.finest("key pressed");
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    logger.info("Escape pressed");
                     inputQueue.add(InputCommand.quitGame());
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    logger.info("Enter pressed");
                     inputQueue.add(InputCommand.pauseToggled());
                 }
             }
