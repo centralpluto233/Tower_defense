@@ -18,10 +18,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
-import towerdefence.ui.input.InputMapping;
 
-import static com.sun.java.accessibility.util.AWTEventMonitor.addKeyListener;
-import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseListener;
 
 public class SwingInputSource implements InputSource {
     private final Game game;
@@ -80,13 +77,13 @@ public class SwingInputSource implements InputSource {
         component.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!SwingUtilities.isLeftMouseButton(e)) {
-                    return;
-                }
-                Integer spotIndex = findTowerSpotIndexFromPoint(e.getPoint());
-                if (spotIndex != null) {
-                    inputQueue.add(InputCommand.placeTowerAtSpot(spotIndex));
-                }
+            if (!SwingUtilities.isLeftMouseButton(e)) {
+                return;
+            }
+            Integer spotIndex = findTowerSpotIndexFromPoint(e.getPoint());
+            if (spotIndex != null) {
+                inputQueue.add(InputCommand.placeTowerAtSpot(spotIndex));
+            }
             }
         });
 
