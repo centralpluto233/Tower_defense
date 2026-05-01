@@ -1,20 +1,21 @@
 package towerdefence.ui.j2d.entity.tower;
 
 import towerdefence.game.entity.tower.BasicTower;
-import towerdefence.game.interfaces.RenderContext;
-import towerdefence.ui.j2d.J2dRenderContext;
+import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.awt.*;
 
 public class J2dBasicTower extends BasicTower {
-    public J2dBasicTower(double x, double y) {
+    private final J2dGraphicsContext graphicsContext;
+
+    public J2dBasicTower(double x, double y, J2dGraphicsContext graphicsContext) {
         super(x, y);
+        this.graphicsContext = graphicsContext;
     }
 
     @Override
-    public void draw(RenderContext ctx) {
-        Graphics2D g2d = ((J2dRenderContext) ctx).getGraphics2D();
-
+    public void draw() {
+        Graphics2D g2d = graphicsContext.getGraphics2D();
         int cx = (int) Math.round(getX());   // exact coordinate = center
         int cy = (int) Math.round(getY());   // exact coordinate = center
         int w = (int) Math.round(getWidth());

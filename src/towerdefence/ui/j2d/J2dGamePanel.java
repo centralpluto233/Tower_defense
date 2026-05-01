@@ -5,7 +5,6 @@ import towerdefence.game.entity.enemy.EnemyEntity;
 import towerdefence.game.entity.projectile.Projectile;
 import towerdefence.game.entity.tower.Tower;
 import towerdefence.game.interfaces.GameView;
-import towerdefence.game.interfaces.RenderContext;
 import towerdefence.game.util.Vector2D;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
@@ -13,7 +12,7 @@ import towerdefence.ui.input.InputMapping;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 //TODO panel uitdunnen en input opschonen/ andere tactiek miss?
@@ -23,14 +22,16 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private JFrame frame;
     private final Config config;
     private static final Logger logger = GameLogger.getLogger();
+    private final J2dGraphicsContext graphicsContext;
 
     private long fpsLastTime = System.currentTimeMillis();
     private int fpsFrames = 0;
     private int fps = 0;
 
-    public J2dGamePanel(Game game, Config config) {
+    public J2dGamePanel(Game game, Config config, J2dGraphicsContext graphicsContext) {
         this.game = game;
         this.config = config;
+        this.graphicsContext = graphicsContext;
         setPreferredSize(new Dimension(config.getGameWidth(), config.getGameHeight()));
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
@@ -43,6 +44,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         frame = new JFrame(config.getWindowTitle());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         frame.setContentPane(this);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);
@@ -60,6 +62,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         updateFps();
         repaint();
     }
+    //TODO gamepanel aanpassen om menu te tekenen
 
     private void updateFps() {
         fpsFrames++;
@@ -78,16 +81,17 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         Graphics2D g2d = (Graphics2D) g;
         g2d = getScaledGraphics(g2d);
-        RenderContext ctx = new J2dRenderContext(g2d);
+        graphicsContext.setGraphics2D(g2d);
 
         drawPath(g2d);
         drawTowerSpots(g2d);
-        drawEntities(ctx);
+        drawEntities();
         drawStats(g2d);
         if (config.getDebug()) {
             drawFps(g2d);
         }
         g2d.dispose();
+        //TODO pas disposen als game afsluiten, in factory aanmaken
     }
 
     private Graphics2D getScaledGraphics(Graphics2D g2d) {
@@ -139,15 +143,19 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         }
     }
 
-    private void drawEntities(RenderContext ctx) {
-        for (EnemyEntity e : game.getEnemies()) {
-            e.draw(ctx);
+    private void drawEntities() {
+        List<EnemyEntity> enemiesSnapshot = new ArrayList<>(game.getEnemies());
+        List<Tower> towersSnapshot = new ArrayList<>(game.getTowers());
+        List<Projectile> projectilesSnapshot = new ArrayList<>(game.getProjectiles());
+
+        for (EnemyEntity e : enemiesSnapshot) {
+            e.draw();
         }
-        for (Tower t : game.getTowers()) {
-            t.draw(ctx);
+        for (Tower t : towersSnapshot) {
+            t.draw();
         }
-        for (Projectile p : game.getProjectiles()) {
-            p.draw(ctx);
+        for (Projectile p : projectilesSnapshot) {
+            p.draw();
         }
 
     }

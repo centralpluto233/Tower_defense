@@ -1,5 +1,4 @@
 package towerdefence.game.entity;
-import towerdefence.game.interfaces.RenderContext;
 import towerdefence.game.util.Vector2D;
 
 public abstract class Entity {
@@ -111,5 +110,5 @@ public abstract class Entity {
     /**
      * abstract draw method
      */
-    public abstract void draw(RenderContext Ctx);
+    public abstract void draw();
 }

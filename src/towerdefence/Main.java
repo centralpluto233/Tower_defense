@@ -7,6 +7,7 @@ import towerdefence.ui.j2d.J2dGamePanel;
 import towerdefence.lua.LuaEngine;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
+import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,12 +25,12 @@ public class Main {
             logger.info("Startup complete.");
             logger.info("Selected level: " + config.getSelectedLevel());
 
-            J2dFactory factory = new J2dFactory();
-
+            J2dGraphicsContext graphicsContext = new J2dGraphicsContext();
+            J2dFactory factory = new J2dFactory(graphicsContext);
             LuaEngine engine = new LuaEngine(config);
 
             Game game = Game.getInstance();
-            J2dGamePanel panel = new J2dGamePanel(game, config);
+            J2dGamePanel panel = new J2dGamePanel(game, config, graphicsContext);
             SwingInputSource input = new SwingInputSource(game, config, panel, panel);
             input.installHandlers();
 
