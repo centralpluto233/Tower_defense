@@ -16,7 +16,6 @@ import towerdefence.system.logging.GameLogger;
 import towerdefence.system.config.Config;
 import towerdefence.system.time.Stopwatch;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import towerdefence.game.entity.Entity;
@@ -24,9 +23,6 @@ import towerdefence.game.entity.Entity;
 public class Game {
     private static Game instance;
     private static final Logger logger = GameLogger.getLogger();
-    private final List<EnemyEntity> enemies = new ArrayList<>();
-    private final List<Tower> towers = new ArrayList<>();
-    private final List<Projectile> projectiles = new ArrayList<>();
     private Config config;
     private GameView view;
     private AbstractGameFactory factory;
@@ -36,6 +32,8 @@ public class Game {
     private RunStats stats;
     private InputSource inputSource;
     private GameState gameState = GameState.MENU;
+    private EntityManager entityManager;
+    private InputHandler inputHandler;
 
 
     private Game() {
@@ -69,6 +67,9 @@ public class Game {
         this.waveSpawnSystem = new WaveSpawnSystem();
         this.waveSpawnSystem.init(currentLevel,manager);
         this.stats = new RunStats(currentLevel.getLives(),currentLevel.getResources());
+
+        this.entityManager= new EntityManager(stats);
+        this.inputHandler= new InputHandler(factory,stats,entityManager,currentLevel);
     }
 
     /**
@@ -123,55 +124,19 @@ public class Game {
 
         logger.finest("Updating Game");
 
-        waveSpawnSystem.update(deltaTime,manager,this,factory);
+        waveSpawnSystem.update(deltaTime, manager, this, factory);
 
-        for (Tower tower: towers) {
-            logger.finest("Updating Tower "+tower.toString());
-            tower.updateCombat(enemies, factory, this);
-            tower.update(deltaTime);
-        }
-        for (Projectile projectile: projectiles) {
-            logger.finest("Updating Projectile "+projectile.toString());
-            projectile.update(deltaTime);
-        }
-        for (EnemyEntity enemy: enemies) {
-            logger.finest("Updating Enemy "+enemy.toString());
-            enemy.update(deltaTime);
+        boolean defeated = entityManager.update(deltaTime, factory, this);
+        if (defeated) {
+            gameState = GameState.GAME_OVER;
+            stop();
+            return;
         }
 
-        // cleanup phase after update
-        for (EnemyEntity enemy: enemies) {
-            if (enemy.isMarkedForRemoval()) {
-                if (enemy.isDead()) {
-                    stats.onEnemyKilled(enemy.getScoreValue());
-                } else {
-                    stats.onEnemyEscaped(enemy.getDamage());
-                    if (stats.isDefeated()) {
-                        gameState=GameState.GAME_OVER;
-                        stop();
-                    }
-                }
-            }
-        }
-        enemies.removeIf(this::shouldRemove);
-        projectiles.removeIf(this::shouldRemove);
-
-        if (manager.getAllEntities().isEmpty() && this.enemies.isEmpty()) {
-            gameState=GameState.LEVEL_WON;
+        if (manager.getAllEntities().isEmpty() && entityManager.hasNoEnemies()) {
+            gameState = GameState.LEVEL_WON;
             stop();
         }
-    }
-
-    /**
-     * Checks if entity needs to be removed
-     * @param entity entity to check
-     * @return true if entity needs to be removed, else false
-     */
-    private boolean shouldRemove(Entity entity) {
-        if (entity.isMarkedForRemoval()) {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -182,34 +147,6 @@ public class Game {
         logger.info("Stopping Game");
     }
 
-    /**
-     * Adds entity to one of the entities lists
-     * @param entity entity to add to list
-     */
-    public void addEntity(Entity entity) {
-        if (entity == null) {
-            logger.warning("Attempted to add null entity to game");
-            return;
-        }
-        if (entity instanceof Tower) {towers.add((Tower) entity);}
-        if (entity instanceof Projectile) {projectiles.add((Projectile) entity);}
-        if (entity instanceof EnemyEntity) {enemies.add((EnemyEntity) entity);}
-    }
-
-    /**
-     * Removes entity from correct entity-list
-     * @param entity entity to remove from list
-     */
-    public void removeEntity(Entity entity) {
-        if (entity == null) {
-            logger.warning("Attempted to remove null entity from game");
-            return;
-        }
-        if (entity instanceof Tower) {towers.remove((Tower) entity);}
-        if (entity instanceof Projectile) {projectiles.remove((Projectile) entity);}
-        if (entity instanceof EnemyEntity) {enemies.remove((EnemyEntity) entity);}
-    }
-
     private void processInput() {
         if (inputSource == null) {
             logger.warning("Input source is null, cannot process input");
@@ -217,60 +154,24 @@ public class Game {
         }
 
         for (InputCommand command : inputSource.pollCommands()) {
-            switch (command.action()) {
-                case PLACE_TOWER_AT_INDEX -> {
-                    if (gameState==GameState.RUNNING) {
-                        int index = command.spotIndex();
-                        if (index >= 0 && index < currentLevel.getTowerSpots().size()) {
-                            Vector2D spot = currentLevel.getTowerSpots().get(index);
-
-                            if (isTowerSpotOccupied(spot)) {
-                                logger.warning("Tower spot already occupied");
-                                continue;
-                            }
-
-                            Tower newTower = factory.createBasicTower(spot.x(), spot.y());
-                            if (stats.trySpendResources(newTower.get_cost())) {
-                                addEntity(newTower);
-                            } else {
-                                logger.warning("Not enough resources to place tower");
-                            }
-                        } else {
-                            logger.warning("Invalid tower spot index: " + index);
-                        }
-                    }
-                }
-                case PAUSE_TOGGLE -> {
-                    togglePause();
-                    logger.info("pause toggled");
-                }
-                case QUIT_GAME -> {
-                    this.stop();
-                }
-            }
+            inputHandler.handleCommand(command, this);
         }
     }
 
-    private boolean isTowerSpotOccupied(Vector2D spot) {
-        for (Tower tower : towers) {
-            if (tower.getX() == spot.x() && tower.getY() == spot.y()) {
-                return true;
-            }
-        }
-        return false;
+    public void addEntity(Entity entity) {
+        entityManager.addEntity(entity);
     }
-
 
     public List<EnemyEntity> getEnemies() {
-        return enemies;
+        return entityManager.getEnemies();
     }
 
     public List<Tower> getTowers() {
-        return towers;
+        return entityManager.getTowers();
     }
 
     public List<Projectile> getProjectiles() {
-        return projectiles;
+        return entityManager.getProjectiles();
     }
 
     public List<Vector2D> getPath() {
@@ -297,7 +198,7 @@ public class Game {
         return gameState== GameState.RUNNING;
     }
 
-    private void togglePause() {
+    public void togglePause() {
         if (gameState == GameState.RUNNING) {
             gameState = GameState.PAUSE;
         } else if (gameState == GameState.PAUSE) {
