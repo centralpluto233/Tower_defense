@@ -6,4 +6,7 @@ import java.util.List;
 
 public interface InputSource {
     List<InputCommand> pollCommands();
+
+    default void installHandlers() {};
+
 }

@@ -25,17 +25,13 @@ public class Main {
             logger.info("Startup complete.");
             logger.info("Selected level: " + config.getSelectedLevel());
 
-            J2dGraphicsContext graphicsContext = new J2dGraphicsContext();
-            J2dFactory factory = new J2dFactory(graphicsContext);
-            LuaEngine engine = new LuaEngine(config);
+
+            J2dFactory factory = new J2dFactory();
 
             Game game = Game.getInstance();
-            J2dGamePanel panel = new J2dGamePanel(game, config, graphicsContext);
-            SwingInputSource input = new SwingInputSource(game, config, panel, panel);
-            input.installHandlers();
-
-            game.init(config, panel, factory, engine, input);
+            game.init(config, factory);
             game.run();
+
 
         } catch (RuntimeException e) {
             if (logger == null) {

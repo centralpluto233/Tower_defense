@@ -1,10 +1,15 @@
 package towerdefence.ui.j2d;
 
 import towerdefence.game.AbstractGameFactory;
+import towerdefence.game.Game;
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.enemy.GoblinEnemy;
 import towerdefence.game.entities.projectile.HomingProjectile;
 import towerdefence.game.entities.tower.BasicTower;
+import towerdefence.game.interfaces.GameView;
+import towerdefence.game.interfaces.InputSource;
+import towerdefence.system.config.Config;
+import towerdefence.ui.input.SwingInputSource;
 import towerdefence.util.Vector2D;
 import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
 import towerdefence.ui.j2d.entity.projectile.J2dHomingProjectile;
@@ -15,12 +20,23 @@ import java.util.List;
 public class J2dFactory extends AbstractGameFactory {
     private J2dGraphicsContext graphicsContext;
 
-    public J2dFactory(J2dGraphicsContext graphicsContext) {
-        this.graphicsContext = graphicsContext;
+    public J2dFactory() {
+        this.graphicsContext = new J2dGraphicsContext();
     }
 
     private J2dGraphicsContext getGraphics() {
         return this.graphicsContext;
+    }
+
+    @Override
+    public GameView createGameView(Game game, Config config) {
+        return new J2dGamePanel(game, config, graphicsContext);
+    }
+
+    @Override
+    public InputSource createInputSource(Game game, Config config, GameView gameView) {
+        J2dGamePanel panel = (J2dGamePanel) gameView;
+        return new SwingInputSource(game, config, panel, panel);
     }
 
     @Override

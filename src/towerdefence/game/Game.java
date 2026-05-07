@@ -54,22 +54,30 @@ public class Game {
     /**
      * initialise the game with the config and the graphics
      * @param config configuration for the game
-     * @param view abstract graphics for the game
+     * @param factory factory for creating game objects
      */
-    public void init(Config config, GameView view, AbstractGameFactory factory, LuaEngine engine, InputSource inputSource) {
-        logger.info("Initializing Game");
-        this.config = config;
-        this.view = view;
+    public void init(Config config, AbstractGameFactory factory) {
+        logger.info("Creating Game with factory: " + (factory == null ? "null" : factory.getClass().getSimpleName()));
         this.factory = factory;
-        this.inputSource = inputSource;
-        this.currentLevel= engine.loadLevelData();
+        this.config = config;
+
+        LuaEngine engine = new LuaEngine(config);
+        this.currentLevel = engine.loadLevelData();
+
         this.manager = new ECSManager();
         this.waveSpawnSystem = new WaveSpawnSystem();
         this.waveSpawnSystem.init(currentLevel,manager);
-        this.stats = new RunStats(currentLevel.getLives(),currentLevel.getResources());
 
-        this.entityManager= new EntityManager(stats);
-        this.inputHandler= new InputHandler(factory,stats,entityManager,currentLevel);
+        this.stats = new RunStats(currentLevel.getLives(), currentLevel.getResources());
+        this.entityManager = new EntityManager(stats);
+
+        this.inputHandler = new InputHandler(factory, stats, entityManager, currentLevel);
+
+        this.view = factory.createGameView(this, config);
+        this.inputSource = factory.createInputSource(this, config, this.view);
+        this.inputSource.installHandlers();
+
+        logger.info("Game constructed");
     }
 
     /**
