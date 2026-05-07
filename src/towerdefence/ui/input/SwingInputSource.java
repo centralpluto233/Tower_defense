@@ -47,7 +47,6 @@ public class SwingInputSource implements InputSource {
     }
 
     private Integer findTowerSpotIndexFromPoint(Point p) {
-        //TODO replace vector2D with point (allready existing class)
         Vector2D pScaled = inputMapping.screenToWorld(p);
         if (pScaled == null) return null;
 

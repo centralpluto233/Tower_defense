@@ -117,7 +117,6 @@ public class Game {
         gameState= GameState.RUNNING;
         logger.info("Starting Game");
     }
-    //TODO game wat uitdunnen, niet alles moet in game gebeuren
     //TODO code opkuisen, onnodige functies?
 
     /**

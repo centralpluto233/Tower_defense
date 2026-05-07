@@ -15,7 +15,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-//TODO panel uitdunnen en input opschonen/ andere tactiek miss?
 
 public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Game game;
@@ -91,7 +90,6 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
             drawFps(g2d);
         }
         g2d.dispose();
-        //TODO pas disposen als game afsluiten, in factory aanmaken
     }
 
     private Graphics2D getScaledGraphics(Graphics2D g2d) {
