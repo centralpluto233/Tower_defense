@@ -1,7 +1,7 @@
 package towerdefence.ui.j2d.entity.enemy;
 
-import towerdefence.game.entity.enemy.GoblinEnemy;
-import towerdefence.game.util.Vector2D;
+import towerdefence.game.entities.enemy.GoblinEnemy;
+import towerdefence.util.Vector2D;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.awt.geom.Rectangle2D;

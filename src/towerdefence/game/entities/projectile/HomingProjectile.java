@@ -1,6 +1,6 @@
-package towerdefence.game.entity.projectile;
+package towerdefence.game.entities.projectile;
 
-import towerdefence.game.entity.enemy.EnemyEntity;
+import towerdefence.game.entities.enemy.EnemyEntity;
 
 public abstract class HomingProjectile extends Projectile {
     private static final double HEIGHT=5.0;

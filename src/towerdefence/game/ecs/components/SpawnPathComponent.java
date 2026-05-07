@@ -1,6 +1,6 @@
 package towerdefence.game.ecs.components;
 
-import towerdefence.game.util.Vector2D;
+import towerdefence.util.Vector2D;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import towerdefence.game.Game;
 import towerdefence.ui.input.SwingInputSource;
 import towerdefence.ui.j2d.J2dFactory;
 import towerdefence.ui.j2d.J2dGamePanel;
-import towerdefence.lua.LuaEngine;
+import towerdefence.level.LuaEngine;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.ui.j2d.J2dGraphicsContext;

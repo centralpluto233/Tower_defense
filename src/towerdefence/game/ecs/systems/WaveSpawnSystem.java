@@ -6,9 +6,9 @@ import towerdefence.game.ecs.ECSManager;
 import towerdefence.game.ecs.components.SpawnCountComponent;
 import towerdefence.game.ecs.components.SpawnPathComponent;
 import towerdefence.game.ecs.components.SpawnScheduleComponent;
-import towerdefence.game.util.Vector2D;
-import towerdefence.lua.LevelData;
-import towerdefence.lua.WaveData;
+import towerdefence.util.Vector2D;
+import towerdefence.level.LevelData;
+import towerdefence.level.WaveData;
 import towerdefence.system.logging.GameLogger;
 
 import java.util.ArrayList;

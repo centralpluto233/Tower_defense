@@ -3,7 +3,7 @@ package towerdefence.ui.input;
 import towerdefence.game.Game;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.InputSource;
-import towerdefence.game.util.Vector2D;
+import towerdefence.util.Vector2D;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.system.config.Config;
 

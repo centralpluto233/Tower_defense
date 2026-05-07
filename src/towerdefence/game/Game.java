@@ -2,23 +2,23 @@ package towerdefence.game;
 
 import towerdefence.game.ecs.ECSManager;
 import towerdefence.game.ecs.systems.WaveSpawnSystem;
-import towerdefence.game.entity.enemy.EnemyEntity;
-import towerdefence.game.entity.projectile.Projectile;
-import towerdefence.game.entity.tower.Tower;
+import towerdefence.game.entities.enemy.EnemyEntity;
+import towerdefence.game.entities.projectile.Projectile;
+import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.stats.RunStats;
-import towerdefence.game.util.Vector2D;
-import towerdefence.lua.LevelData;
-import towerdefence.lua.LuaEngine;
+import towerdefence.util.Vector2D;
+import towerdefence.level.LevelData;
+import towerdefence.level.LuaEngine;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.system.config.Config;
 import towerdefence.system.time.Stopwatch;
 
 import java.util.List;
 import java.util.logging.Logger;
-import towerdefence.game.entity.Entity;
+import towerdefence.game.entities.Entity;
 
 public class Game {
     private static Game instance;

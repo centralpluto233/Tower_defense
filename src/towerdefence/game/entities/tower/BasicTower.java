@@ -1,4 +1,4 @@
-package towerdefence.game.entity.tower;
+package towerdefence.game.entities.tower;
 
 public abstract class BasicTower extends Tower{
     private static final double RANGE = 120.0;

@@ -1,9 +1,9 @@
 package towerdefence.game;
 
-import towerdefence.game.entity.tower.Tower;
+import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.stats.RunStats;
-import towerdefence.lua.LevelData;
+import towerdefence.level.LevelData;
 import towerdefence.system.logging.GameLogger;
 
 import java.util.logging.Logger;

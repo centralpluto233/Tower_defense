@@ -1,5 +1,5 @@
-package towerdefence.game.entity;
-import towerdefence.game.util.Vector2D;
+package towerdefence.game.entities;
+import towerdefence.util.Vector2D;
 
 public abstract class Entity {
 
@@ -10,10 +10,10 @@ public abstract class Entity {
 
     /**
      * Constructs an Entity with the specified position and dimensions.
-     * @param x the x-coordinate of the entity's position
-     * @param y the y-coordinate of the entity's position
-     * @param width the width of the entity
-     * @param height the height of the entity
+     * @param x the x-coordinate of the entities's position
+     * @param y the y-coordinate of the entities's position
+     * @param width the width of the entities
+     * @param height the height of the entities
      */
     public Entity(double x, double y, double width, double height) {
         this.width = width;
@@ -22,7 +22,7 @@ public abstract class Entity {
     }
 
     /**
-     * Returns the x-coordinate of the entity's position.
+     * Returns the x-coordinate of the entities's position.
      * @return the x-coordinate
      */
     public double getX() {
@@ -30,7 +30,7 @@ public abstract class Entity {
     }
 
     /**
-     * Sets the x-coordinate of the entity's position.
+     * Sets the x-coordinate of the entities's position.
      * @param x the new x-coordinate
      */
     protected void setX(double x) {
@@ -38,7 +38,7 @@ public abstract class Entity {
     }
 
     /**
-     * Returns the y-coordinate of the entity's position.
+     * Returns the y-coordinate of the entities's position.
      * @return the y-coordinate
      */
     public double getY() {
@@ -46,7 +46,7 @@ public abstract class Entity {
     }
 
     /**
-     * Sets the y-coordinate of the entity's position.
+     * Sets the y-coordinate of the entities's position.
      * @param y the new y-coordinate
      */
     public void setY(double y) {
@@ -54,7 +54,7 @@ public abstract class Entity {
     }
 
     /**
-     * Returns the width of the entity.
+     * Returns the width of the entities.
      * @return the width
      */
     public double getWidth() {
@@ -62,7 +62,7 @@ public abstract class Entity {
     }
 
     /**
-     * Returns the height of the entity.
+     * Returns the height of the entities.
      * @return the height
      */
     public double getHeight() {
@@ -70,7 +70,7 @@ public abstract class Entity {
     }
 
     /**
-     * Returns the position of the entity.
+     * Returns the position of the entities.
      * @return the position
      */
     public Vector2D getPosition() {
@@ -78,7 +78,7 @@ public abstract class Entity {
     }
 
     /**
-     * Returns a string representation of the entity.
+     * Returns a string representation of the entities.
      * @return the string representation
      */
     @Override
@@ -87,21 +87,21 @@ public abstract class Entity {
     }
 
     /**
-     * Updates the entity's state based on the time elapsed.
+     * Updates the entities's state based on the time elapsed.
      * @param deltaTime the time elapsed since the last update
      */
     public abstract void update(double deltaTime);
 
     /**
-     * Marks entity for removal (dead or out of bounds)
+     * Marks entities for removal (dead or out of bounds)
      */
     protected void markForRemoval() {
         this.markedForRemoval = true;
     }
 
     /**
-     * Returns a boolean indicating whether the entity is marked for removal.
-     * @return true if the entity is marked for removal, false otherwise
+     * Returns a boolean indicating whether the entities is marked for removal.
+     * @return true if the entities is marked for removal, false otherwise
      */
     public boolean isMarkedForRemoval() {
         return this.markedForRemoval;

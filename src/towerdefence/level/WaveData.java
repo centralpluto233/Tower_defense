@@ -1,4 +1,4 @@
-package towerdefence.lua;
+package towerdefence.level;
 
 public class WaveData {
     private final int count;

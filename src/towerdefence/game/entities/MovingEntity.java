@@ -1,8 +1,8 @@
-package towerdefence.game.entity;
-import towerdefence.game.util.Vector2D;
+package towerdefence.game.entities;
+import towerdefence.util.Vector2D;
 
 /**
- * An abstract class representing a moving entity in the game.
+ * An abstract class representing a moving entities in the game.
  */
 public abstract class MovingEntity extends Entity{
     
@@ -10,7 +10,7 @@ public abstract class MovingEntity extends Entity{
     private double speed;
 
     /**
-     * Returns the speed of the entity.
+     * Returns the speed of the entities.
      * @return the speed
      */
     public double getSpeed() {
@@ -18,7 +18,7 @@ public abstract class MovingEntity extends Entity{
     }
 
     /**
-     * Sets the speed of the entity.
+     * Sets the speed of the entities.
      * @param speed the new speed
      */
     public void setSpeed(double speed) {
@@ -26,7 +26,7 @@ public abstract class MovingEntity extends Entity{
     }
 
     /**
-     * Returns the velocity of the entity.
+     * Returns the velocity of the entities.
      * @return the velocity
      */
     public Vector2D getVelocity() {
@@ -35,11 +35,11 @@ public abstract class MovingEntity extends Entity{
 
     /**
      * Constructs a MovingEntity with the specified position and movement properties.
-     * @param x the x-coordinate of the entity's position
-     * @param y the y-coordinate of the entity's position
-     * @param width the width of the entity
-     * @param height the height of the entity
-     * @param speed the speed of the entity
+     * @param x the x-coordinate of the entities's position
+     * @param y the y-coordinate of the entities's position
+     * @param width the width of the entities
+     * @param height the height of the entities
+     * @param speed the speed of the entities
      */
     public MovingEntity(double x, double y, double width, double height, double speed) {
         super(x, y, width, height);
@@ -48,7 +48,7 @@ public abstract class MovingEntity extends Entity{
     }
 
     /**
-     * Sets the direction of the entity's movement.
+     * Sets the direction of the entities's movement.
      * @param directionX the x-component of the direction
      * @param directionY the y-component of the direction
      */
@@ -57,7 +57,7 @@ public abstract class MovingEntity extends Entity{
     }
 
     /**
-     * Moves the entity based on its velocity and the time elapsed.
+     * Moves the entities based on its velocity and the time elapsed.
      * @param deltaTime the time elapsed since the last update
      */
     protected void move(double deltaTime) {
@@ -66,7 +66,7 @@ public abstract class MovingEntity extends Entity{
     }
 
     /**
-     * Returns a string representation of the moving entity.
+     * Returns a string representation of the moving entities.
      * @return the string representation
      */
     @Override

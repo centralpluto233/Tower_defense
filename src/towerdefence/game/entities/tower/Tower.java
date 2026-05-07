@@ -1,10 +1,10 @@
-package towerdefence.game.entity.tower;
+package towerdefence.game.entities.tower;
 
 import towerdefence.game.AbstractGameFactory;
 import towerdefence.game.Game;
-import towerdefence.game.entity.Entity;
-import towerdefence.game.entity.enemy.EnemyEntity;
-import towerdefence.game.entity.projectile.Projectile;
+import towerdefence.game.entities.Entity;
+import towerdefence.game.entities.enemy.EnemyEntity;
+import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.interfaces.Attacker;
 import towerdefence.game.interfaces.Damageable;
 import towerdefence.system.logging.GameLogger;

@@ -1,6 +1,6 @@
 package towerdefence.ui.input;
 
-import towerdefence.game.util.Vector2D;
+import towerdefence.util.Vector2D;
 
 import java.awt.*;
 

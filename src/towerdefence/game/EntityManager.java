@@ -1,11 +1,11 @@
 package towerdefence.game;
 
-import towerdefence.game.entity.Entity;
-import towerdefence.game.entity.enemy.EnemyEntity;
-import towerdefence.game.entity.projectile.Projectile;
-import towerdefence.game.entity.tower.Tower;
+import towerdefence.game.entities.Entity;
+import towerdefence.game.entities.enemy.EnemyEntity;
+import towerdefence.game.entities.projectile.Projectile;
+import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.stats.RunStats;
-import towerdefence.game.util.Vector2D;
+import towerdefence.util.Vector2D;
 import towerdefence.system.logging.GameLogger;
 
 import java.util.ArrayList;
@@ -26,12 +26,12 @@ public class EntityManager {
     }
 
     /**
-     * Adds entity to one of the entities lists
-     * @param entity entity to add to list
+     * Adds entities to one of the entities lists
+     * @param entity entities to add to list
      */
     public void addEntity(Entity entity) {
         if (entity == null) {
-            logger.warning("Attempted to add null entity to game");
+            logger.warning("Attempted to add null entities to game");
             return;
         }
         if (entity instanceof Tower) {towers.add((Tower) entity);}
@@ -40,12 +40,12 @@ public class EntityManager {
     }
 
     /**
-     * Removes entity from correct entity-list
-     * @param entity entity to remove from list
+     * Removes entities from correct entities-list
+     * @param entity entities to remove from list
      */
     public void removeEntity(Entity entity) {
         if (entity == null) {
-            logger.warning("Attempted to remove null entity from game");
+            logger.warning("Attempted to remove null entities from game");
             return;
         }
         if (entity instanceof Tower) {towers.remove((Tower) entity);}
@@ -119,9 +119,9 @@ public class EntityManager {
     }
 
     /**
-     * Checks if entity needs to be removed
-     * @param entity entity to check
-     * @return true if entity needs to be removed, else false
+     * Checks if entities needs to be removed
+     * @param entity entities to check
+     * @return true if entities needs to be removed, else false
      */
     private boolean shouldRemove(Entity entity) {
         if (entity.isMarkedForRemoval()) {

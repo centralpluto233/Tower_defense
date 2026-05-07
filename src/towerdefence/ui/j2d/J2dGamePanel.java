@@ -1,11 +1,11 @@
 package towerdefence.ui.j2d;
 
 import towerdefence.game.Game;
-import towerdefence.game.entity.enemy.EnemyEntity;
-import towerdefence.game.entity.projectile.Projectile;
-import towerdefence.game.entity.tower.Tower;
+import towerdefence.game.entities.enemy.EnemyEntity;
+import towerdefence.game.entities.projectile.Projectile;
+import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.interfaces.GameView;
-import towerdefence.game.util.Vector2D;
+import towerdefence.util.Vector2D;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.ui.input.InputMapping;

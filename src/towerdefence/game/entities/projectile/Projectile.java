@@ -1,7 +1,7 @@
-package towerdefence.game.entity.projectile;
+package towerdefence.game.entities.projectile;
 
-import towerdefence.game.entity.MovingEntity;
-import towerdefence.game.entity.enemy.EnemyEntity;
+import towerdefence.game.entities.MovingEntity;
+import towerdefence.game.entities.enemy.EnemyEntity;
 
 public abstract class Projectile extends MovingEntity {
     private final int damage;

@@ -1,10 +1,10 @@
 package towerdefence.game;
 
-import towerdefence.game.entity.enemy.EnemyEntity;
-import towerdefence.game.entity.enemy.GoblinEnemy;
-import towerdefence.game.entity.projectile.HomingProjectile;
-import towerdefence.game.entity.tower.BasicTower;
-import towerdefence.game.util.Vector2D;
+import towerdefence.game.entities.enemy.EnemyEntity;
+import towerdefence.game.entities.enemy.GoblinEnemy;
+import towerdefence.game.entities.projectile.HomingProjectile;
+import towerdefence.game.entities.tower.BasicTower;
+import towerdefence.util.Vector2D;
 
 import java.util.List;
 

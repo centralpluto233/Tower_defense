@@ -1,10 +1,10 @@
-package towerdefence.lua;
+package towerdefence.level;
 
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jme.JmePlatform;
-import towerdefence.game.util.Vector2D;
+import towerdefence.util.Vector2D;
 import towerdefence.system.config.Config;
 import towerdefence.system.config.Constants;
 import towerdefence.system.logging.GameLogger;

@@ -1,6 +1,6 @@
 package towerdefence.ui.j2d.entity.tower;
 
-import towerdefence.game.entity.tower.BasicTower;
+import towerdefence.game.entities.tower.BasicTower;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.awt.*;

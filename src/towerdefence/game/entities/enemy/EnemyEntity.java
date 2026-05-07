@@ -1,8 +1,8 @@
-package towerdefence.game.entity.enemy;
+package towerdefence.game.entities.enemy;
 
-import towerdefence.game.entity.MovingEntity;
+import towerdefence.game.entities.MovingEntity;
 import towerdefence.game.interfaces.Damageable;
-import towerdefence.game.util.Vector2D;
+import towerdefence.util.Vector2D;
 import towerdefence.system.logging.GameLogger;
 
 import java.util.List;
@@ -27,8 +27,8 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
      * creates an EnemyEntity
      * @param x starting x position
      * @param y starting y position
-     * @param width width of the entity
-     * @param height height of the entity
+     * @param width width of the entities
+     * @param height height of the entities
      * @param speed speed in game units per second
      * @param health starting and max health
      * @param scoreValue score when killed
