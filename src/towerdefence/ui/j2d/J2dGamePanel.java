@@ -5,6 +5,7 @@ import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.interfaces.GameView;
+import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.menu.MenuOverlayPanel;
 import towerdefence.util.Vector2D;
 import towerdefence.system.config.Config;
@@ -13,6 +14,7 @@ import towerdefence.ui.input.InputMapping;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -24,6 +26,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private static final Logger logger = GameLogger.getLogger();
     private final J2dGraphicsContext graphicsContext;
     private final MenuOverlayPanel overlay;
+    private BufferedImage pathTile;
 
     private long fpsLastTime = System.currentTimeMillis();
     private int fpsFrames = 0;
@@ -31,7 +34,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     private double deltaTime=0;
 
-    public J2dGamePanel(Game game, Config config, J2dGraphicsContext graphicsContext) {
+    public J2dGamePanel(Game game, Config config, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
         this.game = game;
         this.config = config;
         this.graphicsContext = graphicsContext;
@@ -46,6 +49,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         add(overlay);
 
         game.setGameListener(overlay);
+        this.pathTile = assetManager.getSprite("sprites/map/path.png");
     }
 
     public void ensureWindow() {
@@ -124,17 +128,33 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     private void drawPath(Graphics2D g2d) {
         List<Vector2D> path = game.getPath();
-        if (path == null || path.size() < 2) {
-            return;
-        }
+        if (path == null || path.size() < 2) return;
 
-        g2d.setColor(new Color(220, 180, 60));
-        g2d.setStroke(new BasicStroke(6f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        int tileSize = 32;
+        int half = tileSize / 2;
 
         for (int i = 0; i < path.size() - 1; i++) {
             Vector2D a = path.get(i);
             Vector2D b = path.get(i + 1);
-            g2d.drawLine((int) a.x(), (int) a.y(), (int) b.x(), (int) b.y());
+
+            double dx = b.x() - a.x();
+            double dy = b.y() - a.y();
+            double dist = Math.hypot(dx, dy);
+            double angle = Math.atan2(dy, dx); // hoek in radialen
+
+            int count = (int) Math.ceil(dist / tileSize);
+
+            for (int s = 0; s <= count; s++) {
+                double t = (count == 0) ? 0 : (double) s / count;
+                int tx = (int)(a.x() + dx * t);
+                int ty = (int)(a.y() + dy * t);
+
+                // sla graphics state op, roteer rond het middelpunt van de tile
+                Graphics2D g2dTile = (Graphics2D) g2d.create();
+                g2dTile.rotate(angle, tx, ty);
+                g2dTile.drawImage(pathTile, tx - half, ty - half, tileSize, tileSize, null);
+                g2dTile.dispose();
+            }
         }
     }
 
