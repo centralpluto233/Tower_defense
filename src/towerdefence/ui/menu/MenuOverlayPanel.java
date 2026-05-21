@@ -70,11 +70,9 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         buttonColumn.add(titleLabel);
         buttonColumn.add(Box.createVerticalStrut(24));
         buttonColumn.add(startButton);
-        buttonColumn.add(Box.createVerticalStrut(12));
         buttonColumn.add(resumeButton);
         buttonColumn.add(Box.createVerticalStrut(12));
         buttonColumn.add(exitButton);
-        buttonColumn.add(Box.createVerticalStrut(20));
 
         centerPanel.add(buttonColumn);
     }
