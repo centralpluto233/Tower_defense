@@ -4,6 +4,7 @@ import towerdefence.game.AbstractGameFactory;
 import towerdefence.game.Game;
 import towerdefence.game.entities.Entity;
 import towerdefence.game.entities.enemy.EnemyEntity;
+import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.interfaces.Attacker;
 import towerdefence.game.interfaces.Damageable;
@@ -73,11 +74,13 @@ public abstract class Tower extends Entity implements Attacker {
             if (target.isPresent()) {
                 logger.fine("Target found " + target);
 
+                Vector2D targetPosition = predictWaypointAim(target.get());
                 Projectile projectile = factory.createHomingProjectile(
                         getSpawnPosition().x(),
                         getSpawnPosition().y(),
                         damage,
-                        target.get()
+                        target.get(),
+                        targetPosition
                 );
 
                 game.addEntity(projectile);
@@ -107,5 +110,54 @@ public abstract class Tower extends Entity implements Attacker {
     }
 
     public abstract Vector2D getSpawnPosition();
+
+    public Vector2D predictWaypointAim(EnemyEntity enemy) {
+
+        double ex = enemy.getX();
+        double ey = enemy.getY();
+        int waypointIndex = enemy.getCurrentWaypointIndex();
+        List<Vector2D> path = enemy.getPath();
+        double enemySpeed = enemy.getSpeed();
+
+        double timeStep = 0.05;
+        double maxTime = 3.0;
+        double elapsed = 0;
+
+        while (elapsed < maxTime) {
+            double remaining = enemySpeed * timeStep;
+            while (remaining > 0 && waypointIndex < path.size()) {
+                Vector2D wp = path.get(waypointIndex);
+                double dx = wp.x() - ex;
+                double dy = wp.y() - ey;
+                double dist = Math.hypot(dx, dy);
+
+                if (dist < 1e-9) {
+                    waypointIndex++;
+                    continue;
+                }
+
+                if (remaining >= dist) {
+                    ex = wp.x();
+                    ey = wp.y();
+                    remaining -= dist;
+                    waypointIndex++;
+                } else {
+                    double t = remaining / dist;
+                    ex += dx * t;
+                    ey += dy * t;
+                    remaining = 0;
+                }
+            }
+
+            elapsed += timeStep;
+
+            double distToArrow = Math.hypot(ex - this.getX(), ey - this.getY());
+            if (distToArrow <= CrossBowArrow.SPEED * elapsed) {
+                return new Vector2D(ex, ey);
+            }
+        }
+
+        return enemy.getPosition();
+    }
     
 }

@@ -165,6 +165,14 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         return damage;
     }
 
+    public List<Vector2D> getPath() {
+        return path;
+    }
+
+    public int getCurrentWaypointIndex() {
+        return currentWaypointIndex;
+    }
+
     /**
      * gives string representation of enemy
      * @return string to print nicely

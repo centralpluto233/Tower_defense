@@ -13,8 +13,8 @@ public class J2dCrossBowArrow extends CrossBowArrow {
     private final J2dGraphicsContext graphicsContext;
     private final BufferedImage sprite;
 
-    public J2dCrossBowArrow(double x, double y, int damage, EnemyEntity target, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
-        super(x, y, damage, target);
+    public J2dCrossBowArrow(double x, double y, int damage, EnemyEntity target,Vector2D targetPosition, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
+        super(x, y, damage, target, targetPosition);
         this.graphicsContext = graphicsContext;
         this.sprite = assetManager.getSprite("sprites/entities/projectiles/arrow_crossbow.png");
     }

@@ -7,11 +7,13 @@ import towerdefence.util.Vector2D;
 public abstract class Projectile extends MovingEntity {
     private final int damage;
     private final EnemyEntity target;
+    private final Vector2D targetPos;
 
-    public Projectile(double x, double y, double width, double height, double speed, int damage, EnemyEntity target) {
+    public Projectile(double x, double y, double width, double height, double speed, int damage, EnemyEntity target, Vector2D targetPos) {
         super(x, y, width, height, speed);
         this.damage = damage;
         this.target = target;
+        this.targetPos = targetPos;
     }
 
     public void update(double dt) {
@@ -20,7 +22,7 @@ public abstract class Projectile extends MovingEntity {
             return;
         }
 
-        Vector2D toTarget = target.getPosition().subtract(getPosition());
+        Vector2D toTarget = targetPos.subtract(getPosition());
 
         if (overlaps(target)) {
             target.takeDamage(damage);

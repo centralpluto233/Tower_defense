@@ -25,5 +25,5 @@ public abstract class AbstractGameFactory {
     public abstract BasicTower createBasicTower(double x, double y);
 
     // Projectiles
-    public abstract CrossBowArrow createHomingProjectile(double x, double y, int damage, EnemyEntity target);
+    public abstract CrossBowArrow createHomingProjectile(double x, double y, int damage, EnemyEntity target, Vector2D targetPosition);
 }

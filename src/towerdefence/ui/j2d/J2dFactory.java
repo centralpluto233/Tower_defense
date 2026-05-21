@@ -52,7 +52,7 @@ public class J2dFactory extends AbstractGameFactory {
     }
 
     @Override
-    public CrossBowArrow createHomingProjectile(double x, double y, int damage, EnemyEntity target) {
-        return new J2dCrossBowArrow(x,y,damage,target, getGraphics(),assetManager);
+    public CrossBowArrow createHomingProjectile(double x, double y, int damage, EnemyEntity target,Vector2D targetPosition) {
+        return new J2dCrossBowArrow(x,y,damage,target, targetPosition,graphicsContext,assetManager);
     }
 }
