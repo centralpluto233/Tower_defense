@@ -22,6 +22,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Config config;
     private static final Logger logger = GameLogger.getLogger();
     private final J2dGraphicsContext graphicsContext;
+    private final MenuOverlayPanel overlay;
 
     private long fpsLastTime = System.currentTimeMillis();
     private int fpsFrames = 0;
@@ -34,6 +35,14 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         setPreferredSize(new Dimension(config.getGameWidth(), config.getGameHeight()));
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
+
+        setLayout(new OverlayLayout(this));
+        overlay= new MenuOverlayPanel(game);
+        overlay.setAlignmentX(0.0f);
+        overlay.setAlignmentY(0.0f);
+        add(overlay);
+
+        game.setGameListener(overlay);
     }
 
     public void ensureWindow() {

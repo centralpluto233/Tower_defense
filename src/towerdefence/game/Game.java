@@ -34,6 +34,7 @@ public class Game {
     private GameState gameState = GameState.MENU;
     private EntityManager entityManager;
     private InputHandler inputHandler;
+    private GameListener gameListener;
 
 
     private Game() {
@@ -80,11 +81,14 @@ public class Game {
         logger.info("Game constructed");
     }
 
+    public void setGameListener(GameListener listener) {
+        this.gameListener = listener;
+    }
+
     /**
      * run the game loop
      */
     public void run() {
-        start();
         Stopwatch stopwatch = new Stopwatch(config.getTargetFps());
         logger.info("Game loop started");
 
@@ -115,6 +119,7 @@ public class Game {
      */
     public void start() {
         gameState= GameState.RUNNING;
+        gameListener.onGameStarted();
         logger.info("Starting Game");
     }
     //TODO code opkuisen, onnodige functies?
@@ -136,12 +141,14 @@ public class Game {
         boolean defeated = entityManager.update(deltaTime, factory, this);
         if (defeated) {
             gameState = GameState.GAME_OVER;
+            gameListener.onGameOver();
             stop();
             return;
         }
 
         if (manager.getAllEntities().isEmpty() && entityManager.hasNoEnemies()) {
             gameState = GameState.LEVEL_WON;
+            gameListener.onLevelWon();
             stop();
         }
     }
@@ -151,6 +158,7 @@ public class Game {
      */
     public void stop() {
         gameState= GameState.EXIT;
+        gameListener.onGameStopped();
         logger.info("Stopping Game");
     }
 
@@ -208,8 +216,10 @@ public class Game {
     public void togglePause() {
         if (gameState == GameState.RUNNING) {
             gameState = GameState.PAUSE;
+            gameListener.onGamePaused();
         } else if (gameState == GameState.PAUSE) {
             gameState = GameState.RUNNING;
+            gameListener.onGameResumed();
         }
     }
 }
