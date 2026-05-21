@@ -2,6 +2,7 @@ package towerdefence.ui.j2d.entity.projectile;
 
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.HomingProjectile;
+import towerdefence.ui.j2d.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.awt.*;
@@ -9,7 +10,7 @@ import java.awt.*;
 public class J2dHomingProjectile extends HomingProjectile {
     private final J2dGraphicsContext graphicsContext;
 
-    public J2dHomingProjectile(double x, double y, int damage, EnemyEntity target, J2dGraphicsContext graphicsContext) {
+    public J2dHomingProjectile(double x, double y, int damage, EnemyEntity target, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
         super(x, y, damage, target);
         this.graphicsContext = graphicsContext;
     }

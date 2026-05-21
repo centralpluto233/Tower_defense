@@ -1,6 +1,7 @@
 package towerdefence.ui.j2d.entity.tower;
 
 import towerdefence.game.entities.tower.BasicTower;
+import towerdefence.ui.j2d.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.awt.*;
@@ -10,7 +11,7 @@ public class J2dBasicTower extends BasicTower {
     private final J2dGraphicsContext graphicsContext;
     private final BufferedImage rangeImage; // pre-rendered
 
-    public J2dBasicTower(double x, double y, J2dGraphicsContext ctx) {
+    public J2dBasicTower(double x, double y, J2dGraphicsContext ctx, AssetManager assetManager) {
         super(x, y);
         this.graphicsContext = ctx;
         this.rangeImage = buildRangeImage((int) getRange());
