@@ -19,10 +19,10 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     private final JLabel titleLabel = new JLabel("Tower Defence");
 
     private final GameButton startButton = GameButton.primary("Start Game");
-    private final GameButton resumeButton = GameButton.success("Resume");
+    private final GameButton resumeButton = GameButton.success("  Resume  ");
     private final GameButton pauseButton = GameButton.muted("Pause");
     private final GameButton settingsButton = GameButton.muted("Settings");
-    private final GameButton exitButton = GameButton.danger("Quit");
+    private final GameButton exitButton = GameButton.danger("   Quit   ");
 
     public MenuOverlayPanel(Game game) {
         this.game = game;
