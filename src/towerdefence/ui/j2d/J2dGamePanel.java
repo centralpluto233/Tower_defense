@@ -5,6 +5,7 @@ import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.interfaces.GameView;
+import towerdefence.ui.menu.MenuOverlayPanel;
 import towerdefence.util.Vector2D;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
