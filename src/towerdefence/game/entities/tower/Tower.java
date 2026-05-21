@@ -79,7 +79,6 @@ public abstract class Tower extends Entity implements Attacker {
                         getSpawnPosition().x(),
                         getSpawnPosition().y(),
                         damage,
-                        target.get(),
                         targetPosition
                 );
 

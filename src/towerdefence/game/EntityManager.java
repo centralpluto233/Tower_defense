@@ -54,27 +54,35 @@ public class EntityManager {
     }
 
     public boolean update(double deltaTime, AbstractGameFactory factory, Game game) {
-        // Update towers (combat)
         for (Tower tower : towers) {
-            logger.finest("Updating Tower " + tower);
             tower.updateCombat(enemies, factory, game);
             tower.update(deltaTime);
         }
 
-        // Update projectiles
         for (Projectile projectile : projectiles) {
-            logger.finest("Updating Projectile " + projectile);
             projectile.update(deltaTime);
         }
 
-        // Update enemies
+        checkProjectileCollisions();
+
         for (EnemyEntity enemy : enemies) {
-            logger.finest("Updating Enemy " + enemy);
             enemy.update(deltaTime);
         }
 
-        // Remove marked entities
         return removeMarkedEntities();
+    }
+
+    private void checkProjectileCollisions() {
+        for (Projectile p : projectiles) {
+            if (p.isMarkedForRemoval()) continue;
+            for (EnemyEntity e : enemies) {
+                if (!e.isMarkedForRemoval() && p.overlaps(e)) {
+                    p.dealDamage(e);
+                    p.markForRemoval();
+                    break;
+                }
+            }
+        }
     }
 
     /**

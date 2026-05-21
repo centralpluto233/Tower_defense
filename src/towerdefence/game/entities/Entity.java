@@ -107,7 +107,7 @@ public abstract class Entity {
     /**
      * Marks entities for removal (dead or out of bounds)
      */
-    protected void markForRemoval() {
+    public void markForRemoval() {
         this.markedForRemoval = true;
     }
 

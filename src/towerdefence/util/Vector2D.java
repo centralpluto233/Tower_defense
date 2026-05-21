@@ -25,4 +25,8 @@ public record Vector2D (double x, double y) {
         if (len < 0.0001) return new Vector2D(0, 0);
         return new Vector2D(x / len, y / len);
     }
+
+    public double dot(Vector2D other) {
+        return x * other.x + y * other.y;
+    }
 }
