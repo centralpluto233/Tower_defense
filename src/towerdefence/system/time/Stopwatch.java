@@ -49,5 +49,9 @@ public class Stopwatch {
         return (System.nanoTime() - lastTick)/1_000_000_000.0;
     }
 
+    public boolean hasTimePassed(double intervalSeconds) {
+        return peek() >= intervalSeconds;
+    }
+
 
 }

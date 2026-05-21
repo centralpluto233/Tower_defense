@@ -153,5 +153,5 @@ public class Config {
 
     public int getTowerSpotRadius() {return getInt("interaction.towerspot.radius");}
 
-    public String getPauseKey() {return get("interaction.pause.key");}
+    public int getTargetRenderFps() {return getInt("target.render.FPS");}
 }

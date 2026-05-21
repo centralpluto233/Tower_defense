@@ -36,6 +36,7 @@ public class Game {
     private EntityManager entityManager;
     private InputHandler inputHandler;
     private GameListener gameListener;
+    private Stopwatch renderStopwatch;
 
 
     private Game() {
@@ -79,6 +80,8 @@ public class Game {
         this.inputSource = factory.createInputSource(this, config, this.view);
         this.inputSource.installHandlers();
 
+        this.renderStopwatch = new Stopwatch(config.getTargetRenderFps());
+
         logger.info("Game constructed");
     }
 
@@ -90,17 +93,17 @@ public class Game {
      * run the game loop
      */
     public void run() {
-        Stopwatch stopwatch = new Stopwatch(config.getTargetFps());
+        Stopwatch gamestopwatch = new Stopwatch(config.getTargetFps());
         logger.info("Game loop started");
 
         while (gameState!=GameState.EXIT) {
-            double deltaTime = stopwatch.tick();
+            double deltaTime = gamestopwatch.tick();
             if (config.getDebug()) {
                 double speedup = Math.clamp(config.getDebugSpeedup(), 0.1, 20.0);
                 deltaTime *= speedup;
             }
             update(deltaTime);
-            view.render();
+            render();
 
             try {
                 Thread.sleep(1);
@@ -113,6 +116,13 @@ public class Game {
 
         stop();
         logger.info("Game loop finished");
+    }
+
+    private void render() {
+        if (renderStopwatch.hasTimePassed(1.0/config.getTargetRenderFps())) {
+            renderStopwatch.tick();
+            view.render();
+        }
     }
 
     /**

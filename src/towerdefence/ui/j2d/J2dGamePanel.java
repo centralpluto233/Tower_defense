@@ -171,7 +171,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         g2d.setFont(new Font("Consolas", Font.BOLD, 18));
 
         g2d.setColor(Color.WHITE);
-        g2d.drawString("FPS: " + fps, 650, 28);
+        g2d.drawString("FPS: " + fps, 650, 50);
     }
 
     private void drawStats(Graphics2D g2d) {
