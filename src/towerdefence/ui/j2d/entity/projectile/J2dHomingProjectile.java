@@ -4,6 +4,7 @@ import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.HomingProjectile;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;
+import towerdefence.util.Vector2D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,6 +22,12 @@ public class J2dHomingProjectile extends HomingProjectile {
     @Override
     public void draw(double deltaTime) {
         Graphics2D g2d = graphicsContext.getGraphics2D();
-        g2d.drawImage(sprite, (int)(getX() - getWidth() / 2.0), (int)(getY() - getHeight() / 2.0), null);
+        Vector2D velocity = this.getVelocity();
+
+        Graphics2D g2dcopy = (Graphics2D) g2d.create();
+        g2dcopy.rotate(velocity.angle(), getX(), getY());
+
+        g2dcopy.drawImage(sprite, (int)(getX() - getWidth() / 2.0), (int)(getY() - getHeight() / 2.0), null);
+        g2dcopy.dispose();
     }
 }

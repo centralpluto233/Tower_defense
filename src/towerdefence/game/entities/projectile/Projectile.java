@@ -2,6 +2,7 @@ package towerdefence.game.entities.projectile;
 
 import towerdefence.game.entities.MovingEntity;
 import towerdefence.game.entities.enemy.EnemyEntity;
+import towerdefence.util.Vector2D;
 
 public abstract class Projectile extends MovingEntity {
     private final int damage;
@@ -19,9 +20,12 @@ public abstract class Projectile extends MovingEntity {
             return;
         }
 
-        double dx = target.getX() - getX();
-        double dy = target.getY() - getY();
-        double distance = target.getPosition().distanceTo(getPosition());
+        double x = target.getX()+(target.getWidth()/2);
+        double y = target.getY()+(target.getHeight()/2);
+        double dx = x - this.getX();
+        double dy = y - this.getY();
+        Vector2D targetCenter = new Vector2D(x, y);
+        double distance = this.getPosition().distanceTo(targetCenter);
 
         double maxStep = getSpeed() * dt;
 

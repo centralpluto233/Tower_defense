@@ -5,9 +5,9 @@ import towerdefence.util.Vector2D;
 import java.util.List;
 
 public abstract class GoblinEnemy extends EnemyEntity{
-    private static final double WIDTH = 20.0;
-    private static final double HEIGHT = 20.0;
-    private static final double SPEED = 20.0;
+    private static final double WIDTH = 11.0*1.5;
+    private static final double HEIGHT = 8.0*1.5;
+    private static final double SPEED = 30.0;
     private static final int HEALTH = 30;
     private static final int SCORE_VALUE = 10;
     private static final int BASE_DAMAGE = 1;
