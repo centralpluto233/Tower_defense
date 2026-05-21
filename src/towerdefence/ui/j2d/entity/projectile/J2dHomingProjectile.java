@@ -25,9 +25,9 @@ public class J2dHomingProjectile extends HomingProjectile {
         Vector2D velocity = this.getVelocity();
 
         Graphics2D g2dcopy = (Graphics2D) g2d.create();
-        g2dcopy.rotate(velocity.angle(), getX(), getY());
+        g2dcopy.rotate(velocity.angle(), getDrawPosition().x(), getDrawPosition().y());
 
-        g2dcopy.drawImage(sprite, (int)(getX() - getWidth() / 2.0), (int)(getY() - getHeight() / 2.0), null);
+        g2dcopy.drawImage(sprite, (int)(getDrawPosition().x() - getWidth() / 2.0), (int)(getDrawPosition().y() - getHeight() / 2.0), null);
         g2dcopy.dispose();
     }
 }

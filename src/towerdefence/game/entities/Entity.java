@@ -77,6 +77,10 @@ public abstract class Entity {
         return position;
     }
 
+    public Vector2D getDrawPosition() {
+        return new Vector2D(getX()-getWidth()/2, getY()-getHeight()/2);
+    }
+
     /**
      * Returns a string representation of the entities.
      * @return the string representation

@@ -12,4 +12,17 @@ public record Vector2D (double x, double y) {
         return Math.atan2(this.y, this.x);
     }
 
+    public Vector2D subtract(Vector2D other) {
+        return new Vector2D(this.x - other.x, this.y - other.y);
+    }
+
+    public double length() {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    public Vector2D normalize() {
+        double len = length();
+        if (len < 0.0001) return new Vector2D(0, 0);
+        return new Vector2D(x / len, y / len);
+    }
 }

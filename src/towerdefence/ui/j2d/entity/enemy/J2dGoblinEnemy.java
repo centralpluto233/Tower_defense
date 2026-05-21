@@ -27,8 +27,8 @@ public class J2dGoblinEnemy extends GoblinEnemy {
         animation.update(deltaTime);
         BufferedImage frame = animation.getCurrentFrame();
         Graphics2D g2d = graphicsContext.getGraphics2D();
-        double x = getX() - getWidth() / 2.0;
-        double y = getY() - getHeight() / 2.0;
+        double x = getDrawPosition().x();
+        double y = getDrawPosition().y();
 
         g2d.drawImage(frame, (int)x, (int)y,(int)getWidth(),(int)getHeight(), null);
     }
