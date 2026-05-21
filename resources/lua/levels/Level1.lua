@@ -1,6 +1,6 @@
 level_name = "Debug Level"
 lives = 20
-resources = 100
+resources = 20
 
 main_path = {
     {x = 50,  y = 300},

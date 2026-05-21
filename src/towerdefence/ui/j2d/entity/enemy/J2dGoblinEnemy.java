@@ -7,6 +7,7 @@ import towerdefence.util.Vector2D;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.util.List;
 
 import java.awt.*;
@@ -30,7 +31,22 @@ public class J2dGoblinEnemy extends GoblinEnemy {
         double x = getDrawPosition().x();
         double y = getDrawPosition().y();
 
-        g2d.drawImage(frame, (int)x, (int)y,(int)getWidth(),(int)getHeight(), null);
+        if (isHitFlashing()) {
+            // schaal frame eerst naar game-grootte
+            BufferedImage scaled = new BufferedImage((int)getWidth(), (int)getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D tmp = scaled.createGraphics();
+            tmp.drawImage(frame, 0, 0, (int)getWidth(), (int)getHeight(), null);
+            tmp.dispose();
+
+            RescaleOp redTint = new RescaleOp(
+                    new float[]{2.0f, 0.4f, 0.4f, 1.0f},
+                    new float[]{0, 0, 0, 0},
+                    null
+            );
+            g2d.drawImage(scaled, redTint, (int)x, (int)y);
+        } else {
+            g2d.drawImage(frame, (int)x, (int)y, (int)getWidth(), (int)getHeight(), null);
+        }
     }
 
 }

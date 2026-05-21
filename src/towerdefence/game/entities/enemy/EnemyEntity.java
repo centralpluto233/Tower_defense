@@ -23,6 +23,9 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     protected List<Vector2D> path;
     protected int currentWaypointIndex = 0;
 
+    private static final double HIT_FLASH_DURATION = 0.15;
+    private double hitFlashTimer = 0.0;
+
     /**
      * creates an EnemyEntity
      * @param x starting x position
@@ -49,6 +52,9 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
      */
     @Override
     public void update(double dt) {
+        if (hitFlashTimer > 0.0) {
+            hitFlashTimer -= dt;
+        }
         if (isDead()) {
             markForRemoval();
             return;
@@ -123,6 +129,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     public void takeDamage(int damage) {
         this.health -= damage;
         this.health = Math.max(0, this.health);
+        hitFlashTimer = HIT_FLASH_DURATION;
         logger.fine("Enemy took "+damage+ " damage, health: "+this.health+ "/"+this.maxHealth);
         if (isDead()) {
             logger.info("Enemy died, score: "+scoreValue);
@@ -171,6 +178,10 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     public int getCurrentWaypointIndex() {
         return currentWaypointIndex;
+    }
+
+    public boolean isHitFlashing() {
+        return hitFlashTimer > 0.0;
     }
 
     /**
