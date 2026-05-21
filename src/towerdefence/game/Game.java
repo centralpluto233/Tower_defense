@@ -17,6 +17,7 @@ import towerdefence.system.config.Config;
 import towerdefence.system.time.Stopwatch;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import towerdefence.game.entities.Entity;
 
@@ -168,7 +169,13 @@ public class Game {
             return;
         }
 
-        for (InputCommand command : inputSource.pollCommands()) {
+        List<InputCommand> commands = inputSource.pollCommands();
+
+        if (Set.of(GameState.MENU, GameState.PAUSE).contains(gameState)) {
+            return; // queue al leeggetrokken, commands gewoon weggooien
+        }
+
+        for (InputCommand command : commands) {
             inputHandler.handleCommand(command, this);
         }
     }
