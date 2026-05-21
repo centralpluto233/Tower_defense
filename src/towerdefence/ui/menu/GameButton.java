@@ -37,25 +37,25 @@ public class GameButton extends JButton {
 
     // --- Factory methodes ---
     public static GameButton primary(String text) {
-        return new GameButton(text, new Color(52, 120, 246));  // blauw
+        return new GameButton(text, new Color(52, 120, 246));
     }
 
     public static GameButton success(String text) {
-        return new GameButton(text, new Color(50, 160, 80));   // groen
+        return new GameButton(text, new Color(50, 160, 80));
     }
 
     public static GameButton danger(String text) {
-        return new GameButton(text, new Color(190, 60, 60));   // rood
+        return new GameButton(text, new Color(190, 60, 60));
     }
 
     public static GameButton muted(String text) {
-        return new GameButton(text, new Color(80, 85, 100));   // grijs
+        return new GameButton(text, new Color(80, 85, 100));
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         ButtonModel model = getModel();
         Color fill = normalColor;
@@ -68,14 +68,21 @@ public class GameButton extends JButton {
             fill = hoverColor;
         }
 
-        g2.setColor(fill);
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), ARC, ARC);
+        g2d.setColor(fill);
+        g2d.fillRoundRect(0, 0, getWidth(), getHeight(), ARC, ARC);
 
-        g2.setColor(borderColor);
-        g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, ARC, ARC);
+        g2d.setColor(borderColor);
+        g2d.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, ARC, ARC);
 
-        g2.dispose();
-        super.paintComponent(g);
+
+        FontMetrics fm = g2d.getFontMetrics();
+        int textX = (getWidth() - fm.stringWidth(getText())) / 2;
+        int textY = (getHeight() + fm.getAscent()-(fm.getDescent()/2)) / 2;
+
+        g2d.setColor(textColor);
+        g2d.drawString(getText(), textX, textY);
+
+        g2d.dispose();
     }
 
     @Override

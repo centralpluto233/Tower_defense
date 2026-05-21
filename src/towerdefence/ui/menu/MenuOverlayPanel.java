@@ -22,6 +22,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     private final GameButton resumeButton = GameButton.success("Resume");
     private final GameButton pauseButton = GameButton.muted("Pause");
     private final GameButton settingsButton = GameButton.muted("Settings");
+    private final GameButton exitButton = GameButton.danger("Quit");
 
     public MenuOverlayPanel(Game game) {
         this.game = game;
@@ -64,6 +65,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         resumeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         buttonColumn.add(titleLabel);
         buttonColumn.add(Box.createVerticalStrut(24));
@@ -71,6 +73,8 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         buttonColumn.add(Box.createVerticalStrut(12));
         buttonColumn.add(resumeButton);
         buttonColumn.add(Box.createVerticalStrut(12));
+        buttonColumn.add(exitButton);
+        buttonColumn.add(Box.createVerticalStrut(20));
 
         centerPanel.add(buttonColumn);
     }
@@ -95,6 +99,11 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
         settingsButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Settings komt later.");
+        });
+
+        exitButton.addActionListener(e -> {
+            game.stop();
+            refresh();
         });
     }
 
