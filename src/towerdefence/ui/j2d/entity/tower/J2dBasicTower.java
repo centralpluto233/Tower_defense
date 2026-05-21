@@ -1,7 +1,7 @@
 package towerdefence.ui.j2d.entity.tower;
 
 import towerdefence.game.entities.tower.BasicTower;
-import towerdefence.ui.j2d.AssetManager;
+import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.awt.*;
@@ -36,7 +36,7 @@ public class J2dBasicTower extends BasicTower {
     }
 
     @Override
-    public void draw() {
+    public void draw(double deltaTime) {
         Graphics2D g2d = graphicsContext.getGraphics2D();
         int cx = (int) Math.round(getX());   // exact coordinate = center
         int cy = (int) Math.round(getY());   // exact coordinate = center

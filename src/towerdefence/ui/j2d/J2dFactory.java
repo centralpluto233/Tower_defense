@@ -10,6 +10,7 @@ import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.system.config.Config;
 import towerdefence.ui.input.SwingInputSource;
+import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.util.Vector2D;
 import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
 import towerdefence.ui.j2d.entity.projectile.J2dHomingProjectile;

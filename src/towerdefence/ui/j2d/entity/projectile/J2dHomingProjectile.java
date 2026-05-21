@@ -2,7 +2,7 @@ package towerdefence.ui.j2d.entity.projectile;
 
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.HomingProjectile;
-import towerdefence.ui.j2d.AssetManager;
+import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.awt.*;
@@ -19,7 +19,7 @@ public class J2dHomingProjectile extends HomingProjectile {
     }
 
     @Override
-    public void draw() {
+    public void draw(double deltaTime) {
         Graphics2D g2d = graphicsContext.getGraphics2D();
         g2d.drawImage(sprite, (int)(getX() - getWidth() / 2.0), (int)(getY() - getHeight() / 2.0), null);
     }

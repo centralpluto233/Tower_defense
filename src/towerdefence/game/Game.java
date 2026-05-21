@@ -103,7 +103,7 @@ public class Game {
                 deltaTime *= speedup;
             }
             update(deltaTime);
-            render();
+            render(deltaTime);
 
             try {
                 Thread.sleep(1);
@@ -118,10 +118,10 @@ public class Game {
         logger.info("Game loop finished");
     }
 
-    private void render() {
+    private void render(double deltaTime) {
         if (renderStopwatch.hasTimePassed(1.0/config.getTargetRenderFps())) {
             renderStopwatch.tick();
-            view.render();
+            view.render(deltaTime);
         }
     }
 

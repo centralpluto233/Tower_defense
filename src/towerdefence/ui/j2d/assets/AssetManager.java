@@ -1,4 +1,4 @@
-package towerdefence.ui.j2d;
+package towerdefence.ui.j2d.assets;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

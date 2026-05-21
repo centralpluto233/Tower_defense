@@ -29,6 +29,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private int fpsFrames = 0;
     private int fps = 0;
 
+    private double deltaTime=0;
+
     public J2dGamePanel(Game game, Config config, J2dGraphicsContext graphicsContext) {
         this.game = game;
         this.config = config;
@@ -66,7 +68,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     }
 
     @Override
-    public void render() {
+    public void render(double deltaTime) {
+        this.deltaTime = deltaTime;
         ensureWindow();
         updateFps();
         repaint();
@@ -94,7 +97,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         drawPath(g2d);
         drawTowerSpots(g2d);
-        drawEntities();
+        drawEntities(this.deltaTime);
         drawStats(g2d);
         if (config.getDebug()) {
             drawFps(g2d);
@@ -151,19 +154,19 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         }
     }
 
-    private void drawEntities() {
+    private void drawEntities(double deltaTime) {
         List<EnemyEntity> enemiesSnapshot = new ArrayList<>(game.getEnemies());
         List<Tower> towersSnapshot = new ArrayList<>(game.getTowers());
         List<Projectile> projectilesSnapshot = new ArrayList<>(game.getProjectiles());
 
         for (EnemyEntity e : enemiesSnapshot) {
-            e.draw();
+            e.draw(deltaTime);
         }
         for (Tower t : towersSnapshot) {
-            t.draw();
+            t.draw(deltaTime);
         }
         for (Projectile p : projectilesSnapshot) {
-            p.draw();
+            p.draw(deltaTime);
         }
 
     }

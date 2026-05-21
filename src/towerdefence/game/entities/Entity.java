@@ -110,5 +110,5 @@ public abstract class Entity {
     /**
      * abstract draw method
      */
-    public abstract void draw();
+    public abstract void draw(double deltaTime);
 }
