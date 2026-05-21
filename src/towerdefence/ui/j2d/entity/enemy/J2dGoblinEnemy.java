@@ -27,7 +27,7 @@ public class J2dGoblinEnemy extends GoblinEnemy {
         double x = getX() - getWidth() / 2.0;
         double y = getY() - getHeight() / 2.0;
 
-        g2d.drawImage(sprite, (int)x, (int)y, (int)getWidth(), (int)getHeight(), null);
+        g2d.drawImage(sprite, (int)x, (int)y, null);
     }
 
 }

@@ -9,12 +9,14 @@ import java.awt.image.BufferedImage;
 
 public class J2dBasicTower extends BasicTower {
     private final J2dGraphicsContext graphicsContext;
-    private final BufferedImage rangeImage; // pre-rendered
+    private final BufferedImage rangeImage;
+    private final BufferedImage sprite;
 
     public J2dBasicTower(double x, double y, J2dGraphicsContext ctx, AssetManager assetManager) {
         super(x, y);
         this.graphicsContext = ctx;
         this.rangeImage = buildRangeImage((int) getRange());
+        this.sprite = assetManager.getSprite("sprites/entities/towers/crossbow.png");
     }
 
     private BufferedImage buildRangeImage(int range) {
@@ -50,8 +52,7 @@ public class J2dBasicTower extends BasicTower {
         // tower centered on exact coords
         int x = cx - w / 2;
         int y = cy - h / 2;
-        g2d.setColor(Color.RED);
-        g2d.fillRect(x, y, w, h);
+        g2d.drawImage(sprite, x, y,null);
     }
 
 

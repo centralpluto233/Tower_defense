@@ -20,7 +20,7 @@ public class AssetManager {
     }
 
     private BufferedImage load(String path) {
-        try (InputStream is = getClass().getResourceAsStream(path)) {
+        try (InputStream is = getClass().getResourceAsStream("/"+path)) {
             if (is == null) throw new IllegalArgumentException("Asset not found: " + path);
             BufferedImage raw = ImageIO.read(is);
             return toCompatible(raw);
