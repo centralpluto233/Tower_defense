@@ -2,7 +2,7 @@ package towerdefence.game;
 
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.enemy.GoblinEnemy;
-import towerdefence.game.entities.projectile.HomingProjectile;
+import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.game.entities.tower.BasicTower;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
@@ -25,5 +25,5 @@ public abstract class AbstractGameFactory {
     public abstract BasicTower createBasicTower(double x, double y);
 
     // Projectiles
-    public abstract HomingProjectile createHomingProjectile(double x, double y, int damage, EnemyEntity target);
+    public abstract CrossBowArrow createHomingProjectile(double x, double y, int damage, EnemyEntity target);
 }

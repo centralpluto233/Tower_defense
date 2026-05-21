@@ -1,7 +1,7 @@
 package towerdefence.ui.j2d.entity.projectile;
 
 import towerdefence.game.entities.enemy.EnemyEntity;
-import towerdefence.game.entities.projectile.HomingProjectile;
+import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 import towerdefence.util.Vector2D;
@@ -9,11 +9,11 @@ import towerdefence.util.Vector2D;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class J2dHomingProjectile extends HomingProjectile {
+public class J2dCrossBowArrow extends CrossBowArrow {
     private final J2dGraphicsContext graphicsContext;
     private final BufferedImage sprite;
 
-    public J2dHomingProjectile(double x, double y, int damage, EnemyEntity target, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
+    public J2dCrossBowArrow(double x, double y, int damage, EnemyEntity target, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
         super(x, y, damage, target);
         this.graphicsContext = graphicsContext;
         this.sprite = assetManager.getSprite("sprites/entities/projectiles/arrow_crossbow.png");

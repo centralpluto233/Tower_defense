@@ -8,6 +8,7 @@ import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.interfaces.Attacker;
 import towerdefence.game.interfaces.Damageable;
 import towerdefence.system.logging.GameLogger;
+import towerdefence.util.Vector2D;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,8 +74,8 @@ public abstract class Tower extends Entity implements Attacker {
                 logger.fine("Target found " + target);
 
                 Projectile projectile = factory.createHomingProjectile(
-                        getX(),
-                        getY(),
+                        getSpawnPosition().x(),
+                        getSpawnPosition().y(),
                         damage,
                         target.get()
                 );
@@ -104,5 +105,7 @@ public abstract class Tower extends Entity implements Attacker {
     public int get_cost(){
         return cost;
     }
+
+    public abstract Vector2D getSpawnPosition();
     
 }

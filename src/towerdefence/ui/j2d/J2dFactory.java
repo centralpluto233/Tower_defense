@@ -4,7 +4,7 @@ import towerdefence.game.AbstractGameFactory;
 import towerdefence.game.Game;
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.enemy.GoblinEnemy;
-import towerdefence.game.entities.projectile.HomingProjectile;
+import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.game.entities.tower.BasicTower;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
@@ -13,7 +13,7 @@ import towerdefence.ui.input.SwingInputSource;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.util.Vector2D;
 import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
-import towerdefence.ui.j2d.entity.projectile.J2dHomingProjectile;
+import towerdefence.ui.j2d.entity.projectile.J2dCrossBowArrow;
 import towerdefence.ui.j2d.entity.tower.J2dBasicTower;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class J2dFactory extends AbstractGameFactory {
     }
 
     @Override
-    public HomingProjectile createHomingProjectile(double x, double y, int damage, EnemyEntity target) {
-        return new J2dHomingProjectile(x,y,damage,target, getGraphics(),assetManager);
+    public CrossBowArrow createHomingProjectile(double x, double y, int damage, EnemyEntity target) {
+        return new J2dCrossBowArrow(x,y,damage,target, getGraphics(),assetManager);
     }
 }

@@ -3,6 +3,7 @@ package towerdefence.ui.j2d.entity.tower;
 import towerdefence.game.entities.tower.BasicTower;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;
+import towerdefence.util.Vector2D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -33,6 +34,11 @@ public class J2dBasicTower extends BasicTower {
 
         g.dispose();
         return img;
+    }
+
+    @Override
+    public Vector2D getSpawnPosition() {
+        return new Vector2D(this.getX(), this.getY()-getHeight()/4);
     }
 
     @Override
