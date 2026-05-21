@@ -1,4 +1,5 @@
 package towerdefence.game.entities;
+import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.util.Vector2D;
 
 public abstract class Entity {
@@ -79,6 +80,13 @@ public abstract class Entity {
 
     public Vector2D getDrawPosition() {
         return new Vector2D(getX()-getWidth()/2, getY()-getHeight()/2);
+    }
+
+    public boolean overlaps(Entity target) {
+        return getX() - getWidth()/2  < target.getX() + target.getWidth()/2
+                && getX() + getWidth()/2  > target.getX() - target.getWidth()/2
+                && getY() - getHeight()/2 < target.getY() + target.getHeight()/2
+                && getY() + getHeight()/2 > target.getY() - target.getHeight()/2;
     }
 
     /**

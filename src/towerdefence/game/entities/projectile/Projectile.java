@@ -14,11 +14,6 @@ public abstract class Projectile extends MovingEntity {
         this.target = target;
     }
 
-    @Override
-    public Vector2D getDrawPosition() {
-        return new Vector2D(getX()-getWidth(), getY()-getHeight()/2);
-    }
-
     public void update(double dt) {
         if (target.isDead() || target.hasReachedEnd()) {
             markForRemoval();
@@ -26,9 +21,8 @@ public abstract class Projectile extends MovingEntity {
         }
 
         Vector2D toTarget = target.getPosition().subtract(getPosition());
-        double distance = toTarget.length();
 
-        if (distance <= getSpeed() * dt || distance <= 0.001) {
+        if (overlaps(target)) {
             target.takeDamage(damage);
             markForRemoval();
             return;

@@ -38,10 +38,6 @@ public class J2dBasicTower extends BasicTower {
     @Override
     public void draw(double deltaTime) {
         Graphics2D g2d = graphicsContext.getGraphics2D();
-        int cx = (int) Math.round(getX());   // exact coordinate = center
-        int cy = (int) Math.round(getY());   // exact coordinate = center
-        int w = (int) Math.round(getWidth());
-        int h = (int) Math.round(getHeight());
         int r = (int) Math.round(getRange());
 
         g2d.drawImage(rangeImage,
@@ -49,10 +45,7 @@ public class J2dBasicTower extends BasicTower {
                 (int)(getY() - r - 1),
                 null);
 
-        // tower centered on exact coords
-        int x = cx - w / 2;
-        int y = cy - h / 2;
-        g2d.drawImage(sprite, x, y,null);
+        g2d.drawImage(sprite, (int)getDrawPosition().x(), (int)getDrawPosition().y(),(int)getWidth(),(int)getHeight(),null);
     }
 
 

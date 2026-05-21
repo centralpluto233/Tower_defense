@@ -73,8 +73,8 @@ public abstract class Tower extends Entity implements Attacker {
                 logger.fine("Target found " + target);
 
                 Projectile projectile = factory.createHomingProjectile(
-                        getX() + getWidth() / 2.0,
-                        getY() + getHeight() / 2.0,
+                        getX(),
+                        getY(),
                         damage,
                         target.get()
                 );
