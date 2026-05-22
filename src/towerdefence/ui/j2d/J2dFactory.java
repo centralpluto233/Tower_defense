@@ -5,17 +5,19 @@ import towerdefence.game.Game;
 import towerdefence.game.entities.enemy.BatEnemy;
 import towerdefence.game.entities.enemy.GoblinEnemy;
 import towerdefence.game.entities.projectile.CrossBowArrow;
-import towerdefence.game.entities.tower.BasicTower;
+import towerdefence.game.entities.tower.ArcherTower;
+import towerdefence.game.entities.tower.CrossBowTower;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.system.config.Config;
 import towerdefence.ui.input.SwingInputSource;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.entity.enemy.J2dBatEnemy;
+import towerdefence.ui.j2d.entity.tower.J2dArcherTower;
 import towerdefence.util.Vector2D;
 import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
 import towerdefence.ui.j2d.entity.projectile.J2dCrossBowArrow;
-import towerdefence.ui.j2d.entity.tower.J2dBasicTower;
+import towerdefence.ui.j2d.entity.tower.J2dCrossBowTower;
 
 import java.util.List;
 
@@ -53,8 +55,13 @@ public class J2dFactory extends AbstractGameFactory {
 
     // towers
     @Override
-    public BasicTower createBasicTower(double x, double y) {
-        return new J2dBasicTower(x,y, getGraphics(),assetManager);
+    public CrossBowTower createCrossBowTower(double x, double y) {
+        return new J2dCrossBowTower(x,y, getGraphics(),assetManager);
+    }
+
+    @Override
+    public ArcherTower createArcherTower(double x, double y) {
+        return new J2dArcherTower(x,y, getGraphics(),assetManager);
     }
 
     // projectiles

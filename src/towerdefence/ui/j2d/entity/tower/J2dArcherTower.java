@@ -1,23 +1,27 @@
 package towerdefence.ui.j2d.entity.tower;
 
-import towerdefence.game.entities.tower.BasicTower;
-import towerdefence.ui.j2d.assets.AssetManager;
+import towerdefence.game.entities.tower.ArcherTower;
+import towerdefence.game.entities.tower.CrossBowTower;
 import towerdefence.ui.j2d.J2dGraphicsContext;
+import towerdefence.ui.j2d.assets.AssetManager;
+import towerdefence.ui.j2d.assets.SpriteAnimation;
 import towerdefence.util.Vector2D;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class J2dBasicTower extends BasicTower {
+public class J2dArcherTower extends ArcherTower {
     private final J2dGraphicsContext graphicsContext;
     private final BufferedImage rangeImage;
-    private final BufferedImage sprite;
+    private final SpriteAnimation animation;
 
-    public J2dBasicTower(double x, double y, J2dGraphicsContext ctx, AssetManager assetManager) {
+    public J2dArcherTower(double x, double y, J2dGraphicsContext ctx, AssetManager assetManager) {
         super(x, y);
         this.graphicsContext = ctx;
         this.rangeImage = buildRangeImage((int) getRange());
-        this.sprite = assetManager.getSprite("sprites/entities/towers/crossbow.png");
+
+        BufferedImage sprite = assetManager.getSprite("sprites/entities/towers/archer.png");
+        this.animation = new SpriteAnimation(sprite,2,30);
     }
 
     private BufferedImage buildRangeImage(int range) {
@@ -43,6 +47,7 @@ public class J2dBasicTower extends BasicTower {
 
     @Override
     public void draw(double deltaTime) {
+        animation.update(deltaTime);
         Graphics2D g2d = graphicsContext.getGraphics2D();
         int r = (int) Math.round(getRange());
 
@@ -51,7 +56,7 @@ public class J2dBasicTower extends BasicTower {
                 (int)(getY() - r - 1),
                 null);
 
-        g2d.drawImage(sprite, (int)getDrawPosition().x(), (int)getDrawPosition().y(),(int)getWidth(),(int)getHeight(),null);
+        g2d.drawImage(animation.getCurrentFrame(), (int)getDrawPosition().x(), (int)getDrawPosition().y(),(int)getWidth(),(int)getHeight(),null);
     }
 
 

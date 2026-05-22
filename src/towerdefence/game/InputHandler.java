@@ -54,7 +54,7 @@ public class InputHandler {
         }
 
         // Try to create and place tower
-        Tower newTower = factory.createBasicTower(spot.x(), spot.y());
+        Tower newTower = factory.createArcherTower(spot.x(), spot.y());
         int cost = newTower.get_cost();
 
         if (stats.trySpendResources(cost)) {
