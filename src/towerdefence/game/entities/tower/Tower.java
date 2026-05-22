@@ -4,7 +4,7 @@ import towerdefence.game.AbstractGameFactory;
 import towerdefence.game.Game;
 import towerdefence.game.entities.Entity;
 import towerdefence.game.entities.enemy.EnemyEntity;
-import towerdefence.game.entities.projectile.CrossBowArrow;
+import static towerdefence.system.config.Constants.ProjectileConstants.*;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.interfaces.Attacker;
 import towerdefence.system.logging.GameLogger;
@@ -145,7 +145,7 @@ public abstract class Tower extends Entity implements Attacker {
             elapsed += timeStep;
 
             double distToArrow = Math.hypot(ex - this.getX(), ey - this.getY());
-            if (distToArrow <= CrossBowArrow.SPEED * elapsed) {
+            if (distToArrow <= Crossbow.SPEED * elapsed) {
                 return new Vector2D(ex, ey);
             }
         }
