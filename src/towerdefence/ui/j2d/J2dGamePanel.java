@@ -130,8 +130,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     }
 
     private Graphics2D getScaledGraphics(Graphics2D g2d) {
-        double virtualW = config.getGameWidth();
-        double virtualH = config.getGameHeight();
+        double virtualW = config.getViewWidth();
+        double virtualH = config.getViewHeight();
         double screenW = this.getWidth();
         double screenH = this.getHeight();
 
@@ -142,6 +142,14 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         Graphics2D g2d2 = (Graphics2D) g2d.create();
         g2d2.translate(offsetX, offsetY);
         g2d2.scale(scale, scale);
+
+        g2d2.translate(-config.getSpawnmargin(), -config.getSpawnmargin());
+        g2d2.setClip(
+                config.getSpawnmargin(),
+                config.getSpawnmargin(),
+                config.getViewWidth(),
+                config.getViewHeight()
+        );
 
         return g2d2;
     }
@@ -256,21 +264,21 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         g2d.setFont(new Font("Consolas", Font.BOLD, 18));
 
         g2d.setColor(Color.WHITE);
-        g2d.drawString("FPS: " + fps, 650, 50);
+        g2d.drawString("FPS: " + fps, 650+config.getSpawnmargin(), 50+config.getSpawnmargin());
     }
 
     private void drawStats(Graphics2D g2d) {
         g2d.setFont(new Font("Consolas", Font.BOLD, 18));
 
         g2d.setColor(Color.WHITE);
-        g2d.drawString("Lives: " + game.getLives(), 18, 30);
-        g2d.drawString("Resources: " + game.getResources(), 18, 50);
+        g2d.drawString("Lives: " + game.getLives(), 18+config.getSpawnmargin(), 30+config.getSpawnmargin());
+        g2d.drawString("Resources: " + game.getResources(), 18+config.getSpawnmargin(), 50+config.getSpawnmargin());
     }
 
     @Override
     public Vector2D screenToWorld(Point p) {
-        double virtualW = config.getGameWidth();
-        double virtualH = config.getGameHeight();
+        double virtualW = config.getViewWidth();
+        double virtualH = config.getViewHeight();
         double screenW = this.getWidth();
         double screenH = this.getHeight();
 
@@ -281,7 +289,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         if (p.x < offsetX || p.y < offsetY || p.x > offsetX + virtualW*scale || p.y > offsetY + virtualH*scale) {
             return null;
         }
-        return new Vector2D((p.x - offsetX)/scale, (p.y - offsetY) / scale);
+        return new Vector2D(((p.x - offsetX)/scale)+config.getSpawnmargin(), ((p.y - offsetY) / scale)+config.getSpawnmargin());
     }
 
 }
