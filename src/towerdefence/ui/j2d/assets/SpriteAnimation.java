@@ -1,6 +1,7 @@
 package towerdefence.ui.j2d.assets;
 
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class SpriteAnimation {
     private final BufferedImage[] frames;
@@ -23,6 +24,8 @@ public class SpriteAnimation {
         for (int i = 0; i < frameCount; i++) {
             frames[i] = sheet.getSubimage(i * frameWidth, 0, frameWidth, frameHeight);
         }
+        Random rand = new Random();
+        currentFrame = rand.nextInt(frameCount);
     }
 
     /**
@@ -40,11 +43,5 @@ public class SpriteAnimation {
     /** Geeft het huidige frame terug om te tekenen. */
     public BufferedImage getCurrentFrame() {
         return frames[currentFrame];
-    }
-
-    /** Reset de animatie naar frame 0. */
-    public void reset() {
-        currentFrame = 0;
-        timer = 0;
     }
 }

@@ -53,5 +53,24 @@ public class Stopwatch {
         return peek() >= intervalSeconds;
     }
 
+    public boolean hasTimePassed() {
+        return peek() >= maxDeltaTime;
+    }
 
+    public void sleepUntilNextTick(double targetSeconds) {
+        long deadline = lastTick + (long)(targetSeconds * 1_000_000_000.0);
+
+        long sleepMs = (deadline - System.nanoTime()) / 1_000_000 - 1;
+        if (sleepMs > 0) {
+            try { Thread.sleep(sleepMs); } catch (InterruptedException ignored) {}
+        }
+
+        while (System.nanoTime() < deadline) {
+            Thread.onSpinWait();
+        }
+    }
+
+    public void sleepUntilNextTick() {
+        sleepUntilNextTick(maxDeltaTime);
+    }
 }

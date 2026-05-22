@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.*;
+import java.util.stream.Stream;
+
 import towerdefence.system.config.Constants;
 
 /**
@@ -56,7 +58,7 @@ public class GameLogger {
         };
 
         // Console handler
-        ConsoleHandler consoleHandler = new ConsoleHandler();
+        StreamHandler consoleHandler = new StreamHandler(System.out, new SimpleFormatter());
         consoleHandler.setLevel(consoleLevel);
         consoleHandler.setFormatter(formatter);
         LOGGER.addHandler(consoleHandler);

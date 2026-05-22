@@ -20,7 +20,7 @@ public class J2dGoblinEnemy extends GoblinEnemy {
         super(x,y,path);
         this.graphicsContext = graphicsContext;
         BufferedImage sheet = assetManager.getSprite("sprites/entities/enemies/goblin.png");
-        this.animation = new SpriteAnimation(sheet, 4, 15);
+        this.animation = new SpriteAnimation(sheet, 4, 40);
     }
 
     @Override
