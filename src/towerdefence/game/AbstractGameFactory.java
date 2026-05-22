@@ -2,6 +2,7 @@ package towerdefence.game;
 
 import towerdefence.game.entities.enemy.BatEnemy;
 import towerdefence.game.entities.enemy.GoblinEnemy;
+import towerdefence.game.entities.projectile.ArcherArrow;
 import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.game.entities.tower.ArcherTower;
 import towerdefence.game.entities.tower.CrossBowTower;
@@ -28,5 +29,6 @@ public abstract class AbstractGameFactory {
     public abstract ArcherTower createArcherTower(double x, double y);
 
     // Projectiles
-    public abstract CrossBowArrow createHomingProjectile(double x, double y, int damage, Vector2D targetPosition);
+    protected abstract CrossBowArrow createCrossBowArrow(double x, double y, int damage, Vector2D targetPosition);
+    protected abstract ArcherArrow createArcherArrow(double x, double y, int damage, Vector2D targetPosition);
 }

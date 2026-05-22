@@ -1,12 +1,12 @@
 package towerdefence.game.entities.tower;
 
-import towerdefence.game.AbstractGameFactory;
 import towerdefence.game.Game;
 import towerdefence.game.entities.Entity;
 import towerdefence.game.entities.enemy.EnemyEntity;
 import static towerdefence.system.config.Constants.ProjectileConstants.*;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.interfaces.Attacker;
+import towerdefence.game.interfaces.ProjectileFactory;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.util.Vector2D;
 
@@ -22,6 +22,7 @@ public abstract class Tower extends Entity implements Attacker {
     private final double cooldown;
     private double timeSinceLastAttack;
     private final int cost;
+    private final ProjectileFactory projectileFactory;
 
     /**
      * constructs a tower
@@ -33,13 +34,14 @@ public abstract class Tower extends Entity implements Attacker {
      * @param damage damage dealt in attack
      * @param cooldown cooldown between attacks
      */
-    public Tower(double x, double y, double width, double height, double range, int damage, double cooldown, int cost) {
+    public Tower(double x, double y, double width, double height, double range, int damage, double cooldown, int cost, ProjectileFactory projectileFactory) {
         super(x, y, width, height);
         this.range = range;
         this.damage = damage;
         this.cooldown = cooldown;
         this.timeSinceLastAttack= cooldown;
         this.cost = cost;
+        this.projectileFactory = projectileFactory;
     }
 
     @Override
@@ -61,7 +63,7 @@ public abstract class Tower extends Entity implements Attacker {
         timeSinceLastAttack += deltaTime;
     }
 
-    public void updateCombat(List<EnemyEntity> enemies, AbstractGameFactory factory, Game game) {
+    public void updateCombat(List<EnemyEntity> enemies, Game game) {
         if (canAttack()) {
             logger.finest("Attacking");
             Optional<EnemyEntity> target = findTargetInRange(enemies);
@@ -69,9 +71,8 @@ public abstract class Tower extends Entity implements Attacker {
                 logger.fine("Target found " + target);
 
                 Vector2D targetPosition = predictWaypointAim(target.get());
-                Projectile projectile = factory.createHomingProjectile(
-                        getSpawnPosition().x(),
-                        getSpawnPosition().y(),
+                Projectile projectile = projectileFactory.create(
+                        getSpawnPosition(),
                         damage,
                         targetPosition
                 );

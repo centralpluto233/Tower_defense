@@ -55,7 +55,7 @@ public class EntityManager {
 
     public boolean update(double deltaTime, AbstractGameFactory factory, Game game) {
         for (Tower tower : towers) {
-            tower.updateCombat(enemies, factory, game);
+            tower.updateCombat(enemies, game);
             tower.update(deltaTime);
         }
 

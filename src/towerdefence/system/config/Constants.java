@@ -34,6 +34,12 @@ public class Constants {
             public static final double WIDTH=13.0*0.8;
             public static final double SPEED=90.0;
         }
+
+        public static final class Archer {
+            public static final double HEIGHT=6.0*0.8;
+            public static final double WIDTH=13.0*0.8;
+            public static final double SPEED=90.0;
+        }
     }
     
     public static class EnemyConstants {
@@ -43,7 +49,7 @@ public class Constants {
             public static final double SPEED = 30.0;
             public static final int HEALTH = 30;
             public static final int SCORE_VALUE = 10;
-            public static final int BASE_DAMAGE = 1;
+            public static final int BASE_DAMAGE = 2;
         }
         
         public static final class Bat {

@@ -4,6 +4,7 @@ import towerdefence.game.AbstractGameFactory;
 import towerdefence.game.Game;
 import towerdefence.game.entities.enemy.BatEnemy;
 import towerdefence.game.entities.enemy.GoblinEnemy;
+import towerdefence.game.entities.projectile.ArcherArrow;
 import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.game.entities.tower.ArcherTower;
 import towerdefence.game.entities.tower.CrossBowTower;
@@ -13,6 +14,7 @@ import towerdefence.system.config.Config;
 import towerdefence.ui.input.SwingInputSource;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.entity.enemy.J2dBatEnemy;
+import towerdefence.ui.j2d.entity.projectile.J2dArcherArrow;
 import towerdefence.ui.j2d.entity.tower.J2dArcherTower;
 import towerdefence.util.Vector2D;
 import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
@@ -56,17 +58,26 @@ public class J2dFactory extends AbstractGameFactory {
     // towers
     @Override
     public CrossBowTower createCrossBowTower(double x, double y) {
-        return new J2dCrossBowTower(x,y, getGraphics(),assetManager);
+        return new J2dCrossBowTower(x,y,
+                (pos, dmg, target) -> createCrossBowArrow(pos.x(), pos.y(), dmg, target),
+                getGraphics(),assetManager);
     }
 
     @Override
     public ArcherTower createArcherTower(double x, double y) {
-        return new J2dArcherTower(x,y, getGraphics(),assetManager);
+        return new J2dArcherTower(x,y,
+                (pos, dmg, target) -> createArcherArrow(pos.x(), pos.y(), dmg, target),
+                getGraphics(),assetManager);
     }
 
     // projectiles
     @Override
-    public CrossBowArrow createHomingProjectile(double x, double y, int damage,Vector2D targetPosition) {
+    protected CrossBowArrow createCrossBowArrow(double x, double y, int damage,Vector2D targetPosition) {
         return new J2dCrossBowArrow(x,y,damage,targetPosition,graphicsContext,assetManager);
+    }
+
+    @Override
+    protected ArcherArrow createArcherArrow(double x, double y, int damage, Vector2D targetPosition) {
+        return new J2dArcherArrow(x,y,damage,targetPosition,graphicsContext,assetManager);
     }
 }

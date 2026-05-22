@@ -1,6 +1,7 @@
 package towerdefence.ui.j2d.entity.tower;
 
 import towerdefence.game.entities.tower.CrossBowTower;
+import towerdefence.game.interfaces.ProjectileFactory;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 import towerdefence.util.Vector2D;
@@ -13,8 +14,8 @@ public class J2dCrossBowTower extends CrossBowTower {
     private final BufferedImage rangeImage;
     private final BufferedImage sprite;
 
-    public J2dCrossBowTower(double x, double y, J2dGraphicsContext ctx, AssetManager assetManager) {
-        super(x, y);
+    public J2dCrossBowTower(double x, double y, ProjectileFactory projectileFactory, J2dGraphicsContext ctx, AssetManager assetManager) {
+        super(x, y, projectileFactory);
         this.graphicsContext = ctx;
         this.rangeImage = buildRangeImage((int) getRange());
         this.sprite = assetManager.getSprite("sprites/entities/towers/crossbow.png");

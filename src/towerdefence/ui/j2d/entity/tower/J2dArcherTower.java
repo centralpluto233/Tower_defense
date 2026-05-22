@@ -2,6 +2,7 @@ package towerdefence.ui.j2d.entity.tower;
 
 import towerdefence.game.entities.tower.ArcherTower;
 import towerdefence.game.entities.tower.CrossBowTower;
+import towerdefence.game.interfaces.ProjectileFactory;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.SpriteAnimation;
@@ -15,8 +16,8 @@ public class J2dArcherTower extends ArcherTower {
     private final BufferedImage rangeImage;
     private final SpriteAnimation animation;
 
-    public J2dArcherTower(double x, double y, J2dGraphicsContext ctx, AssetManager assetManager) {
-        super(x, y);
+    public J2dArcherTower(double x, double y, ProjectileFactory projectileFactory, J2dGraphicsContext ctx, AssetManager assetManager) {
+        super(x, y, projectileFactory);
         this.graphicsContext = ctx;
         this.rangeImage = buildRangeImage((int) getRange());
 
