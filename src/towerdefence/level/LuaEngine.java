@@ -11,6 +11,7 @@ import towerdefence.system.logging.GameLogger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 public class LuaEngine {
@@ -36,9 +37,20 @@ public class LuaEngine {
         int resources = this.getInt("resources");
         List<Vector2D> path = this.readVectorTable("main_path");
         List<Vector2D> towerSpots = this.readVectorTable("tower_spots");
+        towerSpots = this.toWorld(towerSpots);
+        path = this.toWorld(path);
         List<WaveData> waves = this.readWaveTable("waves");
 
         return new LevelData(levelName, lives, resources, path, towerSpots, waves);
+    }
+
+    private List<Vector2D> toWorld(List<Vector2D> points) {
+        for (int i=0; i< points.size(); i++) {
+            Vector2D margin = new Vector2D(config.getSpawnmargin(), config.getSpawnmargin());
+            Vector2D pathPoint = points.get(i);
+            points.set(i,margin.add(pathPoint));
+        }
+        return points;
     }
 
     private LuaValue getValue(String name) {

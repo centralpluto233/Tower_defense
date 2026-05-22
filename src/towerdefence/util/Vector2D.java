@@ -16,6 +16,10 @@ public record Vector2D (double x, double y) {
         return new Vector2D(this.x - other.x, this.y - other.y);
     }
 
+    public Vector2D add(Vector2D other) {
+        return new Vector2D(this.x + other.x, this.y + other.y);
+    }
+
     public double length() {
         return Math.sqrt(x * x + y * y);
     }

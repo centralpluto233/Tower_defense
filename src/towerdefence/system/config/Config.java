@@ -132,12 +132,16 @@ public class Config {
     }
 
     public int getGameWidth() {
-        return getInt("game.width");
+        return getViewWidth()+2*getSpawnmargin();
     }
 
     public int getGameHeight() {
-        return getInt("game.height");
+        return getViewHeight()+2*getSpawnmargin();
     }
+
+    public int getViewWidth() {return getInt("view.width");}
+
+    public int getViewHeight() {return getInt("view.height");}
 
     public int getTargetFps() {
         return getInt("target.fps");
@@ -154,4 +158,6 @@ public class Config {
     public int getTowerSpotRadius() {return getInt("interaction.towerspot.radius");}
 
     public int getTargetRenderFps() {return getInt("target.render.FPS");}
+
+    public int getSpawnmargin() {return getInt("game.spawnmargin");}
 }
