@@ -1,6 +1,6 @@
 package towerdefence.game;
 
-import towerdefence.game.entities.enemy.EnemyEntity;
+import towerdefence.game.entities.enemy.BatEnemy;
 import towerdefence.game.entities.enemy.GoblinEnemy;
 import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.game.entities.tower.BasicTower;
@@ -20,6 +20,7 @@ public abstract class AbstractGameFactory {
     public abstract InputSource createInputSource(Game game, Config config, GameView gameView);
     // Enemies
     public abstract GoblinEnemy createGoblin(double x, double y, List<Vector2D> path);
+    public abstract BatEnemy createBat(double x, double y, List<Vector2D> path);
 
     // Towers
     public abstract BasicTower createBasicTower(double x, double y);

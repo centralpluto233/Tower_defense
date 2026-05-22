@@ -2,7 +2,6 @@ package towerdefence.level;
 
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jme.JmePlatform;
 import towerdefence.util.Vector2D;
 import towerdefence.system.config.Config;
@@ -11,7 +10,6 @@ import towerdefence.system.logging.GameLogger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 public class LuaEngine {
@@ -35,26 +33,16 @@ public class LuaEngine {
         String levelName = this.getString("level_name");
         int lives = this.getInt("lives");
         int resources = this.getInt("resources");
-        List<Vector2D> path = this.readVectorTable("main_path");
-        List<Vector2D> towerSpots = this.readVectorTable("tower_spots");
-        towerSpots = this.toWorld(towerSpots);
-        path = this.toWorld(path);
+        List<Vector2D> path = this.toWorld(this.readVectorTable("main_path"));
+        List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
         List<WaveData> waves = this.readWaveTable("waves");
 
         return new LevelData(levelName, lives, resources, path, towerSpots, waves);
     }
 
     private List<Vector2D> toWorld(List<Vector2D> points) {
-        for (int i=0; i< points.size(); i++) {
-            Vector2D margin = new Vector2D(config.getSpawnmargin(), config.getSpawnmargin());
-            Vector2D pathPoint = points.get(i);
-            points.set(i,margin.add(pathPoint));
-        }
+        points.replaceAll(point -> new Vector2D(config.getSpawnmargin(), config.getSpawnmargin()).add(point));
         return points;
-    }
-
-    private LuaValue getValue(String name) {
-        return globals.get(name);
     }
 
     private LuaTable getTable(String name) {
@@ -102,8 +90,9 @@ public class LuaEngine {
             int count = wave.get("count").checkint();
             double interval = wave.get("interval").checkdouble();
             double startDelay = wave.get("startDelay").checkdouble();
+            String enemyType = wave.get("enemyType").optjstring("goblin");
 
-            waves.add(new WaveData(count, interval, startDelay));
+            waves.add(new WaveData(count, interval, startDelay, enemyType));
         }
         return waves;
     }

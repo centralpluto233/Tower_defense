@@ -19,6 +19,8 @@ tower_spots = {
 }
 
 waves = {
-    { count = 8, interval = 0.8, startDelay = 0.0},
-    { count = 10, interval = 0.6, startDelay = 10.0}
+    { count = 5, interval = 1.5, startDelay = 3.0,  enemyType = "goblin" },
+    { count = 8, interval = 0.8, startDelay = 10.0, enemyType = "bat"    },
+    { count = 3, interval = 2.0, startDelay = 20.0, enemyType = "goblin" },
+    { count = 6, interval = 0.5, startDelay = 30.0, enemyType = "bat"    },
 }

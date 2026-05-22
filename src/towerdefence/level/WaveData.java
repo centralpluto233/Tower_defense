@@ -4,8 +4,9 @@ public class WaveData {
     private final int count;
     private final double intervalSeconds;
     private final double startDelaySeconds;
+    private final String enemyType;
 
-    public WaveData(int count, double intervalSeconds, double startDelaySeconds) {
+    public WaveData(int count, double intervalSeconds, double startDelaySeconds, String enemyType) {
         if (count < 1) {
             throw new IllegalArgumentException("Wave count must be >=1");
         }
@@ -19,6 +20,7 @@ public class WaveData {
         this.count = count;
         this.intervalSeconds = intervalSeconds;
         this.startDelaySeconds = startDelaySeconds;
+        this.enemyType = enemyType;
     }
 
     public int getCount() {
@@ -31,6 +33,10 @@ public class WaveData {
 
     public double getStartDelaySeconds() {
         return startDelaySeconds;
+    }
+
+    public String getEnemyType() {
+        return enemyType;
     }
 
     @Override

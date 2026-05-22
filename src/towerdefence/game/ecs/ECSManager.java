@@ -3,6 +3,7 @@ package towerdefence.game.ecs;
 import towerdefence.game.ecs.components.SpawnScheduleComponent;
 import towerdefence.game.ecs.components.SpawnCountComponent;
 import towerdefence.game.ecs.components.SpawnPathComponent;
+import towerdefence.game.ecs.components.SpawnTypeComponent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ public class ECSManager {
     private final Map<Integer, SpawnScheduleComponent> spawnSchedules = new HashMap<>();
     private final Map<Integer, SpawnCountComponent> spawnCounts = new HashMap<>();
     private final Map<Integer, SpawnPathComponent> spawnPaths = new HashMap<>();
+    private final Map<Integer, SpawnTypeComponent> spawnTypes = new HashMap<>();
 
     public int createEntity() {
         int id = nextEntityId++;
@@ -28,6 +30,7 @@ public class ECSManager {
         spawnSchedules.remove(id);
         spawnCounts.remove(id);
         spawnPaths.remove(id);
+        spawnTypes.remove(id);
     }
 
     public Set<Integer> getAllEntities() {
@@ -46,9 +49,12 @@ public class ECSManager {
         return Map.copyOf(spawnPaths);
     }
 
-    public void addSpawnJob(int id, SpawnScheduleComponent spawnSchedule, SpawnCountComponent spawnCount, SpawnPathComponent spawnPath) {
+    public Map<Integer, SpawnTypeComponent> getSpawnTypes() {return Map.copyOf(spawnTypes);}
+
+    public void addSpawnJob(int id, SpawnScheduleComponent spawnSchedule, SpawnCountComponent spawnCount, SpawnPathComponent spawnPath, SpawnTypeComponent spawnType) {
         this.spawnSchedules.put(id, spawnSchedule);
         this.spawnCounts.put(id, spawnCount);
         this.spawnPaths.put(id, spawnPath);
+        this.spawnTypes.put(id, spawnType);
     }
 }
