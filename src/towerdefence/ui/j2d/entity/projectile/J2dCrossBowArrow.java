@@ -1,6 +1,5 @@
 package towerdefence.ui.j2d.entity.projectile;
 
-import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;

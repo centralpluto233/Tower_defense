@@ -10,7 +10,6 @@ import towerdefence.ui.j2d.assets.SpriteAnimation;
 import towerdefence.ui.menu.MenuOverlayPanel;
 import towerdefence.util.Vector2D;
 import towerdefence.system.config.Config;
-import towerdefence.system.logging.GameLogger;
 import towerdefence.ui.input.InputMapping;
 
 import javax.swing.*;
@@ -19,20 +18,16 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 
 public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Game game;
     private JFrame frame;
     private final Config config;
-    private static final Logger logger = GameLogger.getLogger();
     private final J2dGraphicsContext graphicsContext;
-    private final MenuOverlayPanel overlay;
 
-    private record Decoration(BufferedImage sprite, int x, int y) {};
+    private record Decoration(BufferedImage sprite, int x, int y) {}
     private final List<Decoration> decorations = new ArrayList<>();
     private final List<BufferedImage> decSprites;
-    private final BufferedImage castleSprite;
     private final SpriteAnimation castle;
     private BufferedImage backgroundCache;
 
@@ -51,13 +46,13 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         setDoubleBuffered(true);
 
         setLayout(new OverlayLayout(this));
-        overlay= new MenuOverlayPanel(game);
+        MenuOverlayPanel overlay = new MenuOverlayPanel(game);
         overlay.setAlignmentX(0.0f);
         overlay.setAlignmentY(0.0f);
         add(overlay);
 
         game.setGameListener(overlay);
-        this.castleSprite = assetManager.getSprite("sprites/map/castle.png");
+        BufferedImage castleSprite = assetManager.getSprite("sprites/map/castle.png");
         this.castle = new SpriteAnimation(castleSprite, 4, 30);
 
         this.decSprites = List.of(
@@ -135,7 +130,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         g2d.drawImage(backgroundCache, 0, 0, null);
 
         drawEntities(this.deltaTime);
-        this.drawCastle(g2d, game.getPath().get(game.getPath().size() - 1));
+        this.drawCastle(g2d, game.getPath().getLast());
         drawStats(g2d);
         if (config.getDebug()) {
             drawFps(g2d);

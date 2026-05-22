@@ -3,6 +3,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -110,7 +111,7 @@ public class Config {
      * Saves the current config back to the file.
      */
     public void save() {
-        try (OutputStream output = new FileOutputStream(Config.class.getResource(Constants.Paths.CONFIG).getPath())) {
+        try (OutputStream output = new FileOutputStream(Objects.requireNonNull(Config.class.getResource(Constants.Paths.CONFIG)).getPath())) {
             properties.store(output, "Game Configuration");
         } catch (IOException e) {
             throw new RuntimeException("Failed to save config: " + e.getMessage());

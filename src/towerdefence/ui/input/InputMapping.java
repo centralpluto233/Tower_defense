@@ -5,5 +5,5 @@ import towerdefence.util.Vector2D;
 import java.awt.*;
 
 public interface InputMapping {
-    public Vector2D screenToWorld(Point p);
+    Vector2D screenToWorld(Point p);
 }

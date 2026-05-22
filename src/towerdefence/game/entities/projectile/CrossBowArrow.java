@@ -1,6 +1,5 @@
 package towerdefence.game.entities.projectile;
 
-import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.util.Vector2D;
 
 public abstract class CrossBowArrow extends Projectile {

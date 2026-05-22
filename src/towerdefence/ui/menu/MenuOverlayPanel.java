@@ -78,28 +78,26 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     }
 
     private void wireActions() {
-        startButton.addActionListener(e -> {
+        startButton.addActionListener(_ -> {
             game.start();
             refresh();
             requestFocusForGame();
         });
 
-        resumeButton.addActionListener(e -> {
+        resumeButton.addActionListener(_ -> {
             game.togglePause();
             refresh();
             requestFocusForGame();
         });
 
-        pauseButton.addActionListener(e -> {
+        pauseButton.addActionListener(_ -> {
             game.togglePause();
             refresh();
         });
 
-        settingsButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Settings komt later.");
-        });
+        settingsButton.addActionListener(_ -> JOptionPane.showMessageDialog(this, "Settings komt later."));
 
-        exitButton.addActionListener(e -> {
+        exitButton.addActionListener(_ -> {
             game.stop();
             refresh();
         });

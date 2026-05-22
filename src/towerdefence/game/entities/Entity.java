@@ -1,5 +1,4 @@
 package towerdefence.game.entities;
-import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.util.Vector2D;
 
 public abstract class Entity {
@@ -11,8 +10,8 @@ public abstract class Entity {
 
     /**
      * Constructs an Entity with the specified position and dimensions.
-     * @param x the x-coordinate of the entities's position
-     * @param y the y-coordinate of the entities's position
+     * @param x the x-coordinate of the entities' position
+     * @param y the y-coordinate of the entity's position
      * @param width the width of the entities
      * @param height the height of the entities
      */
@@ -23,7 +22,7 @@ public abstract class Entity {
     }
 
     /**
-     * Returns the x-coordinate of the entities's position.
+     * Returns the x-coordinate of the entity's position.
      * @return the x-coordinate
      */
     public double getX() {
@@ -31,7 +30,7 @@ public abstract class Entity {
     }
 
     /**
-     * Sets the x-coordinate of the entities's position.
+     * Sets the x-coordinate of the entities' position.
      * @param x the new x-coordinate
      */
     protected void setX(double x) {
@@ -39,7 +38,7 @@ public abstract class Entity {
     }
 
     /**
-     * Returns the y-coordinate of the entities's position.
+     * Returns the y-coordinate of the entities' position.
      * @return the y-coordinate
      */
     public double getY() {
@@ -47,7 +46,7 @@ public abstract class Entity {
     }
 
     /**
-     * Sets the y-coordinate of the entities's position.
+     * Sets the y-coordinate of the entities' position.
      * @param y the new y-coordinate
      */
     public void setY(double y) {
@@ -99,7 +98,7 @@ public abstract class Entity {
     }
 
     /**
-     * Updates the entities's state based on the time elapsed.
+     * Updates the entities' state based on the time elapsed.
      * @param deltaTime the time elapsed since the last update
      */
     public abstract void update(double deltaTime);
@@ -112,7 +111,7 @@ public abstract class Entity {
     }
 
     /**
-     * Returns a boolean indicating whether the entities is marked for removal.
+     * Returns a boolean indicating whether the entities are marked for removal.
      * @return true if the entities is marked for removal, false otherwise
      */
     public boolean isMarkedForRemoval() {

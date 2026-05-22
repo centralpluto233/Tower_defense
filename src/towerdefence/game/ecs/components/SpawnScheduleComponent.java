@@ -9,10 +9,6 @@ public class SpawnScheduleComponent {
         this.timeLeftSeconds = startDelaySeconds;
     }
 
-    public double getIntervalSeconds() {
-        return intervalSeconds;
-    }
-
     public double getTimeLeftSeconds() {
         return timeLeftSeconds;
     }

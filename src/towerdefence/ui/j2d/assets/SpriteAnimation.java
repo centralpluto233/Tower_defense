@@ -7,7 +7,7 @@ public class SpriteAnimation {
     private final BufferedImage[] frames;
     private final double frameDuration;
     private double timer = 0;
-    private int currentFrame = 0;
+    private int currentFrame;
 
     /**
      * @param sheet       de volledige sprite strip

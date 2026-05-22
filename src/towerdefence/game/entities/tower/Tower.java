@@ -7,7 +7,6 @@ import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.interfaces.Attacker;
-import towerdefence.game.interfaces.Damageable;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.util.Vector2D;
 
@@ -22,7 +21,7 @@ public abstract class Tower extends Entity implements Attacker {
     private final int damage;
     private final double cooldown;
     private double timeSinceLastAttack;
-    private int cost;
+    private final int cost;
 
     /**
      * constructs a tower
@@ -41,11 +40,6 @@ public abstract class Tower extends Entity implements Attacker {
         this.cooldown = cooldown;
         this.timeSinceLastAttack= cooldown;
         this.cost = cost;
-    }
-
-    protected void attack(Damageable target) {
-        target.takeDamage(damage);
-        timeSinceLastAttack=0;
     }
 
     @Override

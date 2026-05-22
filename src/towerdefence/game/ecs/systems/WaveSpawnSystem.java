@@ -66,11 +66,11 @@ public class WaveSpawnSystem {
     public void init(LevelData levelData, ECSManager ecs) {
         for (WaveData wave : levelData.getWaves()) {
             int id = ecs.createEntity();
-            ecs.addSpawnJob(id, new SpawnScheduleComponent(wave.getIntervalSeconds(),
-                    wave.getStartDelaySeconds()),
-                    new SpawnCountComponent(wave.getCount()),
+            ecs.addSpawnJob(id, new SpawnScheduleComponent(wave.intervalSeconds(),
+                    wave.startDelaySeconds()),
+                    new SpawnCountComponent(wave.count()),
                     new SpawnPathComponent(levelData.getPath()),
-                    new SpawnTypeComponent(wave.getEnemyType()));
+                    new SpawnTypeComponent(wave.enemyType()));
         }
     }
 }

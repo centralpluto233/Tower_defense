@@ -15,10 +15,6 @@ public class GameButton extends JButton {
 
     private Shape shape;
 
-    public GameButton(String text) {
-        this(text, new Color(52, 120, 246));
-    }
-
     public GameButton(String text, Color baseColor) {
         super(text);
         this.normalColor  = baseColor;

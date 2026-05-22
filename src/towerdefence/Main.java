@@ -1,19 +1,15 @@
 package towerdefence;
 
 import towerdefence.game.Game;
-import towerdefence.ui.input.SwingInputSource;
 import towerdefence.ui.j2d.J2dFactory;
-import towerdefence.ui.j2d.J2dGamePanel;
-import towerdefence.level.LuaEngine;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
-import towerdefence.ui.j2d.J2dGraphicsContext;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main {
-    public static void main(String[] args) {
+    static void main() {
         Logger logger = null;
 
         try {

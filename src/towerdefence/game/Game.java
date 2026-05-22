@@ -55,7 +55,7 @@ public class Game {
     }
 
     /**
-     * initialise the game with the config and the graphics
+     * initialize the game with the config and the graphics
      * @param config configuration for the game
      * @param factory factory for creating game objects
      */

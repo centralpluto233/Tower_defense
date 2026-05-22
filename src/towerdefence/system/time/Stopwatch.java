@@ -36,7 +36,7 @@ public class Stopwatch {
     /**
      * Resets the stopwatch
      */
-    public void reset() {
+    private void reset() {
         lastTick = System.nanoTime();
         logger.fine("Stopwatch reset");
     }

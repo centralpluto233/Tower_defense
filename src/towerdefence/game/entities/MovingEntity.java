@@ -7,7 +7,7 @@ import towerdefence.util.Vector2D;
 public abstract class MovingEntity extends Entity{
     
     private Vector2D velocity;
-    private double speed;
+    private final double speed;
 
     /**
      * Returns the speed of the entities.
@@ -15,14 +15,6 @@ public abstract class MovingEntity extends Entity{
      */
     public double getSpeed() {
         return speed;
-    }
-
-    /**
-     * Sets the speed of the entities.
-     * @param speed the new speed
-     */
-    public void setSpeed(double speed) {
-        this.speed = speed;
     }
 
     /**
@@ -35,8 +27,8 @@ public abstract class MovingEntity extends Entity{
 
     /**
      * Constructs a MovingEntity with the specified position and movement properties.
-     * @param x the x-coordinate of the entities's position
-     * @param y the y-coordinate of the entities's position
+     * @param x the x-coordinate of the entities' position
+     * @param y the y-coordinate of the entities' position
      * @param width the width of the entities
      * @param height the height of the entities
      * @param speed the speed of the entities
@@ -48,7 +40,7 @@ public abstract class MovingEntity extends Entity{
     }
 
     /**
-     * Sets the direction of the entities's movement.
+     * Sets the direction of the entities' movement.
      * @param directionX the x-component of the direction
      * @param directionY the y-component of the direction
      */

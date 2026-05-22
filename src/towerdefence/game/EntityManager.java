@@ -126,18 +126,6 @@ public class EntityManager {
                 .anyMatch(tower -> tower.getPosition().equals(spot));
     }
 
-    /**
-     * Checks if entities needs to be removed
-     * @param entity entities to check
-     * @return true if entities needs to be removed, else false
-     */
-    private boolean shouldRemove(Entity entity) {
-        if (entity.isMarkedForRemoval()) {
-            return true;
-        }
-        return false;
-    }
-
     public int getTotalEntityCount() {
         return towers.size()+enemies.size()+projectiles.size();
     }

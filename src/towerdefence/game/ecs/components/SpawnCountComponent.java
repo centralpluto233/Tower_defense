@@ -7,10 +7,6 @@ public class SpawnCountComponent {
         this.remaining = remaining;
     }
 
-    public int getRemaining() {
-        return remaining;
-    }
-
     public boolean isDone() {
         return remaining <= 0;
     }
