@@ -29,14 +29,12 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final J2dGraphicsContext graphicsContext;
     private final MenuOverlayPanel overlay;
 
-    private final BufferedImage pathTile;
-    private final BufferedImage grassTile;
-
     private record Decoration(BufferedImage sprite, int x, int y) {};
     private final List<Decoration> decorations = new ArrayList<>();
     private final List<BufferedImage> decSprites;
     private final BufferedImage castleSprite;
     private final SpriteAnimation castle;
+    private BufferedImage backgroundCache;
 
     private long fpsLastTime = System.currentTimeMillis();
     private int fpsFrames = 0;
@@ -59,8 +57,6 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         add(overlay);
 
         game.setGameListener(overlay);
-        this.pathTile = assetManager.getSprite("sprites/map/path.png");
-        this.grassTile = assetManager.getSprite("sprites/map/grass.png");
         this.castleSprite = assetManager.getSprite("sprites/map/castle.png");
         this.castle = new SpriteAnimation(castleSprite, 4, 30);
 
@@ -72,7 +68,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         assetManager.getSprite("sprites/map/decoration/rock_3.png")
         );
 
-        generateDecorations(0.08);
+        generateDecorations(0.1);
+        buildBackgroundCache(assetManager);
     }
 
     public void ensureWindow() {
@@ -92,6 +89,19 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         frame.setFocusTraversalKeysEnabled(false);
         SwingUtilities.invokeLater(this::requestFocusInWindow);
+    }
+
+    private void buildBackgroundCache(AssetManager assetManager) {
+        BufferedImage pathTile = assetManager.getSprite("sprites/map/path.png");
+        BufferedImage grassTile = assetManager.getSprite("sprites/map/grass.png");
+
+        backgroundCache = new BufferedImage(config.getGameWidth(), config.getGameHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = backgroundCache.createGraphics();
+        drawBackground(g, grassTile);
+        drawPath(g, pathTile);
+        drawDecorations(g);
+        drawTowerSpots(g);
+        g.dispose();
     }
 
     @Override
@@ -122,10 +132,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         g2d = getScaledGraphics(g2d);
         graphicsContext.setGraphics2D(g2d);
 
-        drawBackground(g2d);
-        drawDecorations(g2d);
-        drawPath(g2d);
-        drawTowerSpots(g2d);
+        g2d.drawImage(backgroundCache, 0, 0, null);
+
         drawEntities(this.deltaTime);
         this.drawCastle(g2d, game.getPath().get(game.getPath().size() - 1));
         drawStats(g2d);
@@ -160,7 +168,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         return g2d2;
     }
 
-    private void drawBackground(Graphics2D g2d) {
+    private void drawBackground(Graphics2D g2d, BufferedImage grassTile) {
         int tileSize = 32;
 
         int cols = (int) Math.ceil((double) config.getGameWidth()  / tileSize);
@@ -181,7 +189,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
             int x = rng.nextInt(config.getGameWidth());
             int y = rng.nextInt(config.getGameHeight());
 
-            if (isTooCloseToPath(x, y, 32+32/2)) continue;
+            if (isTooCloseToPath(x, y, 32)) continue;
 
             BufferedImage sprite = decSprites.get(rng.nextInt(decSprites.size()));
             decorations.add(new Decoration(sprite, x, y));
@@ -189,10 +197,24 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     }
 
     private boolean isTooCloseToPath(int cx, int cy, int minDist) {
-        for (Vector2D p : game.getPath()) {
-            if (Math.hypot(cx - p.x(), cy - p.y()) < minDist) return true;
+        List<Vector2D> path = game.getPath();
+        for (int i = 0; i < path.size() - 1; i++) {
+            Vector2D a = path.get(i);
+            Vector2D b = path.get(i + 1);
+
+            double dist = distanceToSegment(cx, cy, a.x(), a.y(), b.x(), b.y());
+            if (dist < minDist) return true;
         }
         return false;
+    }
+
+    private double distanceToSegment(double px, double py,
+                                     double ax, double ay,
+                                     double bx, double by) {
+        double dx = bx - ax, dy = by - ay;
+        if (dx == 0 && dy == 0) return Math.hypot(px - ax, py - ay);
+        double t = Math.clamp(((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy), 0, 1);
+        return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
     }
 
     private void drawDecorations(Graphics2D g2d) {
@@ -201,7 +223,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         }
     }
 
-    private void drawPath(Graphics2D g2d) {
+    private void drawPath(Graphics2D g2d, BufferedImage pathTile) {
         List<Vector2D> path = game.getPath();
         if (path == null || path.size() < 2) return;
 
