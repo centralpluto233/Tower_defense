@@ -32,7 +32,6 @@ public class J2dGoblinEnemy extends GoblinEnemy {
         double y = getDrawPosition().y();
 
         if (isHitFlashing()) {
-            // schaal frame eerst naar game-grootte
             BufferedImage scaled = new BufferedImage((int)getWidth(), (int)getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D tmp = scaled.createGraphics();
             tmp.drawImage(frame, 0, 0, (int)getWidth(), (int)getHeight(), null);

@@ -1,4 +1,4 @@
-level_name = "Debug Level"
+level_name = "Level 1"
 lives = 20
 resources = 20
 

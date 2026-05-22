@@ -6,6 +6,7 @@ import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.ui.j2d.assets.AssetManager;
+import towerdefence.ui.j2d.assets.SpriteAnimation;
 import towerdefence.ui.menu.MenuOverlayPanel;
 import towerdefence.util.Vector2D;
 import towerdefence.system.config.Config;
@@ -34,6 +35,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private record Decoration(BufferedImage sprite, int x, int y) {};
     private final List<Decoration> decorations = new ArrayList<>();
     private final List<BufferedImage> decSprites;
+    private final BufferedImage castleSprite;
+    private final SpriteAnimation castle;
 
     private long fpsLastTime = System.currentTimeMillis();
     private int fpsFrames = 0;
@@ -58,6 +61,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         game.setGameListener(overlay);
         this.pathTile = assetManager.getSprite("sprites/map/path.png");
         this.grassTile = assetManager.getSprite("sprites/map/grass.png");
+        this.castleSprite = assetManager.getSprite("sprites/map/castle.png");
+        this.castle = new SpriteAnimation(castleSprite, 4, 30);
 
         this.decSprites = List.of(
         assetManager.getSprite("sprites/map/decoration/mushroom.png"),
@@ -122,6 +127,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         drawPath(g2d);
         drawTowerSpots(g2d);
         drawEntities(this.deltaTime);
+        this.drawCastle(g2d, game.getPath().get(game.getPath().size() - 1));
         drawStats(g2d);
         if (config.getDebug()) {
             drawFps(g2d);
@@ -209,7 +215,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
             double dx = b.x() - a.x();
             double dy = b.y() - a.y();
             double dist = Math.hypot(dx, dy);
-            double angle = Math.atan2(dy, dx); // hoek in radialen
+            double angle = Math.atan2(dy, dx);
 
             int count = (int) Math.ceil(dist / tileSize);
 
@@ -218,13 +224,20 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
                 int tx = (int)(a.x() + dx * t);
                 int ty = (int)(a.y() + dy * t);
 
-                // sla graphics state op, roteer rond het middelpunt van de tile
                 Graphics2D g2dTile = (Graphics2D) g2d.create();
                 g2dTile.rotate(angle, tx, ty);
                 g2dTile.drawImage(pathTile, tx - half, ty - half, tileSize, tileSize, null);
                 g2dTile.dispose();
             }
         }
+    }
+
+    private void drawCastle(Graphics2D g2d, Vector2D end) {
+        castle.update(deltaTime);
+        BufferedImage frame = castle.getCurrentFrame();
+        double width = 52*2.5;
+        double height = 38*2.5;
+        g2d.drawImage(frame,(int)end.x()-(int)width/2,(int)end.y()-(5*(int)height/6),(int)width,(int)height,null);
     }
 
     private void drawTowerSpots(Graphics2D g2d) {
