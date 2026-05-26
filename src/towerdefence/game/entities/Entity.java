@@ -49,8 +49,13 @@ public abstract class Entity {
      * Sets the y-coordinate of the entities' position.
      * @param y the new y-coordinate
      */
-    public void setY(double y) {
+    protected void setY(double y) {
         this.position = new Vector2D(this.position.x(), y);
+    }
+
+    protected void setPosition(Vector2D position) {
+        setX(position.x());
+        setY(position.y());
     }
 
     /**

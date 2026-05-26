@@ -12,7 +12,7 @@ public class Constants {
         public static final class Archer {
             public static final double RANGE = 120.0;
             public static final int DAMAGE = 5;
-            public static final double COOLDOWN = 0.7;
+            public static final double COOLDOWN = 1;
             public static final double WIDTH = 16.0*2;
             public static final double HEIGHT = 23.0*2;
             public static final int COST = 10;
@@ -38,7 +38,7 @@ public class Constants {
         public static final class Archer {
             public static final double HEIGHT=6.0*0.8;
             public static final double WIDTH=13.0*0.8;
-            public static final double SPEED=80.0;
+            public static final double SPEED=70.0;
             public static final double ARC_HEIGHT = 60.0;
         }
     }

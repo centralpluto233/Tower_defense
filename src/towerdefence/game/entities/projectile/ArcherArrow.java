@@ -13,24 +13,17 @@ public abstract class ArcherArrow extends Projectile {
         progress += deltaTime / duration;
         progress = Math.min(progress, 1.0);
 
-        Vector2D nextPos = getPositionOnArc(progress);
-        Vector2D currentPos = getPosition();
+        Vector2D currentPos = getPositionOnArc(progress);
+        Vector2D nextPos = getPositionOnArc(Math.min(progress + 0.01, 1.0));
 
-        double vx = (nextPos.x() - currentPos.x()) / deltaTime;
-        double vy = (nextPos.y() - currentPos.y()) / deltaTime;
+        setX(currentPos.x());
+        setY(currentPos.y());
 
-        setVelocity(new Vector2D(vx, vy).normalize());
-        move(deltaTime);
+        setVelocity(nextPos.subtract(currentPos).normalize());
 
-        Vector2D toTarget = targetPos.subtract(getPosition());
-        Vector2D dir = new Vector2D(getVelocity().x(), getVelocity().y());
-        if (dir.dot(toTarget) < 0) {
+        if (progress >= 1.0) {
             markForRemoval();
         }
-        System.out.println("progress=" + progress
-                + " pos=" + getPosition()
-                + " nextPos=" + nextPos
-                + " arc=" + Math.sin(progress * Math.PI) * ARC_HEIGHT);
     }
 
     private Vector2D getPositionOnArc(double p) {
