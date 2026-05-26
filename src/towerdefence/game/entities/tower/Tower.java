@@ -23,6 +23,7 @@ public abstract class Tower extends Entity implements Attacker {
     private double timeSinceLastAttack;
     private final int cost;
     private final ProjectileFactory projectileFactory;
+    private double projectileSpeed;
 
     /**
      * constructs a tower
@@ -34,7 +35,7 @@ public abstract class Tower extends Entity implements Attacker {
      * @param damage damage dealt in attack
      * @param cooldown cooldown between attacks
      */
-    public Tower(double x, double y, double width, double height, double range, int damage, double cooldown, int cost, ProjectileFactory projectileFactory) {
+    public Tower(double x, double y, double width, double height, double range, int damage, double cooldown, int cost, double projectileSpeed, ProjectileFactory projectileFactory) {
         super(x, y, width, height);
         this.range = range;
         this.damage = damage;
@@ -42,6 +43,7 @@ public abstract class Tower extends Entity implements Attacker {
         this.timeSinceLastAttack= cooldown;
         this.cost = cost;
         this.projectileFactory = projectileFactory;
+        this.projectileSpeed = projectileSpeed;
     }
 
     @Override
@@ -76,6 +78,7 @@ public abstract class Tower extends Entity implements Attacker {
                         damage,
                         targetPosition
                 );
+                logger.finest("Projectile: " + projectile);
 
                 game.addEntity(projectile);
                 timeSinceLastAttack = 0;
@@ -146,7 +149,7 @@ public abstract class Tower extends Entity implements Attacker {
             elapsed += timeStep;
 
             double distToArrow = Math.hypot(ex - this.getX(), ey - this.getY());
-            if (distToArrow <= Crossbow.SPEED * elapsed) {
+            if (distToArrow <= projectileSpeed * elapsed) {
                 return new Vector2D(ex, ey);
             }
         }

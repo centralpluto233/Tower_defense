@@ -44,8 +44,12 @@ public abstract class MovingEntity extends Entity{
      * @param directionX the x-component of the direction
      * @param directionY the y-component of the direction
      */
-    protected void setDirection(double directionX, double directionY) {
+    protected void setVelocity(double directionX, double directionY) {
         this.velocity = new Vector2D(directionX, directionY);
+    }
+
+    protected void setVelocity(Vector2D velocity) {
+        this.velocity = velocity;
     }
 
     /**

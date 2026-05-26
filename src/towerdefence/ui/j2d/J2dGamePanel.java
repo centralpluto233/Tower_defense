@@ -278,15 +278,16 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         List<Tower> towersSnapshot = new ArrayList<>(game.getTowers());
         List<Projectile> projectilesSnapshot = new ArrayList<>(game.getProjectiles());
 
+        for (Projectile p : projectilesSnapshot) {
+            p.draw(deltaTime);
+        }
         for (EnemyEntity e : enemiesSnapshot) {
             e.draw(deltaTime);
         }
         for (Tower t : towersSnapshot) {
             t.draw(deltaTime);
         }
-        for (Projectile p : projectilesSnapshot) {
-            p.draw(deltaTime);
-        }
+
 
     }
 

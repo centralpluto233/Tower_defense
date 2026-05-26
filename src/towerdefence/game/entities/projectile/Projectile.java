@@ -6,7 +6,7 @@ import towerdefence.util.Vector2D;
 
 public abstract class Projectile extends MovingEntity {
     private final int damage;
-    private final Vector2D targetPos;
+    protected final Vector2D targetPos;
 
     public Projectile(double x, double y, double width, double height, double speed, int damage, Vector2D targetPos) {
         super(x, y, width, height, speed);
@@ -14,7 +14,7 @@ public abstract class Projectile extends MovingEntity {
         this.targetPos = targetPos;
 
         Vector2D dir = targetPos.subtract(new Vector2D(x, y)).normalize();
-        setDirection(dir.x(), dir.y());
+        setVelocity(dir.x(), dir.y());
     }
 
     public void update(double dt) {

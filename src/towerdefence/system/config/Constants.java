@@ -38,7 +38,8 @@ public class Constants {
         public static final class Archer {
             public static final double HEIGHT=6.0*0.8;
             public static final double WIDTH=13.0*0.8;
-            public static final double SPEED=90.0;
+            public static final double SPEED=80.0;
+            public static final double ARC_HEIGHT = 60.0;
         }
     }
     
