@@ -5,6 +5,7 @@ import towerdefence.game.GameListener;
 import towerdefence.game.entities.tower.TowerOption;
 import towerdefence.game.input.InputCommand;
 import towerdefence.system.config.Constants;
+import towerdefence.ui.input.InputMapping;
 import towerdefence.ui.input.SwingInputSource;
 import towerdefence.util.Vector2D;
 
@@ -17,6 +18,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     private Vector2D selectedSpot;
     private Consumer<InputCommand> commandSink = _ -> {};
     private int selectedSpotIndex;
+    private InputMapping inputMapping;
 
     private final JPanel towerOptionPanel = new JPanel();
 
@@ -25,7 +27,8 @@ public class BuildMenuPanel extends JPanel implements GameListener {
             new TowerOption("Crossbow", Constants.TowerConstants.CrossBow.COST)
     );
 
-    public BuildMenuPanel() {
+    public BuildMenuPanel(InputMapping inputMapping) {
+        this.inputMapping = inputMapping;
         setOpaque(false);
         setLayout(null);
 
@@ -77,7 +80,8 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     public void onBuildMenuRequested(int spotIndex, Vector2D spotPosition) {
         this.selectedSpot = spotPosition;
         this.selectedSpotIndex = spotIndex;
-        showAt(spotPosition, new Point((int)spotPosition.x(), (int)spotPosition.y()));
+        Point screenPos = inputMapping.worldToScreen(spotPosition);
+        showAt(spotPosition, screenPos);
     }
 
 

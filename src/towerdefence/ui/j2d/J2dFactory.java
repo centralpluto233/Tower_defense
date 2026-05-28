@@ -38,7 +38,8 @@ public class J2dFactory extends AbstractGameFactory {
 
     @Override
     public GameView createGameView(Game game, Config config) {
-        return new J2dGamePanel(game, config, graphicsContext, assetManager);
+        this.gamePanel= new J2dGamePanel(game, config, graphicsContext, assetManager);
+        return gamePanel;
     }
 
     @Override

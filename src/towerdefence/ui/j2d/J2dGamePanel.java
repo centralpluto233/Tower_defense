@@ -57,7 +57,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         add(overlay);
         game.addGameListener(overlay);
 
-        BuildMenuPanel buildMenu = new BuildMenuPanel();
+        BuildMenuPanel buildMenu = new BuildMenuPanel(this);
         buildMenu.setAlignmentX(0.0f);
         buildMenu.setAlignmentY(0.0f);
         add(buildMenu);
@@ -337,6 +337,16 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
             return null;
         }
         return new Vector2D(((p.x - offsetX)/scale)+config.getSpawnmargin(), ((p.y - offsetY) / scale)+config.getSpawnmargin());
+    }
+
+    @Override
+    public Point worldToScreen(Vector2D v) {
+        double scaleX = (double) getWidth()  / config.getGameWidth();
+        double scaleY = (double) getHeight() / config.getGameHeight();
+        return new Point(
+                (int)(v.x() * scaleX),
+                (int)(v.y() * scaleY)
+        );
     }
 
 }
