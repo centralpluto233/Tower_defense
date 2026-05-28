@@ -57,7 +57,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         add(overlay);
         game.addGameListener(overlay);
 
-        BuildMenuPanel buildMenu = new BuildMenuPanel(this);
+        BuildMenuPanel buildMenu = new BuildMenuPanel(this, assetManager);
         buildMenu.setAlignmentX(0.0f);
         buildMenu.setAlignmentY(0.0f);
         add(buildMenu);
