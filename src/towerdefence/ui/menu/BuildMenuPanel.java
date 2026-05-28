@@ -91,4 +91,5 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     @Override public void onGameStopped() {closeBuildMenu();}
     @Override public void onGameOver() {closeBuildMenu();}
     @Override public void onLevelWon() {closeBuildMenu();}
+    @Override public void onBuildMenuClosed() {closeBuildMenu();}
 }

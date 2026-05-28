@@ -250,6 +250,10 @@ public class Game {
         notifyListeners(l -> l.onBuildMenuRequested(spotIndex,spot));
     }
 
+    public void notifyBuildMenuClose() {
+        notifyListeners(GameListener::onBuildMenuClosed);
+    }
+
     public InputSource getInputSource() {
         return inputSource;
     }

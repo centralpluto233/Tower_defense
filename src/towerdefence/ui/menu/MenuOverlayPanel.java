@@ -194,4 +194,6 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     @Override
     public void onBuildMenuRequested(int spotIndex, Vector2D spotPosition) {}
+
+    @Override public void onBuildMenuClosed() {}
 }

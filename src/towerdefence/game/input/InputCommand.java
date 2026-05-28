@@ -8,6 +8,10 @@ public record InputCommand(InputAction action, int spotIndex, Optional<String> t
         return new InputCommand(InputAction.PLACE_TOWER_AT_INDEX, spotIndex, Optional.empty());
     }
 
+    public static InputCommand closeBuildMenu() {
+        return new InputCommand(InputAction.CLOSE_BUILD_MENU, -1, Optional.empty());
+    }
+
     public static InputCommand placeTowerAtSpot(int spotIndex, String towerType) {
         return new InputCommand(InputAction.PLACE_TOWER_AT_INDEX, spotIndex, Optional.of(towerType));
     }

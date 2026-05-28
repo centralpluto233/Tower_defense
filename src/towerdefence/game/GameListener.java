@@ -10,4 +10,5 @@ public interface GameListener {
     void onGameOver();
     void onLevelWon();
     void onBuildMenuRequested(int spotIndex, Vector2D spotPosition);
+    void onBuildMenuClosed();
 }

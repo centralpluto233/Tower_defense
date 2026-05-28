@@ -83,6 +83,8 @@ public class SwingInputSource implements InputSource {
             Integer spotIndex = findTowerSpotIndexFromPoint(e.getPoint());
             if (spotIndex != null) {
                 inputQueue.add(InputCommand.openBuildMenu(spotIndex));
+            } else {
+                inputQueue.add(InputCommand.closeBuildMenu());
             }
             }
         });

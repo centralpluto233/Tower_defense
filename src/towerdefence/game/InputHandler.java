@@ -42,6 +42,7 @@ public class InputHandler {
             case PAUSE_TOGGLE -> game.togglePause();
             case QUIT_GAME -> game.stop();
             case START_GAME -> game.start();
+            case CLOSE_BUILD_MENU -> game.notifyBuildMenuClose();
             default -> logger.warning("Unknown command"+ command.action());
         }
     }
