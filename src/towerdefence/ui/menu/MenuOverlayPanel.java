@@ -3,6 +3,7 @@ package towerdefence.ui.menu;
 import towerdefence.game.Game;
 import towerdefence.game.GameListener;
 import towerdefence.game.GameState;
+import towerdefence.util.Vector2D;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -190,4 +191,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     public void onLevelWon() {
         refresh();
     }
+
+    @Override
+    public void onBuildMenuRequested(int spotIndex, Vector2D spotPosition) {}
 }

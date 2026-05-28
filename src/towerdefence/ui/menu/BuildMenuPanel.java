@@ -1,17 +1,22 @@
 package towerdefence.ui.menu;
 
 import towerdefence.game.Game;
+import towerdefence.game.GameListener;
 import towerdefence.game.entities.tower.TowerOption;
+import towerdefence.game.input.InputCommand;
 import towerdefence.system.config.Constants;
+import towerdefence.ui.input.SwingInputSource;
 import towerdefence.util.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class BuildMenuPanel extends JPanel {
+public class BuildMenuPanel extends JPanel implements GameListener {
     private Vector2D selectedSpot;
-    private Game game;
+    private Consumer<InputCommand> commandSink = _ -> {};
+    private int selectedSpotIndex;
 
     private final JPanel towerOptionPanel = new JPanel();
 
@@ -20,7 +25,7 @@ public class BuildMenuPanel extends JPanel {
             new TowerOption("Crossbow", Constants.TowerConstants.CrossBow.COST)
     );
 
-    public BuildMenuPanel(Game game) {
+    public BuildMenuPanel() {
         setOpaque(false);
         setLayout(null);
 
@@ -31,8 +36,8 @@ public class BuildMenuPanel extends JPanel {
         for (TowerOption towerOption : towerOptions) {
             JButton button = new JButton(towerOption.type());
             button.addActionListener(_ -> {
-                game.placeTower(towerOption.type(), selectedSpot);
-            hide();
+                commandSink.accept(InputCommand.placeTowerAtSpot(selectedSpotIndex,towerOption.type()));
+            closeBuildMenu();
             });
             towerOptionPanel.add(button);
         }
@@ -53,7 +58,11 @@ public class BuildMenuPanel extends JPanel {
         repaint();
     }
 
-    public void hide() {
+    public void setCommandSink(Consumer<InputCommand> sink) {
+        this.commandSink = sink;
+    }
+
+    public void closeBuildMenu() {
         setVisible(false);
     }
 
@@ -63,4 +72,19 @@ public class BuildMenuPanel extends JPanel {
         Point p = SwingUtilities.convertPoint(this, x, y, towerOptionPanel);
         return towerOptionPanel.contains(p);
     }
+
+    @Override
+    public void onBuildMenuRequested(int spotIndex, Vector2D spotPosition) {
+        this.selectedSpot = spotPosition;
+        this.selectedSpotIndex = spotIndex;
+        showAt(spotPosition, new Point((int)spotPosition.x(), (int)spotPosition.y()));
+    }
+
+
+    @Override public void onGameStarted() {}
+    @Override public void onGamePaused() {closeBuildMenu();}
+    @Override public void onGameResumed() {}
+    @Override public void onGameStopped() {closeBuildMenu();}
+    @Override public void onGameOver() {closeBuildMenu();}
+    @Override public void onLevelWon() {closeBuildMenu();}
 }

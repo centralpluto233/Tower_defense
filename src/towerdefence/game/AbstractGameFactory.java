@@ -6,6 +6,7 @@ import towerdefence.game.entities.projectile.ArcherArrow;
 import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.game.entities.tower.ArcherTower;
 import towerdefence.game.entities.tower.CrossBowTower;
+import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.system.config.Config;
@@ -27,6 +28,13 @@ public abstract class AbstractGameFactory {
     // Towers
     public abstract CrossBowTower createCrossBowTower(double x, double y);
     public abstract ArcherTower createArcherTower(double x, double y);
+    public Tower createTower(String type, Vector2D spot) {
+        return switch (type) {
+            case "Crossbow" -> createCrossBowTower(spot.x(), spot.y());
+            case "Archer" -> createArcherTower(spot.x(), spot.y());
+            default -> throw new IllegalArgumentException("Unknown tower type: " + type);
+        };
+    }
 
     // Projectiles
     protected abstract CrossBowArrow createCrossBowArrow(double x, double y, int damage, Vector2D targetPosition);

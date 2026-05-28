@@ -16,8 +16,10 @@ import towerdefence.system.logging.GameLogger;
 import towerdefence.system.config.Config;
 import towerdefence.system.time.Stopwatch;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import towerdefence.game.entities.Entity;
 
@@ -35,8 +37,8 @@ public class Game {
     private GameState gameState = GameState.MENU;
     private EntityManager entityManager;
     private InputHandler inputHandler;
-    private GameListener gameListener;
     private Stopwatch renderStopwatch;
+    private final List<GameListener> gameListeners = new ArrayList<>();
 
 
     private Game() {
@@ -85,8 +87,12 @@ public class Game {
         logger.info("Game constructed");
     }
 
-    public void setGameListener(GameListener listener) {
-        this.gameListener = listener;
+    public void addGameListener(GameListener listener) {
+        this.gameListeners.add(listener);
+    }
+
+    private void notifyListeners(Consumer<GameListener> event) {
+        gameListeners.forEach(event);
     }
 
     /**
@@ -130,7 +136,7 @@ public class Game {
      */
     public void start() {
         gameState= GameState.RUNNING;
-        gameListener.onGameStarted();
+        notifyListeners(GameListener::onGameStarted);
         logger.info("Starting Game");
     }
     //TODO code opkuisen, onnodige functies?
@@ -152,14 +158,14 @@ public class Game {
         boolean defeated = entityManager.update(deltaTime, factory, this);
         if (defeated) {
             gameState = GameState.GAME_OVER;
-            gameListener.onGameOver();
+            notifyListeners(GameListener::onGameOver);
             stop();
             return;
         }
 
         if (manager.getAllEntities().isEmpty() && entityManager.hasNoEnemies()) {
             gameState = GameState.LEVEL_WON;
-            gameListener.onLevelWon();
+            notifyListeners(GameListener::onLevelWon);
             stop();
         }
     }
@@ -169,7 +175,7 @@ public class Game {
      */
     public void stop() {
         gameState= GameState.EXIT;
-        gameListener.onGameStopped();
+        notifyListeners(GameListener::onGameStopped);
         logger.info("Stopping Game");
     }
 
@@ -233,10 +239,18 @@ public class Game {
     public void togglePause() {
         if (gameState == GameState.RUNNING) {
             gameState = GameState.PAUSE;
-            gameListener.onGamePaused();
+            notifyListeners(GameListener::onGamePaused);
         } else if (gameState == GameState.PAUSE) {
             gameState = GameState.RUNNING;
-            gameListener.onGameResumed();
+            notifyListeners(GameListener::onGameResumed);
         }
+    }
+
+    public void notifyBuildMenuRequested(int spotIndex, Vector2D spot) {
+        notifyListeners(l -> l.onBuildMenuRequested(spotIndex,spot));
+    }
+
+    public InputSource getInputSource() {
+        return inputSource;
     }
 }

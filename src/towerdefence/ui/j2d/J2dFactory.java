@@ -26,6 +26,7 @@ import java.util.List;
 public class J2dFactory extends AbstractGameFactory {
     private final J2dGraphicsContext graphicsContext;
     private final AssetManager assetManager = new AssetManager();
+    private J2dGamePanel gamePanel;
 
     public J2dFactory() {
         this.graphicsContext = new J2dGraphicsContext();
@@ -43,7 +44,9 @@ public class J2dFactory extends AbstractGameFactory {
     @Override
     public InputSource createInputSource(Game game, Config config, GameView gameView) {
         J2dGamePanel panel = (J2dGamePanel) gameView;
-        return new SwingInputSource(game, config, panel, panel);
+        SwingInputSource inputSource = new SwingInputSource(game, config, panel, panel);
+        gamePanel.setCommandSink(inputSource::queueCommand);
+        return inputSource;
     }
 
     // enemies

@@ -4,9 +4,12 @@ import towerdefence.game.Game;
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
+import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
+import towerdefence.ui.input.SwingInputSource;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.SpriteAnimation;
+import towerdefence.ui.menu.BuildMenuPanel;
 import towerdefence.ui.menu.MenuOverlayPanel;
 import towerdefence.util.Vector2D;
 import towerdefence.system.config.Config;
@@ -18,12 +21,14 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Game game;
     private JFrame frame;
     private final Config config;
     private final J2dGraphicsContext graphicsContext;
+    private BuildMenuPanel buildMenuPanel;
 
     private record Decoration(BufferedImage sprite, int x, int y) {}
     private final List<Decoration> decorations = new ArrayList<>();
@@ -50,8 +55,15 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         overlay.setAlignmentX(0.0f);
         overlay.setAlignmentY(0.0f);
         add(overlay);
+        game.addGameListener(overlay);
 
-        game.setGameListener(overlay);
+        BuildMenuPanel buildMenu = new BuildMenuPanel();
+        buildMenu.setAlignmentX(0.0f);
+        buildMenu.setAlignmentY(0.0f);
+        add(buildMenu);
+        this.buildMenuPanel = buildMenu;
+        game.addGameListener(buildMenu);
+
         BufferedImage castleSprite = assetManager.getSprite("sprites/map/castle.png");
         this.castle = new SpriteAnimation(castleSprite, 4, 30);
 
@@ -117,6 +129,10 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
             fpsFrames = 0;
             fpsLastTime = now;
         }
+    }
+
+    public void setCommandSink(Consumer<InputCommand> commandSink) {
+        buildMenuPanel.setCommandSink(commandSink);
     }
 
     @Override

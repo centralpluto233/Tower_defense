@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
@@ -81,7 +82,7 @@ public class SwingInputSource implements InputSource {
             }
             Integer spotIndex = findTowerSpotIndexFromPoint(e.getPoint());
             if (spotIndex != null) {
-                inputQueue.add(InputCommand.placeTowerAtSpot(spotIndex));
+                inputQueue.add(InputCommand.openBuildMenu(spotIndex));
             }
             }
         });
@@ -100,5 +101,9 @@ public class SwingInputSource implements InputSource {
             }
         });
         SwingUtilities.invokeLater(component::requestFocusInWindow);
+    }
+
+    public void queueCommand(InputCommand command) {
+        inputQueue.add(command);
     }
 }
