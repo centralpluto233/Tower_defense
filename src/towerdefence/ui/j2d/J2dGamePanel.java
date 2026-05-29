@@ -408,4 +408,41 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         );
     }
 
+    public static void drawEntityHealthBar(Graphics2D g2d, double x, double y, double entityWidth, double entityHeight, int health, int maxHealth) {
+        int barWidth = (int) Math.max(entityWidth, 20);
+        int barHeight = 3;
+        int bx = (int) (x-barWidth/2.0);
+        int by = (int) (y-barHeight/2.0)-12;
+        double percentage = (double) health / maxHealth;
+
+        Color fill = gradientHealthColor(percentage);
+
+        g2d.setColor(new Color(0, 0, 0, 160));
+        g2d.fillRoundRect(bx - 1, by - 1, barWidth + 2, barHeight + 2, 3, 3);
+
+        g2d.setColor(fill);
+        g2d.fillRoundRect(bx, by, (int)(barWidth * percentage), barHeight, 3, 3);
+    }
+
+    private static Color gradientHealthColor(double percentage) { // github copilot gradient color
+        // Clamp to [0, 1]
+        percentage = Math.clamp(percentage, 0, 1);
+
+        int r, g, b;
+        if (percentage < 0.5) {
+            // Red to Yellow (0% to 50%)
+            double t = percentage * 2; // 0 to 1 over first half
+            r = 255;
+            g = (int) (165 * t);  // 0 → 165
+            b = 0;
+        } else {
+            // Yellow to Green (50% to 100%)
+            double t = (percentage - 0.5) * 2; // 0 to 1 over second half
+            r = (int) (255 - 255 * t);  // 255 → 0
+            g = 255;
+            b = 0;
+        }
+        return new Color(r, g, b);
+    }
+
 }

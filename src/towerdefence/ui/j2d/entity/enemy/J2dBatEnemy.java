@@ -1,6 +1,7 @@
 package towerdefence.ui.j2d.entity.enemy;
 
 import towerdefence.game.entities.enemy.BatEnemy;
+import towerdefence.ui.j2d.J2dGamePanel;
 import towerdefence.ui.j2d.J2dGraphicsContext;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.SpriteAnimation;
@@ -45,6 +46,8 @@ public class J2dBatEnemy extends BatEnemy {
         } else {
             g2d.drawImage(frame, (int)x, (int)y, (int)getWidth(), (int)getHeight(), null);
         }
+
+        J2dGamePanel.drawEntityHealthBar(g2d,this.getX(),this.getY(),getWidth(),getHeight(),getHealth(),getMaxHealth());
     }
 
 }
