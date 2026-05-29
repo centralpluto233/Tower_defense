@@ -10,29 +10,24 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MenuOverlayPanel extends JPanel implements GameListener {
     private final Game game;
 
-    private final JPanel topBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+    private static final String CARD_MENU      = "MENU";
+    private static final String CARD_PAUSE     = "PAUSE";
+    private static final String CARD_GAME_OVER = "GAME_OVER";
+    private static final String CARD_LEVEL_WON = "LEVEL_WON";
+    private static final String CARD_LEVELS    = "LEVELS";
+
+    private final JPanel topBar      = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
     private final JPanel centerPanel = new JPanel();
-    private final JPanel buttonColumn = new JPanel();
+    private final JPanel cards       = new JPanel(new CardLayout());
 
-    private final JLabel titleLabel = new JLabel("Tower Defence");
-
-    private final GameButton startButton = GameButton.primary("Start Game");
-    private final GameButton resumeButton = GameButton.success("  Resume  ");
     private final GameButton pauseButton = GameButton.muted("Pause");
-    private final GameButton settingsButton = GameButton.muted("Settings");
-    private final GameButton exitButton = GameButton.danger("   Quit   ");
-    private final GameButton levelButton = GameButton.muted("   Level  ");
-    private final List<GameButton> levelButtons = new ArrayList<>();
 
     public MenuOverlayPanel(Game game) {
         this.game = game;
-
         setOpaque(false);
         setLayout(new BorderLayout());
 
@@ -42,7 +37,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
         buildTopBar();
         buildCenterPanel();
-        wireActions();
+        wireTopBar();
 
         add(topBar, BorderLayout.NORTH);
         add(centerPanel, BorderLayout.CENTER);
@@ -50,153 +45,178 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         refresh();
     }
 
+    // ── factory methods voor herbruikbare buttons ─────────────────────────────
+
+    private GameButton makeSettingsButton() {
+        GameButton btn = GameButton.muted(" Settings ");
+        btn.addActionListener(_ -> JOptionPane.showMessageDialog(this, "Settings komt later."));
+        return btn;
+    }
+
+    private GameButton makeExitButton() {
+        GameButton btn = GameButton.danger("   Quit   ");
+        btn.addActionListener(_ -> { game.exit(); refresh(); });
+        return btn;
+    }
+
+    private GameButton makeLevelButton() {
+        GameButton btn = GameButton.muted("   Level  ");
+        btn.addActionListener(_ -> showCard(CARD_LEVELS));
+        return btn;
+    }
+
+    // ── top bar ───────────────────────────────────────────────────────────────
+
     private void buildTopBar() {
         topBar.setOpaque(false);
-        topBar.add(settingsButton);
         topBar.add(pauseButton);
     }
+
+    private void wireTopBar() {
+        pauseButton.addActionListener(_ -> { game.togglePause(); refresh(); });
+    }
+
+    // ── cards ─────────────────────────────────────────────────────────────────
 
     private void buildCenterPanel() {
         centerPanel.setOpaque(false);
         centerPanel.setLayout(new GridBagLayout());
 
-        buttonColumn.setOpaque(false);
-        buttonColumn.setLayout(new BoxLayout(buttonColumn, BoxLayout.Y_AXIS));
-        buttonColumn.setBorder(new EmptyBorder(24, 32, 24, 32));
+        cards.setOpaque(false);
+        cards.add(buildMainMenuCard(),    CARD_MENU);
+        cards.add(buildPauseCard(),       CARD_PAUSE);
+        cards.add(buildGameOverCard(),    CARD_GAME_OVER);
+        cards.add(buildLevelWonCard(),    CARD_LEVEL_WON);
+        cards.add(buildLevelPickerCard(), CARD_LEVELS);
 
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font("Consolas", Font.BOLD, 32));
-
-        startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        resumeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        levelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        buttonColumn.add(titleLabel);
-        buttonColumn.add(Box.createVerticalStrut(24));
-        buttonColumn.add(startButton);
-        buttonColumn.add(resumeButton);
-        buttonColumn.add(Box.createVerticalStrut(12));
-        buttonColumn.add(levelButton);
-        buttonColumn.add(Box.createVerticalStrut(12));
-        buttonColumn.add(exitButton);
-
-        centerPanel.add(buttonColumn);
+        centerPanel.add(cards);
     }
 
-    private void wireActions() {
-        startButton.addActionListener(_ -> {
+    private JPanel buildMainMenuCard() {
+        GameButton startButton = GameButton.primary("Start Game");
+        startButton.addActionListener(_ -> { game.start(); refresh(); requestFocusForGame(); });
+
+        return column("Tower Defence", startButton, makeLevelButton(), makeSettingsButton(), makeExitButton());
+    }
+
+    private JPanel buildPauseCard() {
+        GameButton resumeButton = GameButton.success("  Resume  ");
+        resumeButton.addActionListener(_ -> { game.togglePause(); refresh(); requestFocusForGame(); });
+
+        return column("Paused", resumeButton, makeSettingsButton(), makeExitButton());
+    }
+
+    private JPanel buildGameOverCard() {
+        GameButton retryButton = GameButton.primary("   Retry  ");
+        retryButton.addActionListener(_ -> {
+            game.stop();
             game.start();
-            refresh();
-            requestFocusForGame();
         });
-
-        resumeButton.addActionListener(_ -> {
-            game.togglePause();
-            refresh();
-            requestFocusForGame();
-        });
-
-        pauseButton.addActionListener(_ -> {
-            game.togglePause();
-            refresh();
-        });
-
-        settingsButton.addActionListener(_ -> JOptionPane.showMessageDialog(this, "Settings komt later."));
-
-        exitButton.addActionListener(_ -> {
-            game.exit();
-            refresh();
-        });
-
-        levelButton.addActionListener(_ -> showLevelPicker());
+        return column("Game Over", retryButton, makeLevelButton(), makeSettingsButton(), makeExitButton());
     }
 
-    private void showLevelPicker() {
-        buttonColumn.removeAll();
+    private JPanel buildLevelWonCard() {
+        return column("Level Won!", makeLevelButton(), makeSettingsButton(), makeExitButton());
+    }
 
-        JLabel levelLabel = new JLabel("Select Level");
-        levelLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        levelLabel.setForeground(Color.WHITE);
-        levelLabel.setFont(new Font("Consolas", Font.BOLD, 32));
-        buttonColumn.add(levelLabel);
-        buttonColumn.add(Box.createVerticalStrut(24));
+    private JPanel buildLevelPickerCard() {
+        JPanel panel = emptyColumn();
+        panel.add(styledLabel("Select Level", 32));
+        panel.add(Box.createVerticalStrut(24));
 
         for (String level : Constants.LevelConstants.LEVEL_NAMES) {
-            GameButton button = GameButton.primary(level);
-            button.setAlignmentX(Component.CENTER_ALIGNMENT);
-            button.addActionListener(_ -> {
+            GameButton btn = GameButton.primary(level.substring(0, level.lastIndexOf('.')));
+            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            btn.addActionListener(_ -> {
                 game.loadLevel(level);
                 game.start();
                 refresh();
                 requestFocusForGame();
-                rebuildButtonColumn();
             });
-
-            buttonColumn.add(button);
-            buttonColumn.add(Box.createVerticalStrut(8));
+            panel.add(btn);
+            panel.add(Box.createVerticalStrut(8));
         }
-        GameButton backButton = GameButton.muted("Back");
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        backButton.addActionListener(_ -> rebuildButtonColumn());
-        buttonColumn.add(Box.createVerticalStrut(12));
-        buttonColumn.add(backButton);
 
-        buttonColumn.revalidate();
-        buttonColumn.repaint();
+        GameButton backButton = GameButton.muted("  Back  ");
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        backButton.addActionListener(_ -> refresh());
+        panel.add(Box.createVerticalStrut(12));
+        panel.add(backButton);
+
+        return panel;
+    }
+
+    // ── helpers ───────────────────────────────────────────────────────────────
+
+    private JPanel column(String title, GameButton... buttons) {
+        JPanel panel = emptyColumn();
+        panel.add(styledLabel(title, 32));
+        panel.add(Box.createVerticalStrut(24));
+        for (GameButton btn : buttons) {
+            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(btn);
+            panel.add(Box.createVerticalStrut(12));
+        }
+        return panel;
+    }
+
+    private JPanel emptyColumn() {
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(new EmptyBorder(24, 32, 24, 32));
+        return panel;
+    }
+
+    private JLabel styledLabel(String text, int size) {
+        JLabel label = new JLabel(text);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Consolas", Font.BOLD, size));
+        return label;
+    }
+
+    private void showCard(String card) {
+        ((CardLayout) cards.getLayout()).show(cards, card);
     }
 
     private void requestFocusForGame() {
         Container parent = getParent();
-        if (parent != null) {
-            parent.requestFocusInWindow();
-        }
+        if (parent != null) parent.requestFocusInWindow();
     }
 
-    private void rebuildButtonColumn() {
-        buttonColumn.removeAll();
-        buttonColumn.add(titleLabel);
-        buttonColumn.add(Box.createVerticalStrut(24));
-        buttonColumn.add(startButton);
-        buttonColumn.add(resumeButton);
-        buttonColumn.add(Box.createVerticalStrut(12));
-        buttonColumn.add(levelButton);
-        buttonColumn.add(Box.createVerticalStrut(12));
-        buttonColumn.add(exitButton);
-        buttonColumn.revalidate();
-        buttonColumn.repaint();
-    }
+    // ── refresh ───────────────────────────────────────────────────────────────
 
     public void refresh() {
         GameState state = game.getGameState();
-
-        boolean inMenu = state == GameState.MENU;
         boolean running = state == GameState.RUNNING;
-        boolean paused = state == GameState.PAUSE;
-
-        titleLabel.setText(inMenu ? "Tower Defence" : "Paused");
-
-        startButton.setVisible(inMenu);
-        resumeButton.setVisible(paused);
-
-        pauseButton.setVisible(running);
-        settingsButton.setVisible(true);
+        boolean paused  = state == GameState.PAUSE;
 
         topBar.setVisible(running || paused);
-        centerPanel.setVisible(inMenu || paused);
+        pauseButton.setVisible(running);
+        centerPanel.setVisible(state != GameState.RUNNING);
+
+        String card = switch (state) {
+            case MENU      -> CARD_MENU;
+            case PAUSE     -> CARD_PAUSE;
+            case GAME_OVER -> CARD_GAME_OVER;
+            case LEVEL_WON -> CARD_LEVEL_WON;
+            default        -> CARD_MENU;
+        };
+        showCard(card);
 
         revalidate();
         repaint();
     }
 
+    // ── paint & input blocking ────────────────────────────────────────────────
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         GameState state = game.getGameState();
-        if (state == GameState.MENU || state == GameState.PAUSE) {
+        if (state == GameState.MENU || state == GameState.PAUSE
+                || state == GameState.GAME_OVER || state == GameState.LEVEL_WON) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, getWidth(), getHeight());
@@ -207,11 +227,10 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     @Override
     public boolean contains(int x, int y) {
         GameState state = game.getGameState();
-
-        if (state == GameState.MENU || state == GameState.PAUSE) {
-            return true; // blokkeer alles onder de overlay
+        if (state == GameState.MENU || state == GameState.PAUSE
+                || state == GameState.GAME_OVER || state == GameState.LEVEL_WON) {
+            return true;
         }
-
         for (Component child : getComponents()) {
             if (!child.isVisible()) continue;
             Point p = SwingUtilities.convertPoint(this, x, y, child);
@@ -220,38 +239,14 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         return false;
     }
 
-    @Override
-    public void onGameStarted() {
-        refresh();
-    }
+    // ── GameListener ──────────────────────────────────────────────────────────
 
-    @Override
-    public void onGamePaused() {
-        refresh();
-    }
-
-    @Override
-    public void onGameResumed() {
-        refresh();
-    }
-
-    @Override
-    public void onGameStopped() {
-        refresh();
-    }
-
-    @Override
-    public void onGameOver() {
-        refresh();
-    }
-
-    @Override
-    public void onLevelWon() {
-        refresh();
-    }
-
-    @Override
-    public void onBuildMenuRequested(int spotIndex, Vector2D spotPosition) {}
-
+    @Override public void onGameStarted()  { refresh(); }
+    @Override public void onGamePaused()   { refresh(); }
+    @Override public void onGameResumed()  { refresh(); }
+    @Override public void onGameStopped()  { refresh(); }
+    @Override public void onGameOver()     { refresh(); }
+    @Override public void onLevelWon()     { refresh(); }
+    @Override public void onBuildMenuRequested(int i, Vector2D v) {}
     @Override public void onBuildMenuClosed() {}
 }

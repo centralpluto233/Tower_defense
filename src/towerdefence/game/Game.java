@@ -172,14 +172,12 @@ public class Game {
         if (defeated) {
             gameState = GameState.GAME_OVER;
             notifyListeners(GameListener::onGameOver);
-            stop();
             return;
         }
 
         if (manager.getAllEntities().isEmpty() && entityManager.hasNoEnemies()) {
             gameState = GameState.LEVEL_WON;
             notifyListeners(GameListener::onLevelWon);
-            stop();
         }
     }
 
