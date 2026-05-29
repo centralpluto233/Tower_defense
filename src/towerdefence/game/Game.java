@@ -75,10 +75,7 @@ public class Game {
         this.manager = new ECSManager();
         this.waveSpawnSystem = new WaveSpawnSystem();
 
-        this.stats = new RunStats(currentLevel.getLives(), currentLevel.getResources());
-        this.entityManager = new EntityManager(stats);
-
-        this.inputHandler = new InputHandler(factory, stats, entityManager, currentLevel);
+        resetGameState();
 
         this.view = factory.createGameView(this, config);
         this.inputSource = factory.createInputSource(this, config, this.view);
@@ -138,11 +135,14 @@ public class Game {
      */
     public void start() {
         waveSpawnSystem.init(currentLevel, manager);
+        gameState = GameState.RUNNING;
+        notifyListeners(GameListener::onGameStarted);
+    }
+
+    private void resetGameState() {
         stats = new RunStats(currentLevel.getLives(), currentLevel.getResources());
         entityManager = new EntityManager(stats);
         inputHandler = new InputHandler(factory, stats, entityManager, currentLevel);
-        gameState = GameState.RUNNING;
-        notifyListeners(GameListener::onGameStarted);
     }
 
     public void loadLevel(String levelName) {
@@ -154,7 +154,6 @@ public class Game {
             waveSpawnSystem.reset(manager);
         }
     }
-    //TODO code opkuisen, onnodige functies?
 
     /**
      * Updates game and all entities
@@ -210,7 +209,7 @@ public class Game {
         List<InputCommand> commands = inputSource.pollCommands();
 
         if (Set.of(GameState.MENU, GameState.PAUSE).contains(gameState)) {
-            return; // queue al leeggetrokken, commands gewoon weggooien
+            return; // queue al leeggetrokken, commands gewoon weggooien, inputs apart behandeld door JButtons en listeners, geen game input
         }
 
         for (InputCommand command : commands) {
