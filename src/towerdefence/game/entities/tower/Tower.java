@@ -6,6 +6,7 @@ import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.interfaces.Attacker;
 import towerdefence.game.interfaces.ProjectileFactory;
+import towerdefence.system.config.Constants;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.util.Vector2D;
 
@@ -180,8 +181,8 @@ public abstract class Tower extends Entity implements Attacker {
         List<Vector2D> path = enemy.getPath();
         double enemySpeed = enemy.getSpeed();
 
-        double timeStep = 0.05;
-        double maxTime = 3.0;
+        double timeStep = Constants.Timing.TOWER_AIM_STEP_SECONDS;
+        double maxTime = Constants.Timing.TOWER_AIM_MAX_LOOKAHEAD_SECONDS;
         double elapsed = 0;
 
         while (elapsed < maxTime) {
@@ -192,7 +193,7 @@ public abstract class Tower extends Entity implements Attacker {
                 double dy = wp.y() - ey;
                 double dist = Math.hypot(dx, dy);
 
-                if (dist < 1e-9) {
+                if (dist < Constants.Gameplay.PATH_POINT_EPSILON) {
                     waypointIndex++;
                     continue;
                 }

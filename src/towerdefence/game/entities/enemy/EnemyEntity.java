@@ -2,6 +2,7 @@ package towerdefence.game.entities.enemy;
 
 import towerdefence.game.entities.MovingEntity;
 import towerdefence.game.interfaces.Damageable;
+import towerdefence.system.config.Constants;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.util.Vector2D;
 
@@ -93,7 +94,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
             double distance = Math.hypot(dx, dy);
 
             // Sta je exact op dit waypoint? Dan direct naar de volgende.
-            if (distance < 1e-9) {
+            if (distance < Constants.Gameplay.PATH_POINT_EPSILON) {
                 currentWaypointIndex++;
                 continue;
             }

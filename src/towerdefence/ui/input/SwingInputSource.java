@@ -4,6 +4,7 @@ import towerdefence.game.Game;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.system.config.Config;
+import towerdefence.system.config.Constants;
 import towerdefence.util.Vector2D;
 
 import javax.swing.*;
@@ -67,7 +68,7 @@ public class SwingInputSource implements InputSource {
         List<Vector2D> spots = game.getTowerSpots();
 
         int best = -1;
-        double bestD = config.getGameWidth() * 2;
+        double bestD = config.getGameWidth() * Constants.Gameplay.TOWER_SPOT_SEARCH_DISTANCE_MULTIPLIER;
 
         for (int i = 0; i < spots.size(); i++) {
             double d = pScaled.distanceTo(spots.get(i));

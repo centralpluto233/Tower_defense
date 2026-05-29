@@ -1,5 +1,9 @@
 package towerdefence.level;
 
+import static towerdefence.system.config.Constants.Gameplay.MIN_WAVE_COUNT;
+import static towerdefence.system.config.Constants.Gameplay.MIN_WAVE_INTERVAL_SECONDS;
+import static towerdefence.system.config.Constants.Gameplay.MIN_WAVE_START_DELAY_SECONDS;
+
 public record WaveData(int count, double intervalSeconds, double startDelaySeconds, String enemyType) {
     /**
      * Constructs a new WaveData record with the specified parameters. Validates that the count is at least 1, the intervalSeconds is greater than 0, and the startDelaySeconds is non-negative.
@@ -10,13 +14,13 @@ public record WaveData(int count, double intervalSeconds, double startDelaySecon
      * @param enemyType         the type of enemy to spawn in this wave
      */
     public WaveData {
-        if (count < 1) {
+        if (count < MIN_WAVE_COUNT) {
             throw new IllegalArgumentException("Wave count must be >=1");
         }
-        if (intervalSeconds <= 0.0) {
+        if (intervalSeconds <= MIN_WAVE_INTERVAL_SECONDS) {
             throw new IllegalArgumentException("Wave interval seconds must be >0");
         }
-        if (startDelaySeconds < 0.0) {
+        if (startDelaySeconds < MIN_WAVE_START_DELAY_SECONDS) {
             throw new IllegalArgumentException("Wave start delay seconds must be >= 0");
         }
 

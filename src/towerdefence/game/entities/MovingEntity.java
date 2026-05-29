@@ -6,6 +6,29 @@ public abstract class MovingEntity extends Entity {
     private Vector2D velocity;
     private final double speed;
 
+    // ---------------------------------------------------------------------
+    // Construction
+    // ---------------------------------------------------------------------
+
+    /**
+     * Constructs a MovingEntity with the specified position and movement properties.
+     *
+     * @param x      the x-coordinate of the entities' position
+     * @param y      the y-coordinate of the entities' position
+     * @param width  the width of the entities
+     * @param height the height of the entities
+     * @param speed  the speed of the entities
+     */
+    public MovingEntity(double x, double y, double width, double height, double speed) {
+        super(x, y, width, height);
+        this.velocity = new Vector2D(0, 0);
+        this.speed = speed;
+    }
+
+    // ---------------------------------------------------------------------
+    // Accessors
+    // ---------------------------------------------------------------------
+
     /**
      * Returns the speed of the entities.
      *
@@ -24,20 +47,9 @@ public abstract class MovingEntity extends Entity {
         return velocity;
     }
 
-    /**
-     * Constructs a MovingEntity with the specified position and movement properties.
-     *
-     * @param x      the x-coordinate of the entities' position
-     * @param y      the y-coordinate of the entities' position
-     * @param width  the width of the entities
-     * @param height the height of the entities
-     * @param speed  the speed of the entities
-     */
-    public MovingEntity(double x, double y, double width, double height, double speed) {
-        super(x, y, width, height);
-        this.velocity = new Vector2D(0, 0);
-        this.speed = speed;
-    }
+    // ---------------------------------------------------------------------
+    // Movement helpers
+    // ---------------------------------------------------------------------
 
     /**
      * Sets the direction of the entities' movement.
@@ -67,6 +79,10 @@ public abstract class MovingEntity extends Entity {
         setX(getX() + velocity.x() * speed * deltaTime);
         setY(getY() + velocity.y() * speed * deltaTime);
     }
+
+    // ---------------------------------------------------------------------
+    // Debugging
+    // ---------------------------------------------------------------------
 
     /**
      * Returns a string representation of the moving entities.

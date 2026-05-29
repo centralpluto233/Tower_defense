@@ -37,7 +37,6 @@ public class AssetManager {
         load("sprites/map/path.png");
         load("sprites/map/grass.png");
         load("sprites/map/decoration/mushroom.png");
-        load("sprites/map/decoration/mushroom.png");
         load("sprites/map/decoration/rock_1.png");
         load("sprites/map/decoration/rock_2.png");
         load("sprites/map/decoration/rock_3.png");

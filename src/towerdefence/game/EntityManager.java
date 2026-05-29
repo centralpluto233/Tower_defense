@@ -19,7 +19,11 @@ public class EntityManager {
     private final List<EnemyEntity> enemies = new ArrayList<>();
     private final List<Projectile> projectiles = new ArrayList<>();
 
-    public final RunStats stats;
+    private final RunStats stats;
+
+    // ---------------------------------------------------------------------
+    // Construction
+    // ---------------------------------------------------------------------
 
     /**
      * Creates a new EntityManager with the given RunStats instance.
@@ -29,6 +33,10 @@ public class EntityManager {
     public EntityManager(RunStats stats) {
         this.stats = stats;
     }
+
+    // ---------------------------------------------------------------------
+    // Entity mutation
+    // ---------------------------------------------------------------------
 
     /**
      * Adds entities to one of the entities lists
@@ -50,6 +58,16 @@ public class EntityManager {
             enemies.add(e);
         }
     }
+
+    public void clear() {
+        enemies.clear();
+        towers.clear();
+        projectiles.clear();
+    }
+
+    // ---------------------------------------------------------------------
+    // Update loop
+    // ---------------------------------------------------------------------
 
     /**
      * Updates all entities in the game, checks for collisions, and removes any entities that are marked for removal.
@@ -76,6 +94,10 @@ public class EntityManager {
 
         return removeMarkedEntities();
     }
+
+    // ---------------------------------------------------------------------
+    // Internal cleanup
+    // ---------------------------------------------------------------------
 
     /**
      * Checks for collisions between projectiles and enemies.
@@ -124,6 +146,10 @@ public class EntityManager {
         return isDefeated;
     }
 
+    // ---------------------------------------------------------------------
+    // Queries
+    // ---------------------------------------------------------------------
+
     /**
      * Returns an unmodifiable copy of the list of towers currently in the game.
      *
@@ -169,15 +195,5 @@ public class EntityManager {
      */
     public boolean hasNoEnemies() {
         return enemies.isEmpty();
-    }
-
-    /**
-     * Clears all entities from the game, including towers, enemies, and projectiles.
-     * This can be used to reset the game state for a new run or level.
-     */
-    public void clear() {
-        enemies.clear();
-        towers.clear();
-        projectiles.clear();
     }
 }

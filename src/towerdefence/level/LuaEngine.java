@@ -42,35 +42,7 @@ public class LuaEngine {
      */
     public LevelData loadLevelData() {
         loadSelectedLevel();
-
-        String levelName = this.getString("level_name");
-        int lives = this.getInt("lives");
-        int resources = this.getInt("resources");
-        List<Vector2D> path = this.toWorld(this.readVectorTable("main_path"));
-        List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
-        List<WaveData> waves = this.readWaveTable("waves");
-
-        return new LevelData(levelName, lives, resources, path, towerSpots, waves);
-    }
-
-    /**
-     * Loads the level data from the specified level's Lua script and returns it as a LevelData object.
-     *
-     * @param levelName the name of the level to load, which corresponds to a Lua script in the levels directory
-     * @return a LevelData object containing the level name, initial lives, initial resources, main path, tower spots, and waves of enemies as defined in the Lua script
-     */
-    public LevelData loadLevelData(String levelName) {
-        String levelPath = Constants.Paths.LEVELS + levelName;
-        loadScript(levelPath);
-
-        levelName = this.getString("level_name");
-        int lives = this.getInt("lives");
-        int resources = this.getInt("resources");
-        List<Vector2D> path = this.toWorld(this.readVectorTable("main_path"));
-        List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
-        List<WaveData> waves = this.readWaveTable("waves");
-
-        return new LevelData(levelName, lives, resources, path, towerSpots, waves);
+        return loadLevelDataFromLoadedScript();
     }
 
     /**
@@ -83,6 +55,10 @@ public class LuaEngine {
         points.replaceAll(point -> new Vector2D(config.getSpawnmargin(), config.getSpawnmargin()).add(point));
         return points;
     }
+
+    // ---------------------------------------------------------------------
+    // Lua access helpers
+    // ---------------------------------------------------------------------
 
     /**
      * Retrieves a Lua table from the global environment using the specified name and checks that it is indeed a table, throwing an error if it is not.
@@ -109,23 +85,31 @@ public class LuaEngine {
     }
 
     /**
-     * Retrieves a string value from the global environment using the specified name and checks that it is indeed a string, throwing an error if it is not.
+     * After a Lua script has been loaded and executed, this method reads the relevant global variables and tables defined in the script (such as "level_name", "lives", "resources", "main_path", "tower_spots", and "waves") and constructs a LevelData object containing all of this information, which can then be used by the game to set up the level accordingly.
      *
-     * @param name the name of the global variable in the Lua script that is expected to be a string (e.g., "level_name")
-     * @return the string value corresponding to the specified name, if it exists and is a string; otherwise, an error is thrown indicating that the expected string was not found or is of the wrong type
+     * @return a LevelData object containing the level name, initial lives, initial resources, main path, tower spots, and waves of enemies as defined in the loaded Lua script; if any of the expected variables or tables are missing or of the wrong type, an error is thrown indicating the issue
      */
-    private String getString(String name) {
-        return globals.get(name).checkjstring();
+    private LevelData loadLevelDataFromLoadedScript() {
+        String levelName = globals.get("level_name").checkjstring();
+        int lives = globals.get("lives").checkint();
+        int resources = globals.get("resources").checkint();
+        List<Vector2D> path = this.toWorld(this.readVectorTable("main_path"));
+        List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
+        List<WaveData> waves = this.readWaveTable();
+
+        return new LevelData(levelName, lives, resources, path, towerSpots, waves);
     }
 
     /**
-     * Retrieves an integer value from the global environment using the specified name and checks that it is indeed an integer, throwing an error if it is not.
+     * Loads the level data from the specified level's Lua script and returns it as a LevelData object.
      *
-     * @param name the name of the global variable in the Lua script that is expected to be an integer (e.g., "lives", "resources")
-     * @return the integer value corresponding to the specified name, if it exists and is an integer; otherwise, an error is thrown indicating that the expected integer was not found or is of the wrong type
+     * @param levelName the name of the level to load, which corresponds to a Lua script in the levels directory
+     * @return a LevelData object containing the level name, initial lives, initial resources, main path, tower spots, and waves of enemies as defined in the Lua script
      */
-    private int getInt(String name) {
-        return globals.get(name).checkint();
+    public LevelData loadLevelData(String levelName) {
+        String levelPath = Constants.Paths.LEVELS + levelName;
+        loadScript(levelPath);
+        return loadLevelDataFromLoadedScript();
     }
 
     /**
@@ -138,7 +122,7 @@ public class LuaEngine {
         LuaTable table = getTable(tableName);
         List<Vector2D> result = new ArrayList<>();
 
-        for (int i = 1; i <= table.length(); i++) {
+        for (int i = Constants.Gameplay.LUA_ARRAY_START_INDEX; i <= table.length(); i++) {
             LuaTable point = table.get(i).checktable();
             double x = point.get("x").checkdouble();
             double y = point.get("y").checkdouble();
@@ -149,22 +133,21 @@ public class LuaEngine {
     }
 
     /**
-     * Reads a Lua table from the global environment using the specified name, where the table is expected to be an array of wave definitions (each wave being a table with "count", "interval", "startDelay", and optionally "enemyType" fields), and converts it into a list of WaveData objects representing those waves.
+     * Reads the "waves" Lua table from the global environment, where the table is expected to be an array of wave definitions (each wave being a table with "count", "interval", "startDelay", and optionally "enemyType" fields), and converts it into a list of WaveData objects representing those waves.
      *
-     * @param tableName the name of the global variable in the Lua script that is expected to be a table containing an array of wave definitions (e.g., "waves"), where each wave is defined as a table with "count", "interval", "startDelay", and optionally "enemyType" fields
-     * @return a list of WaveData objects corresponding to the wave definitions in the specified Lua table, where each WaveData object is constructed using the "count", "interval", "startDelay", and optionally "enemyType" fields from the Lua table entries; if the specified table does not exist or is not in the expected format, an error is thrown indicating the issue
+     * @return a list of WaveData objects corresponding to the wave definitions in the "waves" Lua table, where each WaveData object contains the count of enemies, interval between spawns, start delay before the wave begins, and enemy type for that wave; if the "waves" table does not exist or is not in the expected format, an error is thrown indicating the issue
      */
-    private List<WaveData> readWaveTable(String tableName) {
-        LuaTable table = getTable(tableName);
+    private List<WaveData> readWaveTable() {
+        LuaTable table = getTable("waves");
         List<WaveData> waves = new ArrayList<>();
 
-        for (int i = 1; i <= table.length(); i++) {
+        for (int i = Constants.Gameplay.LUA_ARRAY_START_INDEX; i <= table.length(); i++) {
             LuaTable wave = table.get(i).checktable();
 
             int count = wave.get("count").checkint();
             double interval = wave.get("interval").checkdouble();
             double startDelay = wave.get("startDelay").checkdouble();
-            String enemyType = wave.get("enemyType").optjstring("goblin");
+            String enemyType = wave.get("enemyType").optjstring(Constants.Gameplay.DEFAULT_ENEMY_TYPE);
 
             waves.add(new WaveData(count, interval, startDelay, enemyType));
         }

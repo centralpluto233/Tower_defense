@@ -13,6 +13,7 @@ import towerdefence.game.stats.RunStats;
 import towerdefence.level.LevelData;
 import towerdefence.level.LuaEngine;
 import towerdefence.system.config.Config;
+import towerdefence.system.config.Constants;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.system.time.Stopwatch;
 import towerdefence.util.Vector2D;
@@ -163,7 +164,7 @@ public class Game {
         while (gameState != GameState.EXIT) {
             double deltaTime = gamestopwatch.tick();
             if (config.getDebug()) {
-                double speedup = Math.clamp(config.getDebugSpeedup(), 0.1, 20.0);
+                double speedup = Math.clamp(config.getDebugSpeedup(), Constants.Timing.DEBUG_SPEEDUP_MIN, Constants.Timing.DEBUG_SPEEDUP_MAX);
                 deltaTime *= speedup;
             }
             update(deltaTime);

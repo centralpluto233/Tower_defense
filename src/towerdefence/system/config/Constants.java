@@ -10,6 +10,24 @@ public class Constants {
         public static final String LOG_FILE = "logs/game.log";
     }
 
+    public static class Gameplay {
+        public static final int LUA_ARRAY_START_INDEX = 1;
+        public static final int TOWER_SPOT_SEARCH_DISTANCE_MULTIPLIER = 2;
+        public static final double PATH_POINT_EPSILON = 1e-9;
+        public static final String DEFAULT_ENEMY_TYPE = "goblin";
+        public static final int MIN_WAVE_COUNT = 1;
+        public static final double MIN_WAVE_INTERVAL_SECONDS = 0.0;
+        public static final double MIN_WAVE_START_DELAY_SECONDS = 0.0;
+    }
+
+    public static class Timing {
+        public static final double NANOS_PER_SECOND = 1_000_000_000.0;
+        public static final double DEBUG_SPEEDUP_MIN = 0.1;
+        public static final double DEBUG_SPEEDUP_MAX = 20.0;
+        public static final double TOWER_AIM_STEP_SECONDS = 0.05;
+        public static final double TOWER_AIM_MAX_LOOKAHEAD_SECONDS = 3.0;
+    }
+
     public static class TowerConstants {
         public static final class Archer {
             public static final double RANGE = 120.0;
