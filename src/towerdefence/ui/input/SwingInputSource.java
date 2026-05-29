@@ -88,20 +88,6 @@ public class SwingInputSource implements InputSource {
             }
             }
         });
-
-        component.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                logger.finest("key pressed");
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    logger.info("Escape pressed");
-                    inputQueue.add(InputCommand.quitGame());
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    logger.info("Enter pressed");
-                    inputQueue.add(InputCommand.pauseToggled());
-                }
-            }
-        });
         SwingUtilities.invokeLater(component::requestFocusInWindow);
     }
 
