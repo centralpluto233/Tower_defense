@@ -150,6 +150,7 @@ public class Game {
         if (!newLevel.getLevelName().equals(currentLevel.getLevelName())) {
             currentLevel = newLevel;
             view.reset();
+            waveSpawnSystem.reset(manager);
         }
     }
     //TODO code opkuisen, onnodige functies?

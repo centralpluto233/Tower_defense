@@ -1,26 +1,31 @@
 level_name = "Level 2"
-lives = 20
-resources = 20
+lives = 15
+resources = 150
 
 main_path = {
-    {x = -10,  y = 300},
-    {x = 300, y = 300},
-    {x = 300, y = 150},
-    {x = 200, y = 150},
-    {x = 200, y = 420},
-    {x = 750, y = 420}
+    {x = -10,  y = 100},
+    {x = 200,  y = 100},
+    {x = 200,  y = 400},
+    {x = 100,  y = 400},
+    {x = 100,  y = 500},
+    {x = 500,  y = 500},
+    {x = 500,  y = 200},
+    {x = 650,  y = 200},
+    {x = 650,  y = 450},
+    {x = 750,  y = 450},
 }
 
 tower_spots = {
-    {x = 120, y = 230},
-    {x = 300, y = 230},
-    {x = 400, y = 320},
-    {x = 600, y = 330}
+    {x = 120,  y = 230},   -- inside first U-turn (between y=100 and y=400)
+    {x = 320,  y = 430},   -- covers bottom stretch toward x=500
+    {x = 320,  y = 570},   -- covers bottom stretch from below
+    {x = 580,  y = 320},   -- inside second U-turn (between y=200 and y=500)
 }
 
 waves = {
-    { count = 5, interval = 1.5, startDelay = 10.0,  enemyType = "goblin" },
-    { count = 8, interval = 0.8, startDelay = 3.0, enemyType = "bat"    },
-    { count = 3, interval = 2.0, startDelay = 20.0, enemyType = "goblin" },
-    { count = 6, interval = 0.5, startDelay = 30.0, enemyType = "bat"    },
+    { count = 6,  interval = 1.2, startDelay = 5.0, enemyType = "goblin" },
+    { count = 10, interval = 0.7, startDelay = 5.0, enemyType = "bat"    },
+    { count = 5,  interval = 1.0, startDelay = 6.0, enemyType = "goblin" },
+    { count = 8,  interval = 0.5, startDelay = 5.0, enemyType = "bat"    },
+    { count = 4,  interval = 1.5, startDelay = 6.0, enemyType = "goblin" },
 }
