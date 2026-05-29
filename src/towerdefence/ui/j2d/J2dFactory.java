@@ -30,6 +30,7 @@ public class J2dFactory extends AbstractGameFactory {
 
     public J2dFactory() {
         this.graphicsContext = new J2dGraphicsContext();
+        this.assetManager.loadAll();
     }
 
     private J2dGraphicsContext getGraphics() {

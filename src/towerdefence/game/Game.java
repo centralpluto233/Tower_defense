@@ -72,7 +72,6 @@ public class Game {
 
         this.manager = new ECSManager();
         this.waveSpawnSystem = new WaveSpawnSystem();
-        this.waveSpawnSystem.init(currentLevel,manager);
 
         this.stats = new RunStats(currentLevel.getLives(), currentLevel.getResources());
         this.entityManager = new EntityManager(stats);
@@ -245,6 +244,8 @@ public class Game {
     public int getLives() {
         return stats.getLives();
     }
+
+    public int getMaxLives() {return stats.getMaxLives();}
 
     public int getResources() {
         return stats.getResources();

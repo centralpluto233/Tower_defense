@@ -327,9 +327,37 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private void drawStats(Graphics2D g2d) {
         g2d.setFont(new Font("Consolas", Font.BOLD, 18));
 
+        drawHealthBar(g2d);
+
         g2d.setColor(Color.WHITE);
-        g2d.drawString("Lives: " + game.getLives(), 18+config.getSpawnmargin(), 30+config.getSpawnmargin());
         g2d.drawString("Resources: " + game.getResources(), 18+config.getSpawnmargin(), 50+config.getSpawnmargin());
+    }
+
+    private void drawHealthBar(Graphics2D g2d) {
+        BufferedImage full = assetManager.getSprite("stats/heart_full.png");
+        BufferedImage half = assetManager.getSprite("stats/heart_half.png");
+        BufferedImage empty = assetManager.getSprite("stats/heart_empty.png");
+        int lives = game.getLives();
+        int maxLives = game.getMaxLives();
+
+        double heartSize_x = 10*2;
+        double heartSize_y = 9*2;
+        int fullHearts = lives /2;
+        boolean hasHalf = ( lives %2 ) !=0;
+        int totalHearts = maxLives/2;
+
+        for (int i =0; i<totalHearts; i++) {
+            BufferedImage sprite;
+            if (i<fullHearts) {
+                sprite = full;
+            } else if (i == fullHearts && hasHalf) {
+                sprite = half;
+            } else {
+                sprite = empty;
+            }
+            g2d.drawImage(sprite, (int) (10+config.getSpawnmargin()+ i*(heartSize_x+4)),10+config.getSpawnmargin(),(int) heartSize_x,(int) heartSize_y, null);
+        }
+
     }
 
     @Override

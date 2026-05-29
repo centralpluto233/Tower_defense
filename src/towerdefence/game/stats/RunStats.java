@@ -9,10 +9,12 @@ public class RunStats {
     private int kills;
     private int escaped;
     private int lives;
+    private final int maxLives;
     private int resources;
 
     public RunStats(int lives, int resources) {
         this.lives = lives;
+        this.maxLives = lives;
         this.resources = resources;
         this.escaped = 0;
         this.kills = 0;
@@ -55,4 +57,6 @@ public class RunStats {
     public int getResources() {
         return resources;
     }
+
+    public int getMaxLives() {return maxLives;}
 }
