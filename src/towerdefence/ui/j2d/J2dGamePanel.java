@@ -40,6 +40,11 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private int fpsFrames = 0;
     private int fps = 0;
 
+    private BufferedImage full;
+    private BufferedImage half;
+    private BufferedImage empty;
+    private final SpriteAnimation coin;
+
     private double deltaTime=0;
 
     public J2dGamePanel(Game game, Config config, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
@@ -68,6 +73,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         BufferedImage castleSprite = assetManager.getSprite("sprites/map/castle.png");
         this.castle = new SpriteAnimation(castleSprite, 4, 30);
 
+        BufferedImage coinSprite = assetManager.getSprite("stats/Coin-Sheet.png");
+        this.coin = new SpriteAnimation(coinSprite, 4, 30);
+
         this.decSprites = List.of(
         assetManager.getSprite("sprites/map/decoration/mushroom.png"),
         assetManager.getSprite("sprites/map/decoration/mushroom.png"),
@@ -75,6 +83,10 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         assetManager.getSprite("sprites/map/decoration/rock_2.png"),
         assetManager.getSprite("sprites/map/decoration/rock_3.png")
         );
+
+        this.empty  = assetManager.getSprite("stats/heart_empty.png");
+        this.half = assetManager.getSprite("stats/heart_half.png");
+        this.full = assetManager.getSprite("stats/heart_full.png");
 
         generateDecorations();
         buildBackgroundCache();
@@ -325,18 +337,11 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     }
 
     private void drawStats(Graphics2D g2d) {
-        g2d.setFont(new Font("Consolas", Font.BOLD, 18));
-
         drawHealthBar(g2d);
-
-        g2d.setColor(Color.WHITE);
-        g2d.drawString("Resources: " + game.getResources(), 18+config.getSpawnmargin(), 50+config.getSpawnmargin());
+        drawResources(g2d);
     }
 
     private void drawHealthBar(Graphics2D g2d) {
-        BufferedImage full = assetManager.getSprite("stats/heart_full.png");
-        BufferedImage half = assetManager.getSprite("stats/heart_half.png");
-        BufferedImage empty = assetManager.getSprite("stats/heart_empty.png");
         int lives = game.getLives();
         int maxLives = game.getMaxLives();
 
@@ -358,6 +363,22 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
             g2d.drawImage(sprite, (int) (10+config.getSpawnmargin()+ i*(heartSize_x+4)),10+config.getSpawnmargin(),(int) heartSize_x,(int) heartSize_y, null);
         }
 
+    }
+
+    private void drawResources(Graphics2D g2d) {
+        coin.update(deltaTime);
+        BufferedImage frame =coin.getCurrentFrame();
+        double frameSize = 8*2.5;
+        int resources = game.getResources();
+
+        int x=10+config.getSpawnmargin();
+        int y=40+config.getSpawnmargin();
+
+        g2d.drawImage(frame,x,y,(int)frameSize,(int)frameSize, null);
+
+        g2d.setColor(new Color(255, 213, 65));
+        g2d.setFont(new Font("Consolas", Font.BOLD, 17));
+        g2d.drawString(String.valueOf(resources),x+28,y+17);
     }
 
     @Override

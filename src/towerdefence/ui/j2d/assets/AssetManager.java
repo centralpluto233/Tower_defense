@@ -42,6 +42,7 @@ public class AssetManager {
         load("stats/heart_full.png");
         load("stats/heart_half.png");
         load("stats/heart_empty.png");
+        load("stats/Coin-Sheet.png");
     }
 
     private void load(String path) {
