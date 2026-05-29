@@ -1,11 +1,7 @@
 package towerdefence.game.entities;
 import towerdefence.util.Vector2D;
 
-/**
- * An abstract class representing a moving entities in the game.
- */
 public abstract class MovingEntity extends Entity{
-    
     private Vector2D velocity;
     private final double speed;
 
@@ -48,6 +44,10 @@ public abstract class MovingEntity extends Entity{
         this.velocity = new Vector2D(directionX, directionY);
     }
 
+    /**
+     * Sets the velocity of the entities to the specified Vector2D.
+     * @param velocity the new velocity as a Vector2D
+     */
     protected void setVelocity(Vector2D velocity) {
         this.velocity = velocity;
     }

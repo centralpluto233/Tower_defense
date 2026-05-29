@@ -22,14 +22,12 @@ public class J2dCrossBowTower extends CrossBowTower {
     }
 
     private BufferedImage buildRangeImage(int range) {
-        int size = range * 2 + 2; // +2 voor stroke
+        int size = range * 2 + 2;
         BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-//        g.setColor(new Color(255, 255, 0, 40)); // transparante fill
-//        g.fillOval(1, 1, range * 2, range * 2);
-        g.setColor(new Color(255, 255, 0, 120)); // rand
+        g.setColor(new Color(255, 255, 0, 120));
         g.setStroke(new BasicStroke(1.5f));
         g.drawOval(1, 1, range * 2, range * 2);
 

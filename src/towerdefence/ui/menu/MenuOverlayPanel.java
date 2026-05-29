@@ -45,7 +45,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         refresh();
     }
 
-    // ── factory methods voor herbruikbare buttons ─────────────────────────────
+    // factory methods voor herbruikbare buttons
 
     private GameButton makeSettingsButton() {
         GameButton btn = GameButton.muted(" Settings ");
@@ -65,7 +65,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         return btn;
     }
 
-    // ── top bar ───────────────────────────────────────────────────────────────
+    // top bar
 
     private void buildTopBar() {
         topBar.setOpaque(false);
@@ -76,7 +76,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         pauseButton.addActionListener(_ -> { game.togglePause(); refresh(); });
     }
 
-    // ── cards ─────────────────────────────────────────────────────────────────
+    // cards
 
     private void buildCenterPanel() {
         centerPanel.setOpaque(false);
@@ -146,7 +146,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         return panel;
     }
 
-    // ── helpers ───────────────────────────────────────────────────────────────
+    // helpers
 
     private JPanel column(String title, GameButton... buttons) {
         JPanel panel = emptyColumn();
@@ -185,7 +185,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         if (parent != null) parent.requestFocusInWindow();
     }
 
-    // ── refresh ───────────────────────────────────────────────────────────────
+    // refresh
 
     public void refresh() {
         GameState state = game.getGameState();
@@ -209,7 +209,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         repaint();
     }
 
-    // ── paint & input blocking ────────────────────────────────────────────────
+    // paint & input blocking
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -239,7 +239,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         return false;
     }
 
-    // ── GameListener ──────────────────────────────────────────────────────────
+    // GameListener
 
     @Override public void onGameStarted()  { refresh(); }
     @Override public void onGamePaused()   { refresh(); }

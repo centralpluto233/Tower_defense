@@ -118,47 +118,103 @@ public class Config {
         }
     }
 
+    /**
+     * Gets the log level for console output from the config and parses it into a Level object.
+     * @return the log level for console output
+     */
     public Level getLogLevelConsole() {
         String level = get("logging.level.console");
         return Level.parse(level);
     }
 
+    /**
+     * Gets the log level for file output from the config and parses it into a Level object.
+     * @return the log level for file output
+     */
     public Level getLogLevelFile() {
         String level = get("logging.level.file");
         return Level.parse(level);
     }
 
+    /**
+     * Gets the selected level from the config.
+     * @return the selected level
+     */
     public String getSelectedLevel() {
         return get("selected.level");
     }
 
+    /**
+     * Calculates the total game width by adding the view width and twice the spawn margin.
+     * @return the total game width
+     */
     public int getGameWidth() {
         return getViewWidth()+2*getSpawnmargin();
     }
 
+    /**
+     * Calculates the total game height by adding the view height and twice the spawn margin.
+     * @return the total game height
+     */
     public int getGameHeight() {
         return getViewHeight()+2*getSpawnmargin();
     }
 
+    /**
+     * Gets the view width from the config.
+     * @return the view width
+     */
     public int getViewWidth() {return getInt("view.width");}
 
+    /**
+     * Gets the view height from the config.
+     * @return the view height
+     */
     public int getViewHeight() {return getInt("view.height");}
 
+    /**
+     * Gets the target frames per second (FPS) for the game from the config.
+     * @return the target FPS for the game
+     */
     public int getTargetFps() {
         return getInt("target.fps");
     }
 
+    /**
+     * Gets the title of the game window from the config.
+     * @return the title of the game window
+     */
     public String getWindowTitle() {
         return get("window.title");
     }
 
+    /**
+     * Gets whether debug mode is enabled from the config.
+     * @return true if debug mode is enabled, false otherwise
+     */
     public boolean getDebug() {return getBoolean("debugmode.enabled");}
 
+    /**
+     * Gets the speedup factor for debug mode from the config.
+     * @return the speedup factor for debug mode
+     */
     public double getDebugSpeedup() {return getDouble("debugmode.speedup");}
 
+    /**
+     * Gets the radius for tower spot interaction from the config.
+     * @return the radius for tower spot interaction
+     */
     public int getTowerSpotRadius() {return getInt("interaction.towerspot.radius");}
 
+    /**
+     * Gets the target frames per second (FPS) for rendering from the config.
+     * @return the target FPS for rendering
+     */
     public int getTargetRenderFps() {return getInt("target.render.FPS");}
 
+    /**
+     * Gets the spawn margin for the game from the config, which is used to determine how far outside the view enemies should spawn.
+     * @return the spawn margin for the game
+     */
     public int getSpawnmargin() {return getInt("game.spawnmargin");}
 }

@@ -21,6 +21,10 @@ public class EntityManager {
 
     public final RunStats stats;
 
+    /**
+     * Creates a new EntityManager with the given RunStats instance.
+     * @param stats the RunStats instance to use for tracking game statistics such as score and health
+     */
     public EntityManager(RunStats stats) {
         this.stats = stats;
     }
@@ -53,7 +57,13 @@ public class EntityManager {
         if (entity instanceof EnemyEntity) {enemies.remove((EnemyEntity) entity);}
     }
 
-    public boolean update(double deltaTime, AbstractGameFactory factory, Game game) {
+    /**
+     * Updates all entities in the game, checks for collisions, and removes any entities that are marked for removal.
+     * @param deltaTime the time elapsed since the last update, used for updating entity positions and states
+     * @param game the Game instance, used to access game state and add new entities if needed during updates
+     * @return true if the player is defeated (e.g. health <= 0), false otherwise
+     */
+    public boolean update(double deltaTime, Game game) {
         for (Tower tower : towers) {
             tower.updateCombat(enemies, game);
             tower.update(deltaTime);
@@ -72,6 +82,10 @@ public class EntityManager {
         return removeMarkedEntities();
     }
 
+    /**
+     * Checks for collisions between projectiles and enemies.
+     * If a projectile overlaps with an enemy, it deals damage to the enemy and marks the projectile for removal.
+     */
     private void checkProjectileCollisions() {
         for (Projectile p : projectiles) {
             if (p.isMarkedForRemoval()) continue;
@@ -115,25 +129,54 @@ public class EntityManager {
         return isDefeated;
     }
 
+    /**
+     * Returns an unmodifiable copy of the list of towers currently in the game.
+     * @return an unmodifiable list of towers
+     */
     public List<Tower> getTowers() {return List.copyOf(towers);}
 
+    /**
+     * Returns an unmodifiable copy of the list of enemies currently in the game.
+     * @return an unmodifiable list of enemies
+     */
     public List<EnemyEntity> getEnemies() {return List.copyOf(enemies);}
 
+    /**
+     * Returns an unmodifiable copy of the list of projectiles currently in the game.
+     * @return an unmodifiable list of projectiles
+     */
     public List<Projectile> getProjectiles() {return List.copyOf(projectiles);}
 
+    /**
+     * Checks if there is a tower occupying the given spot.
+     * @param spot the position to check for tower occupancy
+     * @return true if there is a tower at the given position, false otherwise
+     */
     public boolean isTowerSpotOccupied(Vector2D spot) {
         return towers.stream()
                 .anyMatch(tower -> tower.getPosition().equals(spot));
     }
 
+    /**
+     * Returns the total number of entities currently in the game (towers + enemies + projectiles).
+     * @return the total entity count
+     */
     public int getTotalEntityCount() {
         return towers.size()+enemies.size()+projectiles.size();
     }
 
+    /**
+     * Checks if there are no enemies currently in the game.
+     * @return true if there are no enemies, false otherwise
+     */
     public boolean hasNoEnemies() {
         return enemies.isEmpty();
     }
 
+    /**
+     * Clears all entities from the game, including towers, enemies, and projectiles.
+     * This can be used to reset the game state for a new run or level.
+     */
     public void clear() {
         enemies.clear();
         towers.clear();

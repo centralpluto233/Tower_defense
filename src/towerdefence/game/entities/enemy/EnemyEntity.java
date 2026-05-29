@@ -5,6 +5,7 @@ import towerdefence.game.interfaces.Damageable;
 import towerdefence.util.Vector2D;
 import towerdefence.system.logging.GameLogger;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -27,15 +28,16 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     private double hitFlashTimer = 0.0;
 
     /**
-     * creates an EnemyEntity
-     * @param x starting x position
-     * @param y starting y position
-     * @param width width of the entities
-     * @param height height of the entities
-     * @param speed speed in game units per second
-     * @param health starting and max health
-     * @param scoreValue score when killed
-     * @param damage damage dealt to base wen reaching end
+     * Creates a new EnemyEntity with the given parameters.
+     * @param x x part of the position of the enemy
+     * @param y y part of the position of the enemy
+     * @param width the width of the enemy in pixels
+     * @param height the height of the enemy in pixels
+     * @param speed the speed of the enemy
+     * @param health the health of the enemy
+     * @param scoreValue the score value awarded (resources) to the player when this enemy is killed
+     * @param damage the damage this enemy will deal to the player (health) if it reaches the end of its path
+     * @param path the path the enemy will follow, represented as a list of waypoints (Vector2D)
      */
     public EnemyEntity(double x, double y, double width, double height, double speed, int health, int scoreValue, int damage, List<Vector2D> path) {
         super(x, y, width, height, speed);
@@ -62,6 +64,10 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         followPath(dt);
     }
 
+    /**
+     * Moves the enemy along its path based on its speed and the elapsed time (dt).
+     * @param dt the elapsed time
+     */
     protected void followPath(double dt) {
         if (path == null || path.isEmpty()) {
             return;
@@ -164,22 +170,43 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         return maxHealth;
     }
 
+    /**
+     * returns the score value awarded to the player when this enemy is killed
+     * @return score value of enemy
+     */
     public int getScoreValue() {
         return scoreValue;
     }
 
+    /**
+     * returns the damage value done to the player when this enemy reaches the end of its path
+     * @return damage value of enemy
+     */
     public int getDamage() {
         return damage;
     }
 
+    /**
+     * returns the path that the enemy follows.
+     * unmodifiable so that external code cannot change the enemy's path directly, which could cause bugs in movement logic.
+     * @return list of Vector2D points
+     */
     public List<Vector2D> getPath() {
-        return path;
+        return Collections.unmodifiableList(path);
     }
 
+    /**
+     * returns the index of the current waypoint the enemy is moving towards
+     * @return index of current waypoint
+     */
     public int getCurrentWaypointIndex() {
         return currentWaypointIndex;
     }
 
+    /**
+     * returns whether the enemy is currently flashing from being hit
+     * @return true if the enemy is currently flashing, false otherwise
+     */
     public boolean isHitFlashing() {
         return hitFlashTimer > 0.0;
     }

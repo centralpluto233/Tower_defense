@@ -16,6 +16,14 @@ import java.util.List;
 
 public class WaveSpawnSystem {
 
+    /**
+     * System to manage spawning of enemies based on spawn schedules, counts, paths, and types defined in the ECS components.
+     * It checks each spawn job every update cycle, spawns enemies when their schedule is due, and removes spawn jobs that are completed.
+     * @param dt the time in seconds since the last update, used to tick down spawn schedules
+     * @param ecs the ECSManager that holds all entities and their components, used to access spawn schedules, counts, paths, and types
+     * @param game the Game instance, used to add new enemy entities when they spawn
+     * @param factory the AbstractGameFactory, used to create new enemy entities based on their type when they spawn
+     */
     public void update(double dt, ECSManager ecs, Game game, AbstractGameFactory factory) {
         List<Integer> toRemove = new ArrayList<>();
 

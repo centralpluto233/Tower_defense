@@ -22,16 +22,13 @@ public class J2dArcherArrow extends ArcherArrow {
     public void draw(double deltaTime) {
         Graphics2D g2d = graphicsContext.getGraphics2D();
 
-        // Center of the sprite in screen coords
         double cx = getX() + getWidth() / 2.0;
         double cy = getY() + getHeight() / 2.0;
 
         double angle = getVelocity().angle();
 
         Graphics2D g2dcopy = (Graphics2D) g2d.create();
-        // Rotate around the CENTER of the sprite, not the top-left corner
         g2dcopy.rotate(angle, cx, cy);
-        // Draw with top-left offset so the sprite is centered on (cx, cy)
         g2dcopy.drawImage(sprite,
                 (int)(cx - getWidth() / 2.0),
                 (int)(cy - getHeight() / 2.0),

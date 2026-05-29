@@ -10,11 +10,12 @@ import java.util.Map;
 
 public class AssetManager {
     private final Map<String, BufferedImage> cache = new HashMap<>();
-    private final GraphicsConfiguration gc = GraphicsEnvironment
-            .getLocalGraphicsEnvironment()
-            .getDefaultScreenDevice()
-            .getDefaultConfiguration();
 
+    /**
+     * Retrieves a sprite from the cache. If the sprite is not found, an exception is thrown.
+     * @param path the path to the sprite image, relative to the classpath. This should match the path used when preloading the sprite with loadAll().
+     * @return the BufferedImage of the sprite
+     */
     public BufferedImage getSprite(String path) {
         BufferedImage image = cache.get(path);
         if (image == null) {
@@ -22,7 +23,10 @@ public class AssetManager {
         }
         return image;
     }
-    
+
+    /**
+     * Preloads all necessary sprites into the cache. This method should be called once at the start of the game to ensure that all sprites are loaded and ready for use when needed.
+     */
     public void loadAll() {
         load("sprites/entities/enemies/bat.png");
         load("sprites/entities/enemies/goblin.png");
@@ -45,6 +49,10 @@ public class AssetManager {
         load("stats/Coin-Sheet.png");
     }
 
+    /**
+     * Loads a single sprite from the given path and stores it in the cache. The path should be relative to the classpath and should match the path used when retrieving the sprite with getSprite(). If the sprite cannot be found or loaded, an exception is thrown.
+     * @param path the path to the sprite image, relative to the classpath. This should match the path used when retrieving the sprite with getSprite().
+     */
     private void load(String path) {
         try (InputStream is = getClass().getClassLoader().getResourceAsStream(path)) {
             if (is == null) throw new IllegalArgumentException("Asset not found: " + path);
@@ -52,14 +60,5 @@ public class AssetManager {
         } catch (IOException e) {
             throw new RuntimeException("Failed to load asset: " + path, e);
         }
-    }
-
-    private BufferedImage toCompatible(BufferedImage img) {
-        BufferedImage compatible = gc.createCompatibleImage(
-                img.getWidth(), img.getHeight(), Transparency.TRANSLUCENT);
-        Graphics2D g = compatible.createGraphics();
-        g.drawImage(img, 0, 0, null);
-        g.dispose();
-        return compatible;
     }
 }

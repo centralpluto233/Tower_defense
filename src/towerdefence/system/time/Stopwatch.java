@@ -34,14 +34,6 @@ public class Stopwatch {
     }
 
     /**
-     * Resets the stopwatch
-     */
-    private void reset() {
-        lastTick = System.nanoTime();
-        logger.fine("Stopwatch reset");
-    }
-
-    /**
      * Returns the time elapsed since the last tick without resetting
      * @return elapsed time in seconds
      */
@@ -49,14 +41,19 @@ public class Stopwatch {
         return (System.nanoTime() - lastTick)/1_000_000_000.0;
     }
 
+    /**
+     * Checks if the specified time interval has passed since the last tick without resetting
+     * @param intervalSeconds the time interval in seconds to check against
+     * @return true if the specified time interval has passed, false otherwise
+     */
     public boolean hasTimePassed(double intervalSeconds) {
         return peek() >= intervalSeconds;
     }
 
-    public boolean hasTimePassed() {
-        return peek() >= maxDeltaTime;
-    }
-
+    /**
+     * Sleeps until the next tick, which is the time when the elapsed time since the last tick reaches the specified target seconds. This method uses a combination of Thread.sleep and busy-waiting to achieve accurate timing while minimizing CPU usage.
+     * @param targetSeconds the target time in seconds to wait until the next tick
+     */
     public void sleepUntilNextTick(double targetSeconds) {
         long deadline = lastTick + (long)(targetSeconds * 1_000_000_000.0);
 
@@ -68,9 +65,5 @@ public class Stopwatch {
         while (System.nanoTime() < deadline) {
             Thread.onSpinWait();
         }
-    }
-
-    public void sleepUntilNextTick() {
-        sleepUntilNextTick(maxDeltaTime);
     }
 }
