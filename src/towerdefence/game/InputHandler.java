@@ -46,6 +46,7 @@ public class InputHandler {
         switch (command.action()) {
             case PLACE_TOWER_AT_INDEX -> {
                 Vector2D spot = levelData.getTowerSpots().get(command.spotIndex());
+                if (entityManager.isTowerSpotOccupied(spot)) return;
                 if (command.towerType().isEmpty()) {
                     game.notifyBuildMenuRequested(command.spotIndex(),spot);
                 } else {

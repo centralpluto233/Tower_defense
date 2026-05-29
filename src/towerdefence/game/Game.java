@@ -168,7 +168,7 @@ public class Game {
 
         waveSpawnSystem.update(deltaTime, manager, this, factory);
 
-        boolean defeated = entityManager.update(deltaTime, factory, this);
+        boolean defeated = entityManager.update(deltaTime, this);
         if (defeated) {
             gameState = GameState.GAME_OVER;
             notifyListeners(GameListener::onGameOver);

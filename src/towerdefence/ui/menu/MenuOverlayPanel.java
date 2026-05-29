@@ -60,7 +60,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     }
 
     private GameButton makeLevelButton() {
-        GameButton btn = GameButton.muted("   Level  ");
+        GameButton btn = GameButton.primary("   Level  ");
         btn.addActionListener(_ -> showCard(CARD_LEVELS));
         return btn;
     }
