@@ -1,5 +1,7 @@
 package towerdefence.system.config;
 
+import java.util.List;
+
 public class Constants {
 
     public static class Paths {
@@ -61,5 +63,12 @@ public class Constants {
             public static final int SCORE_VALUE = 5;
             public static final int BASE_DAMAGE = 1;
         }
+    }
+
+    public static class LevelConstants {
+        public static final List<String> LEVEL_NAMES = List.of(
+                "Level1.lua",
+                "Level2.lua"
+        );
     }
 }

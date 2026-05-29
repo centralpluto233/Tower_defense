@@ -32,6 +32,8 @@ public class BuildMenuPanel extends JPanel implements GameListener {
                     Constants.TowerConstants.CrossBow.WIDTH,
                     Constants.TowerConstants.CrossBow.HEIGHT)
     );
+    //TODO: images in constants and preloaded at start
+    //TODO: full clean up of classes, functions, tasks, ....
 
     public BuildMenuPanel(InputMapping inputMapping, AssetManager assetManager) {
         this.inputMapping = inputMapping;

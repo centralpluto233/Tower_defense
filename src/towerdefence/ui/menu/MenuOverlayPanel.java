@@ -3,12 +3,15 @@ package towerdefence.ui.menu;
 import towerdefence.game.Game;
 import towerdefence.game.GameListener;
 import towerdefence.game.GameState;
+import towerdefence.system.config.Constants;
 import towerdefence.util.Vector2D;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuOverlayPanel extends JPanel implements GameListener {
     private final Game game;
@@ -24,6 +27,8 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     private final GameButton pauseButton = GameButton.muted("Pause");
     private final GameButton settingsButton = GameButton.muted("Settings");
     private final GameButton exitButton = GameButton.danger("   Quit   ");
+    private final GameButton levelButton = GameButton.muted("   Level  ");
+    private final List<GameButton> levelButtons = new ArrayList<>();
 
     public MenuOverlayPanel(Game game) {
         this.game = game;
@@ -67,11 +72,14 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         resumeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        levelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         buttonColumn.add(titleLabel);
         buttonColumn.add(Box.createVerticalStrut(24));
         buttonColumn.add(startButton);
         buttonColumn.add(resumeButton);
+        buttonColumn.add(Box.createVerticalStrut(12));
+        buttonColumn.add(levelButton);
         buttonColumn.add(Box.createVerticalStrut(12));
         buttonColumn.add(exitButton);
 
@@ -99,9 +107,45 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         settingsButton.addActionListener(_ -> JOptionPane.showMessageDialog(this, "Settings komt later."));
 
         exitButton.addActionListener(_ -> {
-            game.stop();
+            game.exit();
             refresh();
         });
+
+        levelButton.addActionListener(_ -> showLevelPicker());
+    }
+
+    private void showLevelPicker() {
+        buttonColumn.removeAll();
+
+        JLabel levelLabel = new JLabel("Select Level");
+        levelLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        levelLabel.setForeground(Color.WHITE);
+        levelLabel.setFont(new Font("Consolas", Font.BOLD, 32));
+        buttonColumn.add(levelLabel);
+        buttonColumn.add(Box.createVerticalStrut(24));
+
+        for (String level : Constants.LevelConstants.LEVEL_NAMES) {
+            GameButton button = GameButton.primary(level);
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            button.addActionListener(_ -> {
+                game.loadLevel(level);
+                game.start();
+                refresh();
+                requestFocusForGame();
+                rebuildButtonColumn();
+            });
+
+            buttonColumn.add(button);
+            buttonColumn.add(Box.createVerticalStrut(8));
+        }
+        GameButton backButton = GameButton.muted("Back");
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        backButton.addActionListener(_ -> rebuildButtonColumn());
+        buttonColumn.add(Box.createVerticalStrut(12));
+        buttonColumn.add(backButton);
+
+        buttonColumn.revalidate();
+        buttonColumn.repaint();
     }
 
     private void requestFocusForGame() {
@@ -109,6 +153,20 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         if (parent != null) {
             parent.requestFocusInWindow();
         }
+    }
+
+    private void rebuildButtonColumn() {
+        buttonColumn.removeAll();
+        buttonColumn.add(titleLabel);
+        buttonColumn.add(Box.createVerticalStrut(24));
+        buttonColumn.add(startButton);
+        buttonColumn.add(resumeButton);
+        buttonColumn.add(Box.createVerticalStrut(12));
+        buttonColumn.add(levelButton);
+        buttonColumn.add(Box.createVerticalStrut(12));
+        buttonColumn.add(exitButton);
+        buttonColumn.revalidate();
+        buttonColumn.repaint();
     }
 
     public void refresh() {

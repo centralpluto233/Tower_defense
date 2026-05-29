@@ -133,4 +133,10 @@ public class EntityManager {
     public boolean hasNoEnemies() {
         return enemies.isEmpty();
     }
+
+    public void clear() {
+        enemies.clear();
+        towers.clear();
+        projectiles.clear();
+    }
 }

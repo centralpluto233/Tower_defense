@@ -39,6 +39,7 @@ public class Game {
     private InputHandler inputHandler;
     private Stopwatch renderStopwatch;
     private final List<GameListener> gameListeners = new ArrayList<>();
+    private LuaEngine luaEngine;
 
 
     private Game() {
@@ -66,8 +67,8 @@ public class Game {
         this.factory = factory;
         this.config = config;
 
-        LuaEngine engine = new LuaEngine(config);
-        this.currentLevel = engine.loadLevelData();
+        this.luaEngine = new LuaEngine(config);
+        this.currentLevel = luaEngine.loadLevelData();
 
         this.manager = new ECSManager();
         this.waveSpawnSystem = new WaveSpawnSystem();
@@ -135,9 +136,21 @@ public class Game {
      * Starts Game
      */
     public void start() {
-        gameState= GameState.RUNNING;
+        waveSpawnSystem.init(currentLevel, manager);
+        stats = new RunStats(currentLevel.getLives(), currentLevel.getResources());
+        entityManager = new EntityManager(stats);
+        inputHandler = new InputHandler(factory, stats, entityManager, currentLevel);
+        gameState = GameState.RUNNING;
         notifyListeners(GameListener::onGameStarted);
-        logger.info("Starting Game");
+    }
+
+    public void loadLevel(String levelName) {
+        if (gameState != GameState.MENU) stop();
+        LevelData newLevel = luaEngine.loadLevelData(levelName);
+        if (!newLevel.getLevelName().equals(currentLevel.getLevelName())) {
+            currentLevel = newLevel;
+            view.reset();
+        }
     }
     //TODO code opkuisen, onnodige functies?
 
@@ -174,9 +187,17 @@ public class Game {
      * Stops Game
      */
     public void stop() {
-        gameState= GameState.EXIT;
+        gameState= GameState.MENU;
+        entityManager.clear();
+        waveSpawnSystem.reset(manager);
         notifyListeners(GameListener::onGameStopped);
         logger.info("Stopping Game");
+    }
+
+    public void exit() {
+        gameState= GameState.EXIT;
+        notifyListeners(GameListener::onGameStopped);
+        logger.info("Exiting Game");
     }
 
     private void processInput() {

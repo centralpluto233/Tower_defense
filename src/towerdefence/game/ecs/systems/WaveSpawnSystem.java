@@ -73,4 +73,10 @@ public class WaveSpawnSystem {
                     new SpawnTypeComponent(wave.enemyType()));
         }
     }
+
+    public void reset(ECSManager ecs) {
+        for (int id: ecs.getAllEntities()) {
+            ecs.removeEntity(id);
+        }
+    }
 }

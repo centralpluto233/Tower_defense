@@ -6,7 +6,6 @@ import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
-import towerdefence.ui.input.SwingInputSource;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.SpriteAnimation;
 import towerdefence.ui.menu.BuildMenuPanel;
@@ -29,9 +28,10 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Config config;
     private final J2dGraphicsContext graphicsContext;
     private BuildMenuPanel buildMenuPanel;
+    private AssetManager assetManager;
 
     private record Decoration(BufferedImage sprite, int x, int y) {}
-    private final List<Decoration> decorations = new ArrayList<>();
+    private List<Decoration> decorations = new ArrayList<>();
     private final List<BufferedImage> decSprites;
     private final SpriteAnimation castle;
     private BufferedImage backgroundCache;
@@ -46,6 +46,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.game = game;
         this.config = config;
         this.graphicsContext = graphicsContext;
+        this.assetManager = assetManager;
         setPreferredSize(new Dimension(config.getGameWidth(), config.getGameHeight()));
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
@@ -75,8 +76,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         assetManager.getSprite("sprites/map/decoration/rock_3.png")
         );
 
-        generateDecorations(0.1);
-        buildBackgroundCache(assetManager);
+        generateDecorations();
+        buildBackgroundCache();
     }
 
     public void ensureWindow() {
@@ -98,7 +99,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         SwingUtilities.invokeLater(this::requestFocusInWindow);
     }
 
-    private void buildBackgroundCache(AssetManager assetManager) {
+    private void buildBackgroundCache() {
         BufferedImage pathTile = assetManager.getSprite("sprites/map/path.png");
         BufferedImage grassTile = assetManager.getSprite("sprites/map/grass.png");
 
@@ -109,6 +110,14 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         drawDecorations(g);
         drawTowerSpots(g);
         g.dispose();
+    }
+
+    @Override
+    public void reset() {
+        this.backgroundCache = null;
+        this.decorations.clear();
+        generateDecorations();
+        buildBackgroundCache();
     }
 
     @Override
@@ -192,7 +201,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         }
     }
 
-    private void generateDecorations(double density) {
+    private void generateDecorations() {
+        double density = 0.1;
         Random rng = new Random();
         int count = (int)(config.getGameWidth() * config.getGameHeight() * density / 1000);
 
@@ -294,14 +304,14 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         List<Tower> towersSnapshot = new ArrayList<>(game.getTowers());
         List<Projectile> projectilesSnapshot = new ArrayList<>(game.getProjectiles());
 
-        for (Projectile p : projectilesSnapshot) {
-            p.draw(deltaTime);
-        }
         for (EnemyEntity e : enemiesSnapshot) {
             e.draw(deltaTime);
         }
         for (Tower t : towersSnapshot) {
             t.draw(deltaTime);
+        }
+        for (Projectile p : projectilesSnapshot) {
+            p.draw(deltaTime);
         }
 
 

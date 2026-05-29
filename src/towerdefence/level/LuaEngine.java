@@ -40,6 +40,20 @@ public class LuaEngine {
         return new LevelData(levelName, lives, resources, path, towerSpots, waves);
     }
 
+    public LevelData loadLevelData(String levelName) {
+        String levelPath = Constants.Paths.LEVELS + levelName;
+        loadScript(levelPath);
+
+        levelName = this.getString("level_name");
+        int lives = this.getInt("lives");
+        int resources = this.getInt("resources");
+        List<Vector2D> path = this.toWorld(this.readVectorTable("main_path"));
+        List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
+        List<WaveData> waves = this.readWaveTable("waves");
+
+        return new LevelData(levelName, lives, resources, path, towerSpots, waves);
+    }
+
     private List<Vector2D> toWorld(List<Vector2D> points) {
         points.replaceAll(point -> new Vector2D(config.getSpawnmargin(), config.getSpawnmargin()).add(point));
         return points;
