@@ -40,35 +40,14 @@ public class EntityManager {
             logger.warning("Attempted to add null entities to game");
             return;
         }
-        if (entity instanceof Tower) {
-            towers.add((Tower) entity);
+        if (entity instanceof Tower t) {
+            towers.add(t);
         }
-        if (entity instanceof Projectile) {
-            projectiles.add((Projectile) entity);
+        if (entity instanceof Projectile p) {
+            projectiles.add(p);
         }
-        if (entity instanceof EnemyEntity) {
-            enemies.add((EnemyEntity) entity);
-        }
-    }
-
-    /**
-     * Removes entities from correct entities-list
-     *
-     * @param entity entities to remove from list
-     */
-    public void removeEntity(Entity entity) {
-        if (entity == null) {
-            logger.warning("Attempted to remove null entities from game");
-            return;
-        }
-        if (entity instanceof Tower) {
-            towers.remove((Tower) entity);
-        }
-        if (entity instanceof Projectile) {
-            projectiles.remove((Projectile) entity);
-        }
-        if (entity instanceof EnemyEntity) {
-            enemies.remove((EnemyEntity) entity);
+        if (entity instanceof EnemyEntity e) {
+            enemies.add(e);
         }
     }
 
@@ -118,7 +97,7 @@ public class EntityManager {
     /**
      * Removes all entities that are marked for removal from the game
      */
-    public boolean removeMarkedEntities() {
+    private boolean removeMarkedEntities() {
         boolean isDefeated = false;
 
         for (EnemyEntity enemy : enemies) {
@@ -181,15 +160,6 @@ public class EntityManager {
     public boolean isTowerSpotOccupied(Vector2D spot) {
         return towers.stream()
                 .anyMatch(tower -> tower.getPosition().equals(spot));
-    }
-
-    /**
-     * Returns the total number of entities currently in the game (towers + enemies + projectiles).
-     *
-     * @return the total entity count
-     */
-    public int getTotalEntityCount() {
-        return towers.size() + enemies.size() + projectiles.size();
     }
 
     /**

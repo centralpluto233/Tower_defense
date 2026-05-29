@@ -41,6 +41,9 @@ public class Game {
     private final List<GameListener> gameListeners = new ArrayList<>();
     private LuaEngine luaEngine;
 
+    // ---------------------------------------------------------------------
+    // Singleton / construction
+    // ---------------------------------------------------------------------
 
     private Game() {
         logger.info("Game created");
@@ -57,6 +60,10 @@ public class Game {
         }
         return instance;
     }
+
+    // ---------------------------------------------------------------------
+    // Initialization / setup
+    // ---------------------------------------------------------------------
 
     /**
      * initialize the game with the config and the graphics
@@ -86,12 +93,64 @@ public class Game {
         logger.info("Game constructed");
     }
 
-    public void addGameListener(GameListener listener) {
-        this.gameListeners.add(listener);
+    /**
+     * reset the runtime state for the current level
+     */
+    private void resetGameState() {
+        stats = new RunStats(currentLevel.getLives(), currentLevel.getResources());
+        entityManager = new EntityManager(stats);
+        inputHandler = new InputHandler(factory, stats, entityManager, currentLevel);
     }
 
-    private void notifyListeners(Consumer<GameListener> event) {
-        gameListeners.forEach(event);
+    public void loadLevel(String levelName) {
+        if (gameState != GameState.MENU) stop();
+        LevelData newLevel = luaEngine.loadLevelData(levelName);
+        if (!newLevel.getLevelName().equals(currentLevel.getLevelName())) {
+            currentLevel = newLevel;
+            view.reset();
+            waveSpawnSystem.reset();
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // Lifecycle
+    // ---------------------------------------------------------------------
+
+    /**
+     * Starts Game
+     */
+    public void start() {
+        resetGameState();
+        waveSpawnSystem.init(currentLevel, manager);
+        gameState = GameState.RUNNING;
+        notifyListeners(GameListener::onGameStarted);
+    }
+
+    /**
+     * Stops Game
+     */
+    public void stop() {
+        gameState = GameState.MENU;
+        entityManager.clear();
+        waveSpawnSystem.reset();
+        notifyListeners(GameListener::onGameStopped);
+        logger.info("Stopping Game");
+    }
+
+    public void exit() {
+        gameState = GameState.EXIT;
+        notifyListeners(GameListener::onGameStopped);
+        logger.info("Exiting Game");
+    }
+
+    public void togglePause() {
+        if (gameState == GameState.RUNNING) {
+            gameState = GameState.PAUSE;
+            notifyListeners(GameListener::onGamePaused);
+        } else if (gameState == GameState.PAUSE) {
+            gameState = GameState.RUNNING;
+            notifyListeners(GameListener::onGameResumed);
+        }
     }
 
     /**
@@ -131,31 +190,6 @@ public class Game {
     }
 
     /**
-     * Starts Game
-     */
-    public void start() {
-        waveSpawnSystem.init(currentLevel, manager);
-        gameState = GameState.RUNNING;
-        notifyListeners(GameListener::onGameStarted);
-    }
-
-    private void resetGameState() {
-        stats = new RunStats(currentLevel.getLives(), currentLevel.getResources());
-        entityManager = new EntityManager(stats);
-        inputHandler = new InputHandler(factory, stats, entityManager, currentLevel);
-    }
-
-    public void loadLevel(String levelName) {
-        if (gameState != GameState.MENU) stop();
-        LevelData newLevel = luaEngine.loadLevelData(levelName);
-        if (!newLevel.getLevelName().equals(currentLevel.getLevelName())) {
-            currentLevel = newLevel;
-            view.reset();
-            waveSpawnSystem.reset(manager);
-        }
-    }
-
-    /**
      * Updates game and all entities
      *
      * @param deltaTime time between frames
@@ -184,22 +218,8 @@ public class Game {
     }
 
     /**
-     * Stops Game
+     * Handle queued input commands
      */
-    public void stop() {
-        gameState = GameState.MENU;
-        entityManager.clear();
-        waveSpawnSystem.reset(manager);
-        notifyListeners(GameListener::onGameStopped);
-        logger.info("Stopping Game");
-    }
-
-    public void exit() {
-        gameState = GameState.EXIT;
-        notifyListeners(GameListener::onGameStopped);
-        logger.info("Exiting Game");
-    }
-
     private void processInput() {
         if (inputSource == null) {
             logger.warning("Input source is null, cannot process input");
@@ -216,6 +236,10 @@ public class Game {
             inputHandler.handleCommand(command, this);
         }
     }
+
+    // ---------------------------------------------------------------------
+    // Entity accessors
+    // ---------------------------------------------------------------------
 
     public void addEntity(Entity entity) {
         entityManager.addEntity(entity);
@@ -240,6 +264,10 @@ public class Game {
     public List<Vector2D> getTowerSpots() {
         return currentLevel.getTowerSpots();
     }
+
+    // ---------------------------------------------------------------------
+    // State getters
+    // ---------------------------------------------------------------------
 
     public int getLives() {
         return stats.getLives();
@@ -273,15 +301,18 @@ public class Game {
         return waveSpawnSystem.getNextWaveCountdown();
     }
 
-    public void togglePause() {
-        if (gameState == GameState.RUNNING) {
-            gameState = GameState.PAUSE;
-            notifyListeners(GameListener::onGamePaused);
-        } else if (gameState == GameState.PAUSE) {
-            gameState = GameState.RUNNING;
-            notifyListeners(GameListener::onGameResumed);
-        }
+    // ---------------------------------------------------------------------
+    // Listeners
+    // ---------------------------------------------------------------------
+
+    public void addGameListener(GameListener listener) {
+        this.gameListeners.add(listener);
     }
+
+    private void notifyListeners(Consumer<GameListener> event) {
+        gameListeners.forEach(event);
+    }
+
 
     public void notifyBuildMenuRequested(int spotIndex, Vector2D spot) {
         notifyListeners(l -> l.onBuildMenuRequested(spotIndex, spot));
