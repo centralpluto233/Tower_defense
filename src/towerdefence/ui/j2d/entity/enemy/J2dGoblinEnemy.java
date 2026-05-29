@@ -48,7 +48,7 @@ public class J2dGoblinEnemy extends GoblinEnemy {
             g2d.drawImage(frame, (int)x, (int)y, (int)getWidth(), (int)getHeight(), null);
         }
 
-        J2dGamePanel.drawEntityHealthBar(g2d,this.getX(),this.getY(),getWidth(),getHeight(),getHealth(),getMaxHealth());
+        J2dGamePanel.drawEntityHealthBar(g2d,this.getX(),this.getY(),getWidth(),getHealth(),getMaxHealth());
     }
 
 }

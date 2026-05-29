@@ -3,6 +3,7 @@ package towerdefence.game.ecs.components;
 public class SpawnScheduleComponent {
     private final double intervalSeconds;
     private double timeLeftSeconds;
+    private final double startDelay;
 
     /**
      * Component to keep track of when the next enemy should spawn. It counts down from the start delay, then resets to the interval after each spawn.
@@ -12,6 +13,7 @@ public class SpawnScheduleComponent {
     public SpawnScheduleComponent(double intervalSeconds, double startDelaySeconds) {
         this.intervalSeconds = intervalSeconds;
         this.timeLeftSeconds = startDelaySeconds;
+        this.startDelay = startDelaySeconds;
     }
 
     /**
@@ -21,6 +23,12 @@ public class SpawnScheduleComponent {
     public double getTimeLeftSeconds() {
         return timeLeftSeconds;
     }
+
+    /**
+     * Gets the initial start delay in seconds before the first spawn.
+     * @return the initial start delay in seconds before the first spawn
+     */
+    public double getStartDelay() {return startDelay;}
 
     /**
      * Ticks the spawn schedule down by the given amount of seconds.

@@ -160,7 +160,7 @@ public class Game {
      */
     public void update(double deltaTime) {
         processInput();
-        if (!isGameRunning()) {
+        if (isGameNotRunning()) {
             return;
         }
 
@@ -253,9 +253,15 @@ public class Game {
         return gameState;
     }
 
-    public boolean isGameRunning() {
-        return gameState== GameState.RUNNING;
+    public boolean isGameNotRunning() {
+        return gameState != GameState.RUNNING;
     }
+
+    public int getCurrentWave() { return waveSpawnSystem.getCurrentWave();}
+
+    public int getTotalWaves() {return waveSpawnSystem.getTotalWaves();}
+
+    public double getNextWaveCountdown() {return waveSpawnSystem.getNextWaveCountdown();}
 
     public void togglePause() {
         if (gameState == GameState.RUNNING) {
@@ -273,9 +279,5 @@ public class Game {
 
     public void notifyBuildMenuClose() {
         notifyListeners(GameListener::onBuildMenuClosed);
-    }
-
-    public InputSource getInputSource() {
-        return inputSource;
     }
 }

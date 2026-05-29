@@ -27,11 +27,11 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private JFrame frame;
     private final Config config;
     private final J2dGraphicsContext graphicsContext;
-    private BuildMenuPanel buildMenuPanel;
-    private AssetManager assetManager;
+    private final BuildMenuPanel buildMenuPanel;
+    private final AssetManager assetManager;
 
     private record Decoration(BufferedImage sprite, int x, int y) {}
-    private List<Decoration> decorations = new ArrayList<>();
+    private final List<Decoration> decorations = new ArrayList<>();
     private final List<BufferedImage> decSprites;
     private final SpriteAnimation castle;
     private BufferedImage backgroundCache;
@@ -40,9 +40,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private int fpsFrames = 0;
     private int fps = 0;
 
-    private BufferedImage full;
-    private BufferedImage half;
-    private BufferedImage empty;
+    private final BufferedImage full;
+    private final BufferedImage half;
+    private final BufferedImage empty;
     private final SpriteAnimation coin;
 
     private double deltaTime=0;
@@ -339,6 +339,35 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private void drawStats(Graphics2D g2d) {
         drawHealthBar(g2d);
         drawResources(g2d);
+        drawWaveInfo(g2d);
+    }
+
+    private void drawWaveInfo(Graphics2D g2d) {
+        if (game.isGameNotRunning()) return;
+
+        int currentWave = game.getCurrentWave();
+        int totalWaves  = game.getTotalWaves();
+        double countdown = game.getNextWaveCountdown();
+
+        int totalHearts = game.getMaxLives() / 2;
+        int rightEdge = config.getSpawnmargin() + totalHearts * (20 + 4);
+
+        int y = 40 + config.getSpawnmargin();
+
+        // draw wave text right-aligned to rightEdge
+        g2d.setFont(new Font("Consolas", Font.BOLD, 17));
+        g2d.setColor(Color.WHITE);
+        String waveText = "Wave " + currentWave + " / " + totalWaves;
+        FontMetrics fm = g2d.getFontMetrics();
+        g2d.drawString(waveText, rightEdge - fm.stringWidth(waveText), y + 17);
+
+        if (countdown > 0) {
+            g2d.setFont(new Font("Consolas", Font.PLAIN, 13));
+            g2d.setColor(new Color(255, 210, 60));
+            FontMetrics fmSmall = g2d.getFontMetrics();
+            String nextText = "Next: " + String.format("%.0f", countdown) + "s";
+            g2d.drawString(nextText, rightEdge - fmSmall.stringWidth(nextText), y + 33);
+        }
     }
 
     private void drawHealthBar(Graphics2D g2d) {
@@ -408,7 +437,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         );
     }
 
-    public static void drawEntityHealthBar(Graphics2D g2d, double x, double y, double entityWidth, double entityHeight, int health, int maxHealth) {
+    public static void drawEntityHealthBar(Graphics2D g2d, double x, double y, double entityWidth, int health, int maxHealth) {
         int barWidth = (int) Math.max(entityWidth, 20);
         int barHeight = 3;
         int bx = (int) (x-barWidth/2.0);
@@ -424,7 +453,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         g2d.fillRoundRect(bx, by, (int)(barWidth * percentage), barHeight, 3, 3);
     }
 
-    private static Color gradientHealthColor(double percentage) { // github copilot gradient color
+    private static Color gradientHealthColor(double percentage) { // GitHub Copilot gradient color
         // Clamp to [0, 1]
         percentage = Math.clamp(percentage, 0, 1);
 
