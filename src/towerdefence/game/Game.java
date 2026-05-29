@@ -2,26 +2,26 @@ package towerdefence.game;
 
 import towerdefence.game.ecs.ECSManager;
 import towerdefence.game.ecs.systems.WaveSpawnSystem;
+import towerdefence.game.entities.Entity;
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
+import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
-import towerdefence.game.input.InputCommand;
 import towerdefence.game.stats.RunStats;
-import towerdefence.util.Vector2D;
 import towerdefence.level.LevelData;
 import towerdefence.level.LuaEngine;
-import towerdefence.system.logging.GameLogger;
 import towerdefence.system.config.Config;
+import towerdefence.system.logging.GameLogger;
 import towerdefence.system.time.Stopwatch;
+import towerdefence.util.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-import towerdefence.game.entities.Entity;
 
 public class Game {
     private static Game instance;
@@ -48,6 +48,7 @@ public class Game {
 
     /**
      * singleton game
+     *
      * @return game instance
      */
     public static Game getInstance() {
@@ -59,7 +60,8 @@ public class Game {
 
     /**
      * initialize the game with the config and the graphics
-     * @param config configuration for the game
+     *
+     * @param config  configuration for the game
      * @param factory factory for creating game objects
      */
     public void init(Config config, AbstractGameFactory factory) {
@@ -102,7 +104,7 @@ public class Game {
         Stopwatch gamestopwatch = new Stopwatch(config.getTargetFps());
         logger.info("Game loop started");
 
-        while (gameState!=GameState.EXIT) {
+        while (gameState != GameState.EXIT) {
             double deltaTime = gamestopwatch.tick();
             if (config.getDebug()) {
                 double speedup = Math.clamp(config.getDebugSpeedup(), 0.1, 20.0);
@@ -125,7 +127,7 @@ public class Game {
     }
 
     private void render(double deltaTime) {
-        if (renderStopwatch.hasTimePassed(1.0/config.getTargetRenderFps())) {
+        if (renderStopwatch.hasTimePassed(1.0 / config.getTargetRenderFps())) {
             renderStopwatch.tick();
             view.render(deltaTime);
         }
@@ -156,6 +158,7 @@ public class Game {
 
     /**
      * Updates game and all entities
+     *
      * @param deltaTime time between frames
      */
     public void update(double deltaTime) {
@@ -185,7 +188,7 @@ public class Game {
      * Stops Game
      */
     public void stop() {
-        gameState= GameState.MENU;
+        gameState = GameState.MENU;
         entityManager.clear();
         waveSpawnSystem.reset(manager);
         notifyListeners(GameListener::onGameStopped);
@@ -193,7 +196,7 @@ public class Game {
     }
 
     public void exit() {
-        gameState= GameState.EXIT;
+        gameState = GameState.EXIT;
         notifyListeners(GameListener::onGameStopped);
         logger.info("Exiting Game");
     }
@@ -243,7 +246,9 @@ public class Game {
         return stats.getLives();
     }
 
-    public int getMaxLives() {return stats.getMaxLives();}
+    public int getMaxLives() {
+        return stats.getMaxLives();
+    }
 
     public int getResources() {
         return stats.getResources();
@@ -257,11 +262,17 @@ public class Game {
         return gameState != GameState.RUNNING;
     }
 
-    public int getCurrentWave() { return waveSpawnSystem.getCurrentWave();}
+    public int getCurrentWave() {
+        return waveSpawnSystem.getCurrentWave();
+    }
 
-    public int getTotalWaves() {return waveSpawnSystem.getTotalWaves();}
+    public int getTotalWaves() {
+        return waveSpawnSystem.getTotalWaves();
+    }
 
-    public double getNextWaveCountdown() {return waveSpawnSystem.getNextWaveCountdown();}
+    public double getNextWaveCountdown() {
+        return waveSpawnSystem.getNextWaveCountdown();
+    }
 
     public void togglePause() {
         if (gameState == GameState.RUNNING) {
@@ -274,7 +285,7 @@ public class Game {
     }
 
     public void notifyBuildMenuRequested(int spotIndex, Vector2D spot) {
-        notifyListeners(l -> l.onBuildMenuRequested(spotIndex,spot));
+        notifyListeners(l -> l.onBuildMenuRequested(spotIndex, spot));
     }
 
     public void notifyBuildMenuClose() {

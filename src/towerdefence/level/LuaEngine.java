@@ -3,10 +3,10 @@ package towerdefence.level;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.lib.jme.JmePlatform;
-import towerdefence.util.Vector2D;
 import towerdefence.system.config.Config;
 import towerdefence.system.config.Constants;
 import towerdefence.system.logging.GameLogger;
+import towerdefence.util.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ public class LuaEngine {
 
     /**
      * Creates a new LuaEngine with the given configuration.
+     *
      * @param config the configuration to use for loading levels, including the selected level and spawn margin
      */
     public LuaEngine(Config config) {
@@ -36,6 +37,7 @@ public class LuaEngine {
 
     /**
      * Loads the level data from the currently selected level's Lua script and returns it as a LevelData object.
+     *
      * @return a LevelData object containing the level name, initial lives, initial resources, main path, tower spots, and waves of enemies as defined in the Lua script
      */
     public LevelData loadLevelData() {
@@ -53,6 +55,7 @@ public class LuaEngine {
 
     /**
      * Loads the level data from the specified level's Lua script and returns it as a LevelData object.
+     *
      * @param levelName the name of the level to load, which corresponds to a Lua script in the levels directory
      * @return a LevelData object containing the level name, initial lives, initial resources, main path, tower spots, and waves of enemies as defined in the Lua script
      */
@@ -72,6 +75,7 @@ public class LuaEngine {
 
     /**
      * Converts a list of Vector2D points from the Lua script's coordinate system to the game's world coordinate system by adding the spawn margin defined in the configuration to each point.
+     *
      * @param points the list of Vector2D points to convert, where each point is defined in the Lua script's coordinate system (origin at top-left corner of the level)
      * @return a new list of Vector2D points where each point has been transformed to the game's world coordinate system (origin at top-left corner of the level plus spawn margin)
      */
@@ -82,6 +86,7 @@ public class LuaEngine {
 
     /**
      * Retrieves a Lua table from the global environment using the specified name and checks that it is indeed a table, throwing an error if it is not.
+     *
      * @param name the name of the global variable in the Lua script that is expected to be a table (e.g., "main_path", "tower_spots", "waves")
      * @return the LuaTable corresponding to the specified name, if it exists and is a table; otherwise, an error is thrown indicating that the expected table was not found or is of the wrong type
      */
@@ -91,6 +96,7 @@ public class LuaEngine {
 
     /**
      * Loads a Lua script from the specified file path and executes it, allowing the script to define global variables and tables that can be accessed later to construct the level data.
+     *
      * @param levelPath the file path to the Lua script that defines the level data, which should be located in the levels directory and correspond to the selected level in the configuration
      */
     private void loadScript(String levelPath) {
@@ -104,6 +110,7 @@ public class LuaEngine {
 
     /**
      * Retrieves a string value from the global environment using the specified name and checks that it is indeed a string, throwing an error if it is not.
+     *
      * @param name the name of the global variable in the Lua script that is expected to be a string (e.g., "level_name")
      * @return the string value corresponding to the specified name, if it exists and is a string; otherwise, an error is thrown indicating that the expected string was not found or is of the wrong type
      */
@@ -113,6 +120,7 @@ public class LuaEngine {
 
     /**
      * Retrieves an integer value from the global environment using the specified name and checks that it is indeed an integer, throwing an error if it is not.
+     *
      * @param name the name of the global variable in the Lua script that is expected to be an integer (e.g., "lives", "resources")
      * @return the integer value corresponding to the specified name, if it exists and is an integer; otherwise, an error is thrown indicating that the expected integer was not found or is of the wrong type
      */
@@ -122,6 +130,7 @@ public class LuaEngine {
 
     /**
      * Reads a Lua table from the global environment using the specified name, where the table is expected to be an array of points (each point being a table with "x" and "y" fields), and converts it into a list of Vector2D objects representing those points.
+     *
      * @param tableName the name of the global variable in the Lua script that is expected to be a table containing an array of points (e.g., "main_path", "tower_spots"), where each point is defined as a table with "x" and "y" fields
      * @return a list of Vector2D objects corresponding to the points defined in the specified Lua table, where each point's x and y coordinates are extracted from the "x" and "y" fields of the Lua table entries; if the specified table does not exist or is not in the expected format, an error is thrown indicating the issue
      */
@@ -141,6 +150,7 @@ public class LuaEngine {
 
     /**
      * Reads a Lua table from the global environment using the specified name, where the table is expected to be an array of wave definitions (each wave being a table with "count", "interval", "startDelay", and optionally "enemyType" fields), and converts it into a list of WaveData objects representing those waves.
+     *
      * @param tableName the name of the global variable in the Lua script that is expected to be a table containing an array of wave definitions (e.g., "waves"), where each wave is defined as a table with "count", "interval", "startDelay", and optionally "enemyType" fields
      * @return a list of WaveData objects corresponding to the wave definitions in the specified Lua table, where each WaveData object is constructed using the "count", "interval", "startDelay", and optionally "enemyType" fields from the Lua table entries; if the specified table does not exist or is not in the expected format, an error is thrown indicating the issue
      */

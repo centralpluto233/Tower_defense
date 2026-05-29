@@ -1,7 +1,6 @@
 package towerdefence.ui.j2d.assets;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,13 +12,14 @@ public class AssetManager {
 
     /**
      * Retrieves a sprite from the cache. If the sprite is not found, an exception is thrown.
+     *
      * @param path the path to the sprite image, relative to the classpath. This should match the path used when preloading the sprite with loadAll().
      * @return the BufferedImage of the sprite
      */
     public BufferedImage getSprite(String path) {
         BufferedImage image = cache.get(path);
         if (image == null) {
-            throw new IllegalStateException("Sprite not preloaded: "+ path);
+            throw new IllegalStateException("Sprite not preloaded: " + path);
         }
         return image;
     }
@@ -51,6 +51,7 @@ public class AssetManager {
 
     /**
      * Loads a single sprite from the given path and stores it in the cache. The path should be relative to the classpath and should match the path used when retrieving the sprite with getSprite(). If the sprite cannot be found or loaded, an exception is thrown.
+     *
      * @param path the path to the sprite image, relative to the classpath. This should match the path used when retrieving the sprite with getSprite().
      */
     private void load(String path) {

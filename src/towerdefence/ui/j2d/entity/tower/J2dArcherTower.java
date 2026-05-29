@@ -21,7 +21,7 @@ public class J2dArcherTower extends ArcherTower {
         this.rangeImage = buildRangeImage((int) getRange());
 
         BufferedImage sprite = assetManager.getSprite("sprites/entities/towers/archer.png");
-        this.animation = new SpriteAnimation(sprite,2,30);
+        this.animation = new SpriteAnimation(sprite, 2, 30);
     }
 
     private BufferedImage buildRangeImage(int range) {
@@ -40,7 +40,7 @@ public class J2dArcherTower extends ArcherTower {
 
     @Override
     public Vector2D getSpawnPosition() {
-        return new Vector2D(this.getX(), this.getY()-getHeight()/4);
+        return new Vector2D(this.getX(), this.getY() - getHeight() / 4);
     }
 
     @Override
@@ -50,11 +50,11 @@ public class J2dArcherTower extends ArcherTower {
         int r = (int) Math.round(getRange());
 
         g2d.drawImage(rangeImage,
-                (int)(getX() - r - 1),
-                (int)(getY() - r - 1),
+                (int) (getX() - r - 1),
+                (int) (getY() - r - 1),
                 null);
 
-        g2d.drawImage(animation.getCurrentFrame(), (int)getDrawPosition().x(), (int)getDrawPosition().y(),(int)getWidth(),(int)getHeight(),null);
+        g2d.drawImage(animation.getCurrentFrame(), (int) getDrawPosition().x(), (int) getDrawPosition().y(), (int) getWidth(), (int) getHeight(), null);
     }
 
 

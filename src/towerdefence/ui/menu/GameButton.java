@@ -17,8 +17,8 @@ public class GameButton extends JButton {
 
     public GameButton(String text, Color baseColor) {
         super(text);
-        this.normalColor  = baseColor;
-        this.hoverColor   = baseColor.brighter();
+        this.normalColor = baseColor;
+        this.hoverColor = baseColor.brighter();
         this.pressedColor = baseColor.darker();
 
         setFocusPainted(false);
@@ -73,7 +73,7 @@ public class GameButton extends JButton {
 
         FontMetrics fm = g2d.getFontMetrics();
         int textX = (getWidth() - fm.stringWidth(getText())) / 2;
-        int textY = (getHeight() + fm.getAscent()-(fm.getDescent()/2)) / 2;
+        int textY = (getHeight() + fm.getAscent() - (fm.getDescent() / 2)) / 2;
 
         g2d.setColor(textColor);
         g2d.drawString(getText(), textX, textY);
@@ -82,7 +82,8 @@ public class GameButton extends JButton {
     }
 
     @Override
-    protected void paintBorder(Graphics g) {}
+    protected void paintBorder(Graphics g) {
+    }
 
     @Override
     public boolean contains(int x, int y) {

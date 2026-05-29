@@ -2,10 +2,11 @@ package towerdefence.game.ecs.components;
 
 public class SpawnCountComponent {
     private int remaining;
-    private int spawnedCount=0;
+    private int spawnedCount = 0;
 
     /**
      * Component to keep count of how many enemies left to spawn
+     *
      * @param remaining amount
      */
     public SpawnCountComponent(int remaining) {
@@ -14,6 +15,7 @@ public class SpawnCountComponent {
 
     /**
      * check if all enemies spawned in
+     *
      * @return true if all enemies spawned, else false
      */
     public boolean isDone() {
@@ -22,6 +24,7 @@ public class SpawnCountComponent {
 
     /**
      * check if at least one enemy has spawned
+     *
      * @return true if at least one enemy has spawned, else false
      */
     public boolean hasNotSpawnedAny() {

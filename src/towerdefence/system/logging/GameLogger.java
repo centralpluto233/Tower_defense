@@ -1,5 +1,7 @@
 package towerdefence.system.logging;
 
+import towerdefence.system.config.Constants;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,8 +9,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.*;
-
-import towerdefence.system.config.Constants;
 
 /**
  * Utility class for setting up and providing a game logger.
@@ -21,6 +21,7 @@ public class GameLogger {
     /**
      * Sets up the logger with the given log level.
      * Call this once in Main before anything else.
+     *
      * @param logfileLevel the log level to use for the log file
      * @param consoleLevel the log level to use for console output
      */
@@ -42,7 +43,7 @@ public class GameLogger {
                 return dateFormat.format(new Date(record.getMillis())) + " " +
                         source + " " +
                         record.getLevel() + ": " +
-                        record.getMessage() + "\n"+ (record.getThrown() != null ? getThrowable(record) : "");
+                        record.getMessage() + "\n" + (record.getThrown() != null ? getThrowable(record) : "");
             }
 
             private String getThrowable(LogRecord record) {
@@ -84,6 +85,7 @@ public class GameLogger {
 
     /**
      * Returns the logger for use in any class.
+     *
      * @return the logger
      */
     public static Logger getLogger() {

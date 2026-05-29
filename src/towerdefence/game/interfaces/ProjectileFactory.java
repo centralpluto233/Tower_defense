@@ -6,8 +6,9 @@ import towerdefence.util.Vector2D;
 public interface ProjectileFactory {
     /**
      * Creates a new Projectile with the specified position, damage, and target position.
-     * @param position the position where the Projectile will be spawned
-     * @param damage the damage this Projectile will deal to an enemy upon impact
+     *
+     * @param position       the position where the Projectile will be spawned
+     * @param damage         the damage this Projectile will deal to an enemy upon impact
      * @param targetPosition the position that the Projectile will travel towards
      * @return a new Projectile instance with the given parameters
      */

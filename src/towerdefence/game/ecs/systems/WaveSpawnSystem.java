@@ -7,9 +7,9 @@ import towerdefence.game.ecs.components.SpawnCountComponent;
 import towerdefence.game.ecs.components.SpawnPathComponent;
 import towerdefence.game.ecs.components.SpawnScheduleComponent;
 import towerdefence.game.ecs.components.SpawnTypeComponent;
-import towerdefence.util.Vector2D;
 import towerdefence.level.LevelData;
 import towerdefence.level.WaveData;
+import towerdefence.util.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +23,16 @@ public class WaveSpawnSystem {
     /**
      * System to manage spawning of enemies based on spawn schedules, counts, paths, and types defined in the ECS components.
      * It checks each spawn job every update cycle, spawns enemies when their schedule is due, and removes spawn jobs that are completed.
-     * @param dt the time in seconds since the last update, used to tick down spawn schedules
-     * @param ecs the ECSManager that holds all entities and their components, used to access spawn schedules, counts, paths, and types
-     * @param game the Game instance, used to add new enemy entities when they spawn
+     *
+     * @param dt      the time in seconds since the last update, used to tick down spawn schedules
+     * @param ecs     the ECSManager that holds all entities and their components, used to access spawn schedules, counts, paths, and types
+     * @param game    the Game instance, used to add new enemy entities when they spawn
      * @param factory the AbstractGameFactory, used to create new enemy entities based on their type when they spawn
      */
     public void update(double dt, ECSManager ecs, Game game, AbstractGameFactory factory) {
         List<Integer> toRemove = new ArrayList<>();
 
-        for (int id: ecs.getAllEntities()) {
+        for (int id : ecs.getAllEntities()) {
             SpawnScheduleComponent scheduleComp = ecs.getSpawnSchedules().get(id);
             SpawnCountComponent countComp = ecs.getSpawnCounts().get(id);
             SpawnPathComponent pathComp = ecs.getSpawnPaths().get(id);
@@ -84,13 +85,14 @@ public class WaveSpawnSystem {
                 .min()
                 .orElse(0);
 
-        for (Integer id: toRemove) {
+        for (Integer id : toRemove) {
             ecs.removeEntity(id);
         }
     }
 
     /**
      * Returns the current wave number based on the total waves and the number of spawn jobs that are still active in the ECSManager.
+     *
      * @return the current wave number, calculated as totalWaves minus the count of entities that have spawn jobs (i.e., those with SpawnCountComponent)
      */
     public int getCurrentWave() {
@@ -110,14 +112,16 @@ public class WaveSpawnSystem {
                 .filter(notStartedDelays::contains)
                 .count();
 
-        return (int)(distinctStartDelays.size() - notStartedGroups);
+        return (int) (distinctStartDelays.size() - notStartedGroups);
     }
 
     public int getTotalWaves() {
         return distinctStartDelays.size();
     }
 
-    public double getNextWaveCountdown() { return nextWaveCountdown; }
+    public double getNextWaveCountdown() {
+        return nextWaveCountdown;
+    }
 
     public void init(LevelData levelData, ECSManager ecs) {
         this.ecsManager = ecs;
@@ -131,7 +135,7 @@ public class WaveSpawnSystem {
         for (WaveData wave : levelData.getWaves()) {
             int id = ecs.createEntity();
             ecs.addSpawnJob(id, new SpawnScheduleComponent(wave.intervalSeconds(),
-                    wave.startDelaySeconds()),
+                            wave.startDelaySeconds()),
                     new SpawnCountComponent(wave.count()),
                     new SpawnPathComponent(levelData.getPath()),
                     new SpawnTypeComponent(wave.enemyType()));
@@ -139,7 +143,7 @@ public class WaveSpawnSystem {
     }
 
     public void reset(ECSManager ecs) {
-        for (int id: ecs.getAllEntities()) {
+        for (int id : ecs.getAllEntities()) {
             ecs.removeEntity(id);
         }
     }

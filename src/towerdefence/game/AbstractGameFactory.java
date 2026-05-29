@@ -20,19 +20,23 @@ import java.util.List;
  */
 public abstract class AbstractGameFactory {
     public abstract GameView createGameView(Game game, Config config);
+
     public abstract InputSource createInputSource(Game game, Config config, GameView gameView);
 
     // Enemies
     public abstract GoblinEnemy createGoblin(double x, double y, List<Vector2D> path);
+
     public abstract BatEnemy createBat(double x, double y, List<Vector2D> path);
 
     // Towers
     public abstract CrossBowTower createCrossBowTower(double x, double y);
+
     public abstract ArcherTower createArcherTower(double x, double y);
 
     /**
      * Factory method to create a tower based on the given type and position.
      * This method abstracts away the specific tower creation logic and allows for easy extension by simply adding new cases to the switch statement for additional tower types.
+     *
      * @param type the type of tower to create (e.g., "Crossbow", "Archer")
      * @param spot the position where the tower should be created, represented as a Vector2D object containing x and y coordinates
      * @return a new Tower instance of the specified type at the given position
@@ -47,5 +51,6 @@ public abstract class AbstractGameFactory {
 
     // Projectiles
     protected abstract CrossBowArrow createCrossBowArrow(double x, double y, int damage, Vector2D targetPosition);
+
     protected abstract ArcherArrow createArcherArrow(double x, double y, int damage, Vector2D targetPosition);
 }

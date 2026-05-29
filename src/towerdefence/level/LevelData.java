@@ -14,12 +14,13 @@ public class LevelData {
 
     /**
      * Constructs a new LevelData object with the specified parameters.
-     * @param levelName the name of the level
-     * @param lives the number of lives the player starts with in this level
-     * @param resources the amount of resources the player starts with in this level
-     * @param path the path that enemies will follow, represented as a list of waypoints (Vector2D)
+     *
+     * @param levelName  the name of the level
+     * @param lives      the number of lives the player starts with in this level
+     * @param resources  the amount of resources the player starts with in this level
+     * @param path       the path that enemies will follow, represented as a list of waypoints (Vector2D)
      * @param towerSpots the locations where the player can build towers, represented as a list of Vector2D
-     * @param waves the list of waves of enemies that will spawn in this level, represented as a list of WaveData
+     * @param waves      the list of waves of enemies that will spawn in this level, represented as a list of WaveData
      */
     public LevelData(String levelName, int lives, int resources, List<Vector2D> path, List<Vector2D> towerSpots, List<WaveData> waves) {
         this.levelName = levelName;
@@ -32,6 +33,7 @@ public class LevelData {
 
     /**
      * Returns the name of the level.
+     *
      * @return the level name
      */
     public String getLevelName() {
@@ -40,6 +42,7 @@ public class LevelData {
 
     /**
      * Returns the number of lives the player starts with in this level.
+     *
      * @return the number of lives
      */
     public int getLives() {
@@ -48,6 +51,7 @@ public class LevelData {
 
     /**
      * Returns the amount of resources the player starts with in this level.
+     *
      * @return the amount of resources
      */
     public int getResources() {
@@ -56,6 +60,7 @@ public class LevelData {
 
     /**
      * Returns the path that enemies will follow in this level, represented as a list of waypoints (Vector2D).
+     *
      * @return the enemy path
      */
     public List<Vector2D> getPath() {
@@ -64,6 +69,7 @@ public class LevelData {
 
     /**
      * Returns the locations where the player can build towers in this level, represented as a list of Vector2D.
+     *
      * @return the tower spots
      */
     public List<Vector2D> getTowerSpots() {
@@ -72,6 +78,7 @@ public class LevelData {
 
     /**
      * Returns the list of waves of enemies that will spawn in this level, represented as a list of WaveData.
+     *
      * @return the waves of enemies
      */
     public List<WaveData> getWaves() {
@@ -80,6 +87,7 @@ public class LevelData {
 
     /**
      * Returns a string representation of the LevelData object, including the level name, lives, resources, path, tower spots, and waves.
+     *
      * @return a string representation of the LevelData
      */
     @Override

@@ -10,20 +10,21 @@ import towerdefence.util.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.function.Consumer;
-import java.awt.image.BufferedImage;
 
 public class BuildMenuPanel extends JPanel implements GameListener {
     private Vector2D selectedSpot;
-    private Consumer<InputCommand> commandSink = _ -> {};
+    private Consumer<InputCommand> commandSink = _ -> {
+    };
     private int selectedSpotIndex;
     private InputMapping inputMapping;
 
     private final JPanel towerOptionPanel = new JPanel();
 
     private static final List<TowerOption> towerOptions = List.of(
-            new TowerOption("Archer",   Constants.TowerConstants.Archer.COST,
+            new TowerOption("Archer", Constants.TowerConstants.Archer.COST,
                     "sprites/entities/towers/archer_icon.png",
                     Constants.TowerConstants.Archer.WIDTH,
                     Constants.TowerConstants.Archer.HEIGHT),
@@ -41,7 +42,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         setLayout(null);
 
         towerOptionPanel.setLayout(new BoxLayout(towerOptionPanel, BoxLayout.Y_AXIS));
-        towerOptionPanel.setBackground(new Color(30,30,30,220));
+        towerOptionPanel.setBackground(new Color(30, 30, 30, 220));
         towerOptionPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
         for (TowerOption towerOption : towerOptions) {
@@ -107,8 +108,8 @@ public class BuildMenuPanel extends JPanel implements GameListener {
                 .mapToDouble(TowerOption::gameHeight)
                 .max().orElse(1);
         double scale = (boxSize / tallest) * option.gameHeight() / src.getHeight();
-        int newW = (int)(src.getWidth()  * scale);
-        int newH = (int)(src.getHeight() * scale);
+        int newW = (int) (src.getWidth() * scale);
+        int newH = (int) (src.getHeight() * scale);
         return src.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
     }
 
@@ -116,7 +117,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         this.selectedSpot = spot;
         towerOptionPanel.setSize(towerOptionPanel.getPreferredSize());
 
-        int px = Math.min(screenPos.x, getWidth()  - towerOptionPanel.getWidth()  - 8);
+        int px = Math.min(screenPos.x, getWidth() - towerOptionPanel.getWidth() - 8);
         int py = Math.min(screenPos.y, getHeight() - towerOptionPanel.getHeight() - 8);
         towerOptionPanel.setLocation(px, py);
 
@@ -148,11 +149,36 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     }
 
 
-    @Override public void onGameStarted() {}
-    @Override public void onGamePaused() {closeBuildMenu();}
-    @Override public void onGameResumed() {}
-    @Override public void onGameStopped() {closeBuildMenu();}
-    @Override public void onGameOver() {closeBuildMenu();}
-    @Override public void onLevelWon() {closeBuildMenu();}
-    @Override public void onBuildMenuClosed() {closeBuildMenu();}
+    @Override
+    public void onGameStarted() {
+    }
+
+    @Override
+    public void onGamePaused() {
+        closeBuildMenu();
+    }
+
+    @Override
+    public void onGameResumed() {
+    }
+
+    @Override
+    public void onGameStopped() {
+        closeBuildMenu();
+    }
+
+    @Override
+    public void onGameOver() {
+        closeBuildMenu();
+    }
+
+    @Override
+    public void onLevelWon() {
+        closeBuildMenu();
+    }
+
+    @Override
+    public void onBuildMenuClosed() {
+        closeBuildMenu();
+    }
 }

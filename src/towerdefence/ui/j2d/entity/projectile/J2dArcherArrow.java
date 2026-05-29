@@ -13,7 +13,7 @@ public class J2dArcherArrow extends ArcherArrow {
     private final BufferedImage sprite;
 
     public J2dArcherArrow(double x, double y, int damage, Vector2D targetPosition, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
-        super(x, y, damage,targetPosition);
+        super(x, y, damage, targetPosition);
         this.graphicsContext = graphicsContext;
         this.sprite = assetManager.getSprite("sprites/entities/projectiles/arrow_archer.png");
     }
@@ -30,8 +30,8 @@ public class J2dArcherArrow extends ArcherArrow {
         Graphics2D g2dcopy = (Graphics2D) g2d.create();
         g2dcopy.rotate(angle, cx, cy);
         g2dcopy.drawImage(sprite,
-                (int)(cx - getWidth() / 2.0),
-                (int)(cy - getHeight() / 2.0),
+                (int) (cx - getWidth() / 2.0),
+                (int) (cy - getHeight() / 2.0),
                 (int) getWidth(),
                 (int) getHeight(),
                 null);

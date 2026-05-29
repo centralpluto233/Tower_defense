@@ -14,12 +14,12 @@ import towerdefence.system.config.Config;
 import towerdefence.ui.input.SwingInputSource;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.entity.enemy.J2dBatEnemy;
-import towerdefence.ui.j2d.entity.projectile.J2dArcherArrow;
-import towerdefence.ui.j2d.entity.tower.J2dArcherTower;
-import towerdefence.util.Vector2D;
 import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
+import towerdefence.ui.j2d.entity.projectile.J2dArcherArrow;
 import towerdefence.ui.j2d.entity.projectile.J2dCrossBowArrow;
+import towerdefence.ui.j2d.entity.tower.J2dArcherTower;
 import towerdefence.ui.j2d.entity.tower.J2dCrossBowTower;
+import towerdefence.util.Vector2D;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class J2dFactory extends AbstractGameFactory {
 
     @Override
     public GameView createGameView(Game game, Config config) {
-        this.gamePanel= new J2dGamePanel(game, config, graphicsContext, assetManager);
+        this.gamePanel = new J2dGamePanel(game, config, graphicsContext, assetManager);
         return gamePanel;
     }
 
@@ -54,35 +54,36 @@ public class J2dFactory extends AbstractGameFactory {
     // enemies
     @Override
     public GoblinEnemy createGoblin(double x, double y, List<Vector2D> path) {
-        return new J2dGoblinEnemy(x,y,path, getGraphics(),assetManager);
+        return new J2dGoblinEnemy(x, y, path, getGraphics(), assetManager);
     }
+
     public BatEnemy createBat(double x, double y, List<Vector2D> path) {
-        return new J2dBatEnemy(x,y,path, getGraphics(),assetManager);
+        return new J2dBatEnemy(x, y, path, getGraphics(), assetManager);
     }
 
     // towers
     @Override
     public CrossBowTower createCrossBowTower(double x, double y) {
-        return new J2dCrossBowTower(x,y,
+        return new J2dCrossBowTower(x, y,
                 (pos, dmg, target) -> createCrossBowArrow(pos.x(), pos.y(), dmg, target),
-                getGraphics(),assetManager);
+                getGraphics(), assetManager);
     }
 
     @Override
     public ArcherTower createArcherTower(double x, double y) {
-        return new J2dArcherTower(x,y,
+        return new J2dArcherTower(x, y,
                 (pos, dmg, target) -> createArcherArrow(pos.x(), pos.y(), dmg, target),
-                getGraphics(),assetManager);
+                getGraphics(), assetManager);
     }
 
     // projectiles
     @Override
-    protected CrossBowArrow createCrossBowArrow(double x, double y, int damage,Vector2D targetPosition) {
-        return new J2dCrossBowArrow(x,y,damage,targetPosition,graphicsContext,assetManager);
+    protected CrossBowArrow createCrossBowArrow(double x, double y, int damage, Vector2D targetPosition) {
+        return new J2dCrossBowArrow(x, y, damage, targetPosition, graphicsContext, assetManager);
     }
 
     @Override
     protected ArcherArrow createArcherArrow(double x, double y, int damage, Vector2D targetPosition) {
-        return new J2dArcherArrow(x,y,damage,targetPosition,graphicsContext,assetManager);
+        return new J2dArcherArrow(x, y, damage, targetPosition, graphicsContext, assetManager);
     }
 }

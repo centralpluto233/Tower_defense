@@ -17,7 +17,7 @@ public class J2dBatEnemy extends BatEnemy {
     private final SpriteAnimation animation;
 
     public J2dBatEnemy(double x, double y, List<Vector2D> path, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
-        super(x,y,path);
+        super(x, y, path);
         this.graphicsContext = graphicsContext;
         BufferedImage sheet = assetManager.getSprite("sprites/entities/enemies/bat.png");
         this.animation = new SpriteAnimation(sheet, 4, 40);
@@ -32,9 +32,9 @@ public class J2dBatEnemy extends BatEnemy {
         double y = getDrawPosition().y();
 
         if (isHitFlashing()) {
-            BufferedImage scaled = new BufferedImage((int)getWidth(), (int)getHeight(), BufferedImage.TYPE_INT_ARGB);
+            BufferedImage scaled = new BufferedImage((int) getWidth(), (int) getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D tmp = scaled.createGraphics();
-            tmp.drawImage(frame, 0, 0, (int)getWidth(), (int)getHeight(), null);
+            tmp.drawImage(frame, 0, 0, (int) getWidth(), (int) getHeight(), null);
             tmp.dispose();
 
             RescaleOp redTint = new RescaleOp(
@@ -42,12 +42,12 @@ public class J2dBatEnemy extends BatEnemy {
                     new float[]{0, 0, 0, 0},
                     null
             );
-            g2d.drawImage(scaled, redTint, (int)x, (int)y);
+            g2d.drawImage(scaled, redTint, (int) x, (int) y);
         } else {
-            g2d.drawImage(frame, (int)x, (int)y, (int)getWidth(), (int)getHeight(), null);
+            g2d.drawImage(frame, (int) x, (int) y, (int) getWidth(), (int) getHeight(), null);
         }
 
-        J2dGamePanel.drawEntityHealthBar(g2d,this.getX(),this.getY(),getWidth(),getHealth(),getMaxHealth());
+        J2dGamePanel.drawEntityHealthBar(g2d, this.getX(), this.getY(), getWidth(), getHealth(), getMaxHealth());
     }
 
 }

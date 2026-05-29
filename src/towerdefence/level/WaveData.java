@@ -3,10 +3,11 @@ package towerdefence.level;
 public record WaveData(int count, double intervalSeconds, double startDelaySeconds, String enemyType) {
     /**
      * Constructs a new WaveData record with the specified parameters. Validates that the count is at least 1, the intervalSeconds is greater than 0, and the startDelaySeconds is non-negative.
-     * @param count amount of enemies to spawn
-     * @param intervalSeconds time in seconds between each enemy spawn
+     *
+     * @param count             amount of enemies to spawn
+     * @param intervalSeconds   time in seconds between each enemy spawn
      * @param startDelaySeconds time in seconds before the first enemy spawns
-     * @param enemyType the type of enemy to spawn in this wave
+     * @param enemyType         the type of enemy to spawn in this wave
      */
     public WaveData {
         if (count < 1) {
@@ -23,6 +24,7 @@ public record WaveData(int count, double intervalSeconds, double startDelaySecon
 
     /**
      * Returns a string representation of the WaveData, including the count, intervalSeconds, and startDelaySeconds.
+     *
      * @return the string representation of the WaveData
      */
     @Override

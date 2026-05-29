@@ -2,8 +2,8 @@ package towerdefence.ui.j2d.entity.tower;
 
 import towerdefence.game.entities.tower.CrossBowTower;
 import towerdefence.game.interfaces.ProjectileFactory;
-import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.J2dGraphicsContext;
+import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.util.Vector2D;
 
 import java.awt.*;
@@ -37,7 +37,7 @@ public class J2dCrossBowTower extends CrossBowTower {
 
     @Override
     public Vector2D getSpawnPosition() {
-        return new Vector2D(this.getX(), this.getY()-getHeight()/4);
+        return new Vector2D(this.getX(), this.getY() - getHeight() / 4);
     }
 
     @Override
@@ -46,11 +46,11 @@ public class J2dCrossBowTower extends CrossBowTower {
         int r = (int) Math.round(getRange());
 
         g2d.drawImage(rangeImage,
-                (int)(getX() - r - 1),
-                (int)(getY() - r - 1),
+                (int) (getX() - r - 1),
+                (int) (getY() - r - 1),
                 null);
 
-        g2d.drawImage(sprite, (int)getDrawPosition().x(), (int)getDrawPosition().y(),(int)getWidth(),(int)getHeight(),null);
+        g2d.drawImage(sprite, (int) getDrawPosition().x(), (int) getDrawPosition().y(), (int) getWidth(), (int) getHeight(), null);
     }
 
 

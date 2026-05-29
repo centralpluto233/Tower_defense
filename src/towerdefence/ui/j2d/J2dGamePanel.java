@@ -6,13 +6,13 @@ import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
+import towerdefence.system.config.Config;
+import towerdefence.ui.input.InputMapping;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.SpriteAnimation;
 import towerdefence.ui.menu.BuildMenuPanel;
 import towerdefence.ui.menu.MenuOverlayPanel;
 import towerdefence.util.Vector2D;
-import towerdefence.system.config.Config;
-import towerdefence.ui.input.InputMapping;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final BuildMenuPanel buildMenuPanel;
     private final AssetManager assetManager;
 
-    private record Decoration(BufferedImage sprite, int x, int y) {}
+    private record Decoration(BufferedImage sprite, int x, int y) {
+    }
+
     private final List<Decoration> decorations = new ArrayList<>();
     private final List<BufferedImage> decSprites;
     private final SpriteAnimation castle;
@@ -45,7 +47,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final BufferedImage empty;
     private final SpriteAnimation coin;
 
-    private double deltaTime=0;
+    private double deltaTime = 0;
 
     public J2dGamePanel(Game game, Config config, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
         this.game = game;
@@ -77,14 +79,14 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.coin = new SpriteAnimation(coinSprite, 4, 30);
 
         this.decSprites = List.of(
-        assetManager.getSprite("sprites/map/decoration/mushroom.png"),
-        assetManager.getSprite("sprites/map/decoration/mushroom.png"),
-        assetManager.getSprite("sprites/map/decoration/rock_1.png"),
-        assetManager.getSprite("sprites/map/decoration/rock_2.png"),
-        assetManager.getSprite("sprites/map/decoration/rock_3.png")
+                assetManager.getSprite("sprites/map/decoration/mushroom.png"),
+                assetManager.getSprite("sprites/map/decoration/mushroom.png"),
+                assetManager.getSprite("sprites/map/decoration/rock_1.png"),
+                assetManager.getSprite("sprites/map/decoration/rock_2.png"),
+                assetManager.getSprite("sprites/map/decoration/rock_3.png")
         );
 
-        this.empty  = assetManager.getSprite("stats/heart_empty.png");
+        this.empty = assetManager.getSprite("stats/heart_empty.png");
         this.half = assetManager.getSprite("stats/heart_half.png");
         this.full = assetManager.getSprite("stats/heart_full.png");
 
@@ -99,7 +101,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         frame = new JFrame(config.getWindowTitle());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         frame.setContentPane(this);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);
@@ -203,7 +205,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private void drawBackground(Graphics2D g2d, BufferedImage grassTile) {
         int tileSize = 32;
 
-        int cols = (int) Math.ceil((double) config.getGameWidth()  / tileSize);
+        int cols = (int) Math.ceil((double) config.getGameWidth() / tileSize);
         int rows = (int) Math.ceil((double) config.getGameHeight() / tileSize);
 
         for (int row = 0; row < rows; row++) {
@@ -216,7 +218,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private void generateDecorations() {
         double density = 0.1;
         Random rng = new Random();
-        int count = (int)(config.getGameWidth() * config.getGameHeight() * density / 1000);
+        int count = (int) (config.getGameWidth() * config.getGameHeight() * density / 1000);
 
         for (int i = 0; i < count; i++) {
             int x = rng.nextInt(config.getGameWidth());
@@ -276,8 +278,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
             for (int s = 0; s <= count; s++) {
                 double t = (count == 0) ? 0 : (double) s / count;
-                int tx = (int)(a.x() + dx * t);
-                int ty = (int)(a.y() + dy * t);
+                int tx = (int) (a.x() + dx * t);
+                int ty = (int) (a.y() + dy * t);
 
                 Graphics2D g2dTile = (Graphics2D) g2d.create();
                 g2dTile.rotate(angle, tx, ty);
@@ -290,9 +292,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private void drawCastle(Graphics2D g2d, Vector2D end) {
         castle.update(deltaTime);
         BufferedImage frame = castle.getCurrentFrame();
-        double width = 52*2.5;
-        double height = 38*2.5;
-        g2d.drawImage(frame,(int)end.x()-(int)width/2,(int)end.y()-(5*(int)height/6),(int)width,(int)height,null);
+        double width = 52 * 2.5;
+        double height = 38 * 2.5;
+        g2d.drawImage(frame, (int) end.x() - (int) width / 2, (int) end.y() - (5 * (int) height / 6), (int) width, (int) height, null);
     }
 
     private void drawTowerSpots(Graphics2D g2d) {
@@ -333,7 +335,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         g2d.setFont(new Font("Consolas", Font.BOLD, 18));
 
         g2d.setColor(Color.WHITE);
-        g2d.drawString("FPS: " + fps, 650+config.getSpawnmargin(), 50+config.getSpawnmargin());
+        g2d.drawString("FPS: " + fps, 650 + config.getSpawnmargin(), 50 + config.getSpawnmargin());
     }
 
     private void drawStats(Graphics2D g2d) {
@@ -346,7 +348,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         if (game.isGameNotRunning()) return;
 
         int currentWave = game.getCurrentWave();
-        int totalWaves  = game.getTotalWaves();
+        int totalWaves = game.getTotalWaves();
         double countdown = game.getNextWaveCountdown();
 
         int totalHearts = game.getMaxLives() / 2;
@@ -374,40 +376,40 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         int lives = game.getLives();
         int maxLives = game.getMaxLives();
 
-        double heartSize_x = 10*2;
-        double heartSize_y = 9*2;
-        int fullHearts = lives /2;
-        boolean hasHalf = ( lives %2 ) !=0;
-        int totalHearts = maxLives/2;
+        double heartSize_x = 10 * 2;
+        double heartSize_y = 9 * 2;
+        int fullHearts = lives / 2;
+        boolean hasHalf = (lives % 2) != 0;
+        int totalHearts = maxLives / 2;
 
-        for (int i =0; i<totalHearts; i++) {
+        for (int i = 0; i < totalHearts; i++) {
             BufferedImage sprite;
-            if (i<fullHearts) {
+            if (i < fullHearts) {
                 sprite = full;
             } else if (i == fullHearts && hasHalf) {
                 sprite = half;
             } else {
                 sprite = empty;
             }
-            g2d.drawImage(sprite, (int) (10+config.getSpawnmargin()+ i*(heartSize_x+4)),10+config.getSpawnmargin(),(int) heartSize_x,(int) heartSize_y, null);
+            g2d.drawImage(sprite, (int) (10 + config.getSpawnmargin() + i * (heartSize_x + 4)), 10 + config.getSpawnmargin(), (int) heartSize_x, (int) heartSize_y, null);
         }
 
     }
 
     private void drawResources(Graphics2D g2d) {
         coin.update(deltaTime);
-        BufferedImage frame =coin.getCurrentFrame();
-        double frameSize = 8*2.5;
+        BufferedImage frame = coin.getCurrentFrame();
+        double frameSize = 8 * 2.5;
         int resources = game.getResources();
 
-        int x=10+config.getSpawnmargin();
-        int y=40+config.getSpawnmargin();
+        int x = 10 + config.getSpawnmargin();
+        int y = 40 + config.getSpawnmargin();
 
-        g2d.drawImage(frame,x,y,(int)frameSize,(int)frameSize, null);
+        g2d.drawImage(frame, x, y, (int) frameSize, (int) frameSize, null);
 
         g2d.setColor(new Color(255, 213, 65));
         g2d.setFont(new Font("Consolas", Font.BOLD, 17));
-        g2d.drawString(String.valueOf(resources),x+28,y+17);
+        g2d.drawString(String.valueOf(resources), x + 28, y + 17);
     }
 
     @Override
@@ -421,27 +423,27 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         double offsetX = (screenW - virtualW * scale) / 2;
         double offsetY = (screenH - virtualH * scale) / 2;
 
-        if (p.x < offsetX || p.y < offsetY || p.x > offsetX + virtualW*scale || p.y > offsetY + virtualH*scale) {
+        if (p.x < offsetX || p.y < offsetY || p.x > offsetX + virtualW * scale || p.y > offsetY + virtualH * scale) {
             return null;
         }
-        return new Vector2D(((p.x - offsetX)/scale)+config.getSpawnmargin(), ((p.y - offsetY) / scale)+config.getSpawnmargin());
+        return new Vector2D(((p.x - offsetX) / scale) + config.getSpawnmargin(), ((p.y - offsetY) / scale) + config.getSpawnmargin());
     }
 
     @Override
     public Point worldToScreen(Vector2D v) {
-        double scaleX = (double) getWidth()  / config.getGameWidth();
+        double scaleX = (double) getWidth() / config.getGameWidth();
         double scaleY = (double) getHeight() / config.getGameHeight();
         return new Point(
-                (int)(v.x() * scaleX),
-                (int)(v.y() * scaleY)
+                (int) (v.x() * scaleX),
+                (int) (v.y() * scaleY)
         );
     }
 
     public static void drawEntityHealthBar(Graphics2D g2d, double x, double y, double entityWidth, int health, int maxHealth) {
         int barWidth = (int) Math.max(entityWidth, 20);
         int barHeight = 3;
-        int bx = (int) (x-barWidth/2.0);
-        int by = (int) (y-barHeight/2.0)-12;
+        int bx = (int) (x - barWidth / 2.0);
+        int by = (int) (y - barHeight / 2.0) - 12;
         double percentage = (double) health / maxHealth;
 
         Color fill = gradientHealthColor(percentage);
@@ -450,7 +452,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         g2d.fillRoundRect(bx - 1, by - 1, barWidth + 2, barHeight + 2, 3, 3);
 
         g2d.setColor(fill);
-        g2d.fillRoundRect(bx, by, (int)(barWidth * percentage), barHeight, 3, 3);
+        g2d.fillRoundRect(bx, by, (int) (barWidth * percentage), barHeight, 3, 3);
     }
 
     private static Color gradientHealthColor(double percentage) { // GitHub Copilot gradient color

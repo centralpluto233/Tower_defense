@@ -10,12 +10,13 @@ public abstract class Projectile extends MovingEntity {
 
     /**
      * Creates a new Projectile with the given position, size, speed, damage, and target position.
-     * @param x x part of the position to spawn the Projectile
-     * @param y y part of the position to spawn the Projectile
-     * @param width the width of the Projectile
-     * @param height the height of the Projectile
-     * @param speed the speed at which the Projectile will travel
-     * @param damage the damage this Projectile will deal to an enemy upon impact
+     *
+     * @param x         x part of the position to spawn the Projectile
+     * @param y         y part of the position to spawn the Projectile
+     * @param width     the width of the Projectile
+     * @param height    the height of the Projectile
+     * @param speed     the speed at which the Projectile will travel
+     * @param damage    the damage this Projectile will deal to an enemy upon impact
      * @param targetPos the position that the Projectile will travel towards
      */
     public Projectile(double x, double y, double width, double height, double speed, int damage, Vector2D targetPos) {
@@ -30,6 +31,7 @@ public abstract class Projectile extends MovingEntity {
     /**
      * Updates the position of the Projectile based on its velocity and checks if it has reached or passed the target position.
      * If it has, the Projectile is marked for removal.
+     *
      * @param dt the time elapsed since the last update
      */
     @Override
@@ -45,6 +47,7 @@ public abstract class Projectile extends MovingEntity {
 
     /**
      * Deals damage to the given EnemyEntity by calling its takeDamage method with this Projectile's damage value.
+     *
      * @param enemy the EnemyEntity to deal damage to
      */
     public void dealDamage(EnemyEntity enemy) {

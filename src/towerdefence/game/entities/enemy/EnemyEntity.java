@@ -2,8 +2,8 @@ package towerdefence.game.entities.enemy;
 
 import towerdefence.game.entities.MovingEntity;
 import towerdefence.game.interfaces.Damageable;
-import towerdefence.util.Vector2D;
 import towerdefence.system.logging.GameLogger;
+import towerdefence.util.Vector2D;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,15 +29,16 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * Creates a new EnemyEntity with the given parameters.
-     * @param x x part of the position of the enemy
-     * @param y y part of the position of the enemy
-     * @param width the width of the enemy in pixels
-     * @param height the height of the enemy in pixels
-     * @param speed the speed of the enemy
-     * @param health the health of the enemy
+     *
+     * @param x          x part of the position of the enemy
+     * @param y          y part of the position of the enemy
+     * @param width      the width of the enemy in pixels
+     * @param height     the height of the enemy in pixels
+     * @param speed      the speed of the enemy
+     * @param health     the health of the enemy
      * @param scoreValue the score value awarded (resources) to the player when this enemy is killed
-     * @param damage the damage this enemy will deal to the player (health) if it reaches the end of its path
-     * @param path the path the enemy will follow, represented as a list of waypoints (Vector2D)
+     * @param damage     the damage this enemy will deal to the player (health) if it reaches the end of its path
+     * @param path       the path the enemy will follow, represented as a list of waypoints (Vector2D)
      */
     public EnemyEntity(double x, double y, double width, double height, double speed, int health, int scoreValue, int damage, List<Vector2D> path) {
         super(x, y, width, height, speed);
@@ -50,6 +51,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * updates the enemy each game tick
+     *
      * @param dt the time elapsed since the last update
      */
     @Override
@@ -66,6 +68,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * Moves the enemy along its path based on its speed and the elapsed time (dt).
+     *
      * @param dt the elapsed time
      */
     protected void followPath(double dt) {
@@ -121,6 +124,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * returns whether the enemy has reached the end of its path
+     *
      * @return true if enemy reached the end
      */
     public boolean hasReachedEnd() {
@@ -129,6 +133,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * applies damage to the enemy
+     *
      * @param damage the amount of damage to apply
      */
     @Override
@@ -136,15 +141,16 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         this.health -= damage;
         this.health = Math.max(0, this.health);
         hitFlashTimer = HIT_FLASH_DURATION;
-        logger.fine("Enemy took "+damage+ " damage, health: "+this.health+ "/"+this.maxHealth);
+        logger.fine("Enemy took " + damage + " damage, health: " + this.health + "/" + this.maxHealth);
         if (isDead()) {
-            logger.info("Enemy died, score: "+scoreValue);
+            logger.info("Enemy died, score: " + scoreValue);
             markForRemoval();
         }
     }
 
     /**
      * returns if enemy is dead or not
+     *
      * @return true if the object is dead, false otherwise
      */
     @Override
@@ -154,6 +160,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * returns the current health of the enemy
+     *
      * @return health of enemy
      */
     @Override
@@ -163,6 +170,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * returns the max health of the enemy
+     *
      * @return max health of enemy
      */
     @Override
@@ -172,6 +180,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * returns the score value awarded to the player when this enemy is killed
+     *
      * @return score value of enemy
      */
     public int getScoreValue() {
@@ -180,6 +189,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * returns the damage value done to the player when this enemy reaches the end of its path
+     *
      * @return damage value of enemy
      */
     public int getDamage() {
@@ -189,6 +199,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     /**
      * returns the path that the enemy follows.
      * unmodifiable so that external code cannot change the enemy's path directly, which could cause bugs in movement logic.
+     *
      * @return list of Vector2D points
      */
     public List<Vector2D> getPath() {
@@ -197,6 +208,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * returns the index of the current waypoint the enemy is moving towards
+     *
      * @return index of current waypoint
      */
     public int getCurrentWaypointIndex() {
@@ -205,6 +217,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * returns whether the enemy is currently flashing from being hit
+     *
      * @return true if the enemy is currently flashing, false otherwise
      */
     public boolean isHitFlashing() {
@@ -213,6 +226,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * gives string representation of enemy
+     *
      * @return string to print nicely
      */
     @Override
@@ -227,7 +241,6 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
                 + ", reachedEnd=" + hasReachedEnd()
                 + "}";
     }
-
 
 
 }

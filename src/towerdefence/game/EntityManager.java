@@ -5,8 +5,8 @@ import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.stats.RunStats;
-import towerdefence.util.Vector2D;
 import towerdefence.system.logging.GameLogger;
+import towerdefence.util.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,7 @@ public class EntityManager {
 
     /**
      * Creates a new EntityManager with the given RunStats instance.
+     *
      * @param stats the RunStats instance to use for tracking game statistics such as score and health
      */
     public EntityManager(RunStats stats) {
@@ -31,6 +32,7 @@ public class EntityManager {
 
     /**
      * Adds entities to one of the entities lists
+     *
      * @param entity entities to add to list
      */
     public void addEntity(Entity entity) {
@@ -38,13 +40,20 @@ public class EntityManager {
             logger.warning("Attempted to add null entities to game");
             return;
         }
-        if (entity instanceof Tower) {towers.add((Tower) entity);}
-        if (entity instanceof Projectile) {projectiles.add((Projectile) entity);}
-        if (entity instanceof EnemyEntity) {enemies.add((EnemyEntity) entity);}
+        if (entity instanceof Tower) {
+            towers.add((Tower) entity);
+        }
+        if (entity instanceof Projectile) {
+            projectiles.add((Projectile) entity);
+        }
+        if (entity instanceof EnemyEntity) {
+            enemies.add((EnemyEntity) entity);
+        }
     }
 
     /**
      * Removes entities from correct entities-list
+     *
      * @param entity entities to remove from list
      */
     public void removeEntity(Entity entity) {
@@ -52,15 +61,22 @@ public class EntityManager {
             logger.warning("Attempted to remove null entities from game");
             return;
         }
-        if (entity instanceof Tower) {towers.remove((Tower) entity);}
-        if (entity instanceof Projectile) {projectiles.remove((Projectile) entity);}
-        if (entity instanceof EnemyEntity) {enemies.remove((EnemyEntity) entity);}
+        if (entity instanceof Tower) {
+            towers.remove((Tower) entity);
+        }
+        if (entity instanceof Projectile) {
+            projectiles.remove((Projectile) entity);
+        }
+        if (entity instanceof EnemyEntity) {
+            enemies.remove((EnemyEntity) entity);
+        }
     }
 
     /**
      * Updates all entities in the game, checks for collisions, and removes any entities that are marked for removal.
+     *
      * @param deltaTime the time elapsed since the last update, used for updating entity positions and states
-     * @param game the Game instance, used to access game state and add new entities if needed during updates
+     * @param game      the Game instance, used to access game state and add new entities if needed during updates
      * @return true if the player is defeated (e.g. health <= 0), false otherwise
      */
     public boolean update(double deltaTime, Game game) {
@@ -131,24 +147,34 @@ public class EntityManager {
 
     /**
      * Returns an unmodifiable copy of the list of towers currently in the game.
+     *
      * @return an unmodifiable list of towers
      */
-    public List<Tower> getTowers() {return List.copyOf(towers);}
+    public List<Tower> getTowers() {
+        return List.copyOf(towers);
+    }
 
     /**
      * Returns an unmodifiable copy of the list of enemies currently in the game.
+     *
      * @return an unmodifiable list of enemies
      */
-    public List<EnemyEntity> getEnemies() {return List.copyOf(enemies);}
+    public List<EnemyEntity> getEnemies() {
+        return List.copyOf(enemies);
+    }
 
     /**
      * Returns an unmodifiable copy of the list of projectiles currently in the game.
+     *
      * @return an unmodifiable list of projectiles
      */
-    public List<Projectile> getProjectiles() {return List.copyOf(projectiles);}
+    public List<Projectile> getProjectiles() {
+        return List.copyOf(projectiles);
+    }
 
     /**
      * Checks if there is a tower occupying the given spot.
+     *
      * @param spot the position to check for tower occupancy
      * @return true if there is a tower at the given position, false otherwise
      */
@@ -159,14 +185,16 @@ public class EntityManager {
 
     /**
      * Returns the total number of entities currently in the game (towers + enemies + projectiles).
+     *
      * @return the total entity count
      */
     public int getTotalEntityCount() {
-        return towers.size()+enemies.size()+projectiles.size();
+        return towers.size() + enemies.size() + projectiles.size();
     }
 
     /**
      * Checks if there are no enemies currently in the game.
+     *
      * @return true if there are no enemies, false otherwise
      */
     public boolean hasNoEnemies() {

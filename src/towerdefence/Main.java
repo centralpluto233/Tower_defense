@@ -1,9 +1,9 @@
 package towerdefence;
 
 import towerdefence.game.Game;
-import towerdefence.ui.j2d.J2dFactory;
 import towerdefence.system.config.Config;
 import towerdefence.system.logging.GameLogger;
+import towerdefence.ui.j2d.J2dFactory;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

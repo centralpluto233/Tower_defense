@@ -10,9 +10,9 @@ public class SpriteAnimation {
     private int currentFrame;
 
     /**
-     * @param sheet       de volledige sprite strip
-     * @param frameCount  aantal frames naast elkaar
-     * @param fps         frames per seconde voor de animatie
+     * @param sheet      de volledige sprite strip
+     * @param frameCount aantal frames naast elkaar
+     * @param fps        frames per seconde voor de animatie
      */
     public SpriteAnimation(BufferedImage sheet, int frameCount, double fps) {
         this.frameDuration = 1.0 / fps;
@@ -30,6 +30,7 @@ public class SpriteAnimation {
 
     /**
      * Update de animatie op basis van verstreken tijd.
+     *
      * @param deltaTime seconden sinds laatste update
      */
     public void update(double deltaTime) {
@@ -40,7 +41,9 @@ public class SpriteAnimation {
         }
     }
 
-    /** Geeft het huidige frame terug om te tekenen. */
+    /**
+     * Geeft het huidige frame terug om te tekenen.
+     */
     public BufferedImage getCurrentFrame() {
         return frames[currentFrame];
     }

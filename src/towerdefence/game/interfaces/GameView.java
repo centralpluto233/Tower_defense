@@ -3,6 +3,7 @@ package towerdefence.game.interfaces;
 public interface GameView {
     /**
      * Renders the game state to the screen. This method should be called once per frame, and should update the display based on the current game state.
+     *
      * @param deltaTime the time in seconds since the last frame was rendered. This can be used to update animations and other time-based effects in the game.
      */
     void render(double deltaTime);

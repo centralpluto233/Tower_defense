@@ -14,15 +14,15 @@ import java.awt.event.MouseAdapter;
 public class MenuOverlayPanel extends JPanel implements GameListener {
     private final Game game;
 
-    private static final String CARD_MENU      = "MENU";
-    private static final String CARD_PAUSE     = "PAUSE";
+    private static final String CARD_MENU = "MENU";
+    private static final String CARD_PAUSE = "PAUSE";
     private static final String CARD_GAME_OVER = "GAME_OVER";
     private static final String CARD_LEVEL_WON = "LEVEL_WON";
-    private static final String CARD_LEVELS    = "LEVELS";
+    private static final String CARD_LEVELS = "LEVELS";
 
-    private final JPanel topBar      = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+    private final JPanel topBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
     private final JPanel centerPanel = new JPanel();
-    private final JPanel cards       = new JPanel(new CardLayout());
+    private final JPanel cards = new JPanel(new CardLayout());
 
     private final GameButton pauseButton = GameButton.muted("Pause");
 
@@ -31,7 +31,8 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         setOpaque(false);
         setLayout(new BorderLayout());
 
-        MouseAdapter blocker = new MouseAdapter() {};
+        MouseAdapter blocker = new MouseAdapter() {
+        };
         addMouseListener(blocker);
         addMouseMotionListener(blocker);
 
@@ -55,7 +56,10 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     private GameButton makeExitButton() {
         GameButton btn = GameButton.danger("   Quit   ");
-        btn.addActionListener(_ -> { game.exit(); refresh(); });
+        btn.addActionListener(_ -> {
+            game.exit();
+            refresh();
+        });
         return btn;
     }
 
@@ -73,7 +77,10 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     }
 
     private void wireTopBar() {
-        pauseButton.addActionListener(_ -> { game.togglePause(); refresh(); });
+        pauseButton.addActionListener(_ -> {
+            game.togglePause();
+            refresh();
+        });
     }
 
     // cards
@@ -83,10 +90,10 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         centerPanel.setLayout(new GridBagLayout());
 
         cards.setOpaque(false);
-        cards.add(buildMainMenuCard(),    CARD_MENU);
-        cards.add(buildPauseCard(),       CARD_PAUSE);
-        cards.add(buildGameOverCard(),    CARD_GAME_OVER);
-        cards.add(buildLevelWonCard(),    CARD_LEVEL_WON);
+        cards.add(buildMainMenuCard(), CARD_MENU);
+        cards.add(buildPauseCard(), CARD_PAUSE);
+        cards.add(buildGameOverCard(), CARD_GAME_OVER);
+        cards.add(buildLevelWonCard(), CARD_LEVEL_WON);
         cards.add(buildLevelPickerCard(), CARD_LEVELS);
 
         centerPanel.add(cards);
@@ -94,14 +101,22 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     private JPanel buildMainMenuCard() {
         GameButton startButton = GameButton.primary("Start Game");
-        startButton.addActionListener(_ -> { game.start(); refresh(); requestFocusForGame(); });
+        startButton.addActionListener(_ -> {
+            game.start();
+            refresh();
+            requestFocusForGame();
+        });
 
         return column("Tower Defence", startButton, makeLevelButton(), makeSettingsButton(), makeExitButton());
     }
 
     private JPanel buildPauseCard() {
         GameButton resumeButton = GameButton.success("  Resume  ");
-        resumeButton.addActionListener(_ -> { game.togglePause(); refresh(); requestFocusForGame(); });
+        resumeButton.addActionListener(_ -> {
+            game.togglePause();
+            refresh();
+            requestFocusForGame();
+        });
 
         return column("Paused", resumeButton, makeSettingsButton(), makeExitButton());
     }
@@ -190,18 +205,18 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     public void refresh() {
         GameState state = game.getGameState();
         boolean running = state == GameState.RUNNING;
-        boolean paused  = state == GameState.PAUSE;
+        boolean paused = state == GameState.PAUSE;
 
         topBar.setVisible(running || paused);
         pauseButton.setVisible(running);
         centerPanel.setVisible(state != GameState.RUNNING);
 
         String card = switch (state) {
-            case MENU      -> CARD_MENU;
-            case PAUSE     -> CARD_PAUSE;
+            case MENU -> CARD_MENU;
+            case PAUSE -> CARD_PAUSE;
             case GAME_OVER -> CARD_GAME_OVER;
             case LEVEL_WON -> CARD_LEVEL_WON;
-            default        -> CARD_MENU;
+            default -> CARD_MENU;
         };
         showCard(card);
 
@@ -241,12 +256,41 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     // GameListener
 
-    @Override public void onGameStarted()  { refresh(); }
-    @Override public void onGamePaused()   { refresh(); }
-    @Override public void onGameResumed()  { refresh(); }
-    @Override public void onGameStopped()  { refresh(); }
-    @Override public void onGameOver()     { refresh(); }
-    @Override public void onLevelWon()     { refresh(); }
-    @Override public void onBuildMenuRequested(int i, Vector2D v) {}
-    @Override public void onBuildMenuClosed() {}
+    @Override
+    public void onGameStarted() {
+        refresh();
+    }
+
+    @Override
+    public void onGamePaused() {
+        refresh();
+    }
+
+    @Override
+    public void onGameResumed() {
+        refresh();
+    }
+
+    @Override
+    public void onGameStopped() {
+        refresh();
+    }
+
+    @Override
+    public void onGameOver() {
+        refresh();
+    }
+
+    @Override
+    public void onLevelWon() {
+        refresh();
+    }
+
+    @Override
+    public void onBuildMenuRequested(int i, Vector2D v) {
+    }
+
+    @Override
+    public void onBuildMenuClosed() {
+    }
 }

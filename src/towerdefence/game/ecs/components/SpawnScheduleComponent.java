@@ -7,7 +7,8 @@ public class SpawnScheduleComponent {
 
     /**
      * Component to keep track of when the next enemy should spawn. It counts down from the start delay, then resets to the interval after each spawn.
-     * @param intervalSeconds the time in seconds between spawns after the first one
+     *
+     * @param intervalSeconds   the time in seconds between spawns after the first one
      * @param startDelaySeconds the time in seconds before the first spawn
      */
     public SpawnScheduleComponent(double intervalSeconds, double startDelaySeconds) {
@@ -18,6 +19,7 @@ public class SpawnScheduleComponent {
 
     /**
      * Gets the time left in seconds before the next spawn.
+     *
      * @return the time left in seconds before the next spawn
      */
     public double getTimeLeftSeconds() {
@@ -26,12 +28,16 @@ public class SpawnScheduleComponent {
 
     /**
      * Gets the initial start delay in seconds before the first spawn.
+     *
      * @return the initial start delay in seconds before the first spawn
      */
-    public double getStartDelay() {return startDelay;}
+    public double getStartDelay() {
+        return startDelay;
+    }
 
     /**
      * Ticks the spawn schedule down by the given amount of seconds.
+     *
      * @param dt the amount of seconds to tick down
      */
     public void tick(double dt) {
