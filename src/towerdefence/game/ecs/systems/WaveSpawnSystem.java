@@ -143,6 +143,7 @@ public class WaveSpawnSystem {
     }
 
     public void reset() {
+        if (ecsManager==null) return;
         for (int id : ecsManager.getAllEntities()) {
             ecsManager.removeEntity(id);
         }

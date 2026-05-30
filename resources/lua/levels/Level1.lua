@@ -1,6 +1,6 @@
 level_name = "Level 1"
 lives = 20
-resources = 20
+resources = 10
 
 main_path = {
     {x = -10,  y = 300},
