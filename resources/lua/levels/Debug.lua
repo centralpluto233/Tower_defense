@@ -15,5 +15,5 @@ tower_spots = {
 }
 
 waves = {
-    { count = 2, interval = 1.5, startDelay = 0,  enemyType = "bat" }
+    { count = 2, interval = 1.5, startDelay = 0,  enemyType = "bigslime" }
 }

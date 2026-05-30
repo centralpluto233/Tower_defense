@@ -64,6 +64,7 @@ public class WaveSpawnSystem {
             game.addEntity(switch (type) {
                 case "bat" -> factory.createBat(spawnPoint.x(), spawnPoint.y(), path);
                 case "goblin" -> factory.createGoblin(spawnPoint.x(), spawnPoint.y(), path);
+                case "bigslime" -> factory.createBigSlime(spawnPoint.x(), spawnPoint.y(), path);
                 default -> throw new IllegalStateException("Unknown spawn type: " + type);
             });
 

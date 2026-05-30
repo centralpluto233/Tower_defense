@@ -27,5 +27,6 @@ waves = {
     { count = 10, interval = 0.7, startDelay = 5.0, enemyType = "bat"    },
     { count = 5,  interval = 1.0, startDelay = 15.0, enemyType = "goblin" },
     { count = 8,  interval = 0.5, startDelay = 17.0, enemyType = "bat"    },
+    { count = 4,  interval = 1.5, startDelay = 20.0, enemyType = "bigslime" },
     { count = 4,  interval = 1.5, startDelay = 20.0, enemyType = "goblin" },
 }

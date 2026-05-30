@@ -107,6 +107,16 @@ public class Constants {
             public static final double WIDTH = 10.0 * 2;
             public static final double HEIGHT = 7.0 * 2;
         }
+
+        public static final class BigSlime {
+            public static final double SPEED = 20.0;
+            public static final int HEALTH = 90;
+            public static final int SCORE_VALUE = 25;
+            public static final int BASE_DAMAGE = 3;
+            // visual
+            public static final double WIDTH = 14.0 * 2;
+            public static final double HEIGHT = 8.0 * 2;
+        }
     }
 
     public static class LevelConstants {

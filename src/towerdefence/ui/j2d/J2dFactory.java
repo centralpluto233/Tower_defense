@@ -3,6 +3,7 @@ package towerdefence.ui.j2d;
 import towerdefence.game.AbstractGameFactory;
 import towerdefence.game.Game;
 import towerdefence.game.entities.enemy.BatEnemy;
+import towerdefence.game.entities.enemy.BigSlime;
 import towerdefence.game.entities.enemy.GoblinEnemy;
 import towerdefence.game.entities.projectile.ArcherArrow;
 import towerdefence.game.entities.projectile.CannonBall;
@@ -16,6 +17,7 @@ import towerdefence.system.config.Config;
 import towerdefence.ui.input.SwingInputSource;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.entity.enemy.J2dBatEnemy;
+import towerdefence.ui.j2d.entity.enemy.J2dBigSlime;
 import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
 import towerdefence.ui.j2d.entity.projectile.J2dArcherArrow;
 import towerdefence.ui.j2d.entity.projectile.J2dCannonBall;
@@ -63,6 +65,10 @@ public class J2dFactory extends AbstractGameFactory {
 
     public BatEnemy createBat(double x, double y, List<Vector2D> path) {
         return new J2dBatEnemy(x, y, path, getGraphics(), assetManager);
+    }
+
+    public BigSlime createBigSlime(double x, double y, List<Vector2D> path) {
+        return new J2dBigSlime(x, y, path, getGraphics(), assetManager);
     }
 
     // towers

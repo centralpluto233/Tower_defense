@@ -48,6 +48,7 @@ public class AssetManager {
         load("stats/Coin-Sheet.png");
         load("sprites/entities/projectiles/cannonball.png");
         load("sprites/entities/towers/cannon.png");
+        load("sprites/entities/enemies/big_slime.png");
     }
 
     /**
