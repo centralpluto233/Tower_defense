@@ -46,6 +46,8 @@ public class AssetManager {
         load("stats/heart_half.png");
         load("stats/heart_empty.png");
         load("stats/Coin-Sheet.png");
+        load("sprites/entities/projectiles/cannonball.png");
+        load("sprites/entities/towers/cannon.png");
     }
 
     /**

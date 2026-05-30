@@ -5,8 +5,10 @@ import towerdefence.game.Game;
 import towerdefence.game.entities.enemy.BatEnemy;
 import towerdefence.game.entities.enemy.GoblinEnemy;
 import towerdefence.game.entities.projectile.ArcherArrow;
+import towerdefence.game.entities.projectile.CannonBall;
 import towerdefence.game.entities.projectile.CrossBowArrow;
 import towerdefence.game.entities.tower.ArcherTower;
+import towerdefence.game.entities.tower.CannonTower;
 import towerdefence.game.entities.tower.CrossBowTower;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
@@ -16,8 +18,10 @@ import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.entity.enemy.J2dBatEnemy;
 import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
 import towerdefence.ui.j2d.entity.projectile.J2dArcherArrow;
+import towerdefence.ui.j2d.entity.projectile.J2dCannonBall;
 import towerdefence.ui.j2d.entity.projectile.J2dCrossBowArrow;
 import towerdefence.ui.j2d.entity.tower.J2dArcherTower;
+import towerdefence.ui.j2d.entity.tower.J2dCannonTower;
 import towerdefence.ui.j2d.entity.tower.J2dCrossBowTower;
 import towerdefence.util.Vector2D;
 
@@ -76,6 +80,13 @@ public class J2dFactory extends AbstractGameFactory {
                 getGraphics(), assetManager);
     }
 
+    @Override
+    public CannonTower createCannonTower(double x, double y) {
+        return new J2dCannonTower(x, y,
+                (pos, dmg, target) -> createCannonBall(pos.x(), pos.y(), dmg, target),
+                getGraphics(), assetManager);
+    }
+
     // projectiles
     @Override
     protected CrossBowArrow createCrossBowArrow(double x, double y, int damage, Vector2D targetPosition) {
@@ -85,5 +96,10 @@ public class J2dFactory extends AbstractGameFactory {
     @Override
     protected ArcherArrow createArcherArrow(double x, double y, int damage, Vector2D targetPosition) {
         return new J2dArcherArrow(x, y, damage, targetPosition, graphicsContext, assetManager);
+    }
+
+    @Override
+    protected CannonBall createCannonBall(double x, double y, int damage, Vector2D targetPosition) {
+        return new J2dCannonBall(x, y, damage, targetPosition, graphicsContext, assetManager);
     }
 }

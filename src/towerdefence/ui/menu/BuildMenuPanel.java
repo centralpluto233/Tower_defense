@@ -15,11 +15,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class BuildMenuPanel extends JPanel implements GameListener {
-    private Vector2D selectedSpot;
     private Consumer<InputCommand> commandSink = _ -> {
     };
     private int selectedSpotIndex;
-    private InputMapping inputMapping;
+    private final InputMapping inputMapping;
 
     private final JPanel towerOptionPanel = new JPanel();
 
@@ -31,7 +30,11 @@ public class BuildMenuPanel extends JPanel implements GameListener {
             new TowerOption("Crossbow", Constants.TowerConstants.CrossBow.COST,
                     "sprites/entities/towers/crossbow.png",
                     Constants.TowerConstants.CrossBow.WIDTH,
-                    Constants.TowerConstants.CrossBow.HEIGHT)
+                    Constants.TowerConstants.CrossBow.HEIGHT),
+            new TowerOption("Cannon", Constants.TowerConstants.Cannon.COST,
+                    "sprites/entities/towers/cannon.png",
+                    Constants.TowerConstants.Cannon.WIDTH,
+                    Constants.TowerConstants.Cannon.HEIGHT)
     );
     //TODO: images in constants and preloaded at start
     //TODO: full clean up of classes, functions, tasks, ....
@@ -113,8 +116,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         return src.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
     }
 
-    public void showAt(Vector2D spot, Point screenPos) {
-        this.selectedSpot = spot;
+    public void showAt(Point screenPos) {
         towerOptionPanel.setSize(towerOptionPanel.getPreferredSize());
 
         int px = Math.min(screenPos.x, getWidth() - towerOptionPanel.getWidth() - 8);
@@ -142,10 +144,9 @@ public class BuildMenuPanel extends JPanel implements GameListener {
 
     @Override
     public void onBuildMenuRequested(int spotIndex, Vector2D spotPosition) {
-        this.selectedSpot = spotPosition;
         this.selectedSpotIndex = spotIndex;
         Point screenPos = inputMapping.worldToScreen(spotPosition);
-        showAt(spotPosition, screenPos);
+        showAt(screenPos);
     }
 
 

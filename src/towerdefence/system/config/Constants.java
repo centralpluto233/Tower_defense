@@ -39,6 +39,18 @@ public class Constants {
             public static final double HEIGHT = 23.0 * 2;
         }
 
+        public static final class Cannon {
+            public static final int COST = 30;
+            public static final double RANGE = 135.0;
+            public static final int DAMAGE = 18;
+            public static final double SPLASHDAMAGE = 10;
+            public static final double SPLASHRADIUS = 35;
+            public static final double COOLDOWN = 2.2;
+            // visual
+            public static final double WIDTH = 18.0 * 2;
+            public static final double HEIGHT = 30.0 * 2;
+        }
+
         public static final class CrossBow {
             public static final int COST = 20;
             public static final double RANGE = 150.0;
@@ -64,7 +76,14 @@ public class Constants {
             // visual
             public static final double HEIGHT = 6.0 * 0.8;
             public static final double WIDTH = 13.0 * 0.8;
+        }
 
+        public static final class CannonBall {
+            public static final double SPEED = 70.0;
+            public static final double ARC_HEIGHT = 60.0;
+            // visual
+            public static final double HEIGHT = 8.0;
+            public static final double WIDTH = 8.0;
         }
     }
 
