@@ -86,11 +86,23 @@ public class BuildMenuPanel extends JPanel implements GameListener {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                if (getModel().isRollover()) {
-                    g2.setColor(new Color(80, 80, 80, 220));
+                boolean canAfford = game.getResources() >= option.cost();
+                boolean rollover = getModel().isRollover();
+
+                if (!canAfford) {
+                    if (rollover) {
+                        g2.setColor(new Color(110, 40, 40, 230));
+                    } else {
+                        g2.setColor(new Color(80, 30, 30, 200));
+                    }
                 } else {
-                    g2.setColor(new Color(50, 50, 50, 200));
+                    if (rollover) {
+                        g2.setColor(new Color(80, 80, 80, 220));
+                    } else {
+                        g2.setColor(new Color(50, 50, 50, 200));
+                    }
                 }
+
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
 
                 int iconW = icon.getWidth(null);
@@ -103,7 +115,11 @@ public class BuildMenuPanel extends JPanel implements GameListener {
                 g2.setFont(new Font("Arial", Font.BOLD, 13));
                 g2.drawString(option.type(), 56, 22);
 
-                g2.setColor(new Color(255, 210, 60));
+                if (canAfford) {
+                    g2.setColor(new Color(255, 210, 60));
+                } else {
+                    g2.setColor(new Color(255, 120, 120));
+                }
                 g2.setFont(new Font("Arial", Font.PLAIN, 12));
                 g2.drawString("€ " + option.cost(), 56, 40);
 
