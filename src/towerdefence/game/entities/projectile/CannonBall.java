@@ -29,10 +29,6 @@ public abstract class CannonBall extends Projectile {
         setY(currentPos.y());
 
         setVelocity(nextPos.subtract(currentPos).normalize());
-
-        if (progress >= 1.0) {
-            markForRemoval();
-        }
     }
 
     /**
