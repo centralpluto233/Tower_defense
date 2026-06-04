@@ -13,12 +13,15 @@ import towerdefence.util.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public class WaveSpawnSystem {
     private double nextWaveCountdown = 0;
     private ECSManager ecsManager;
     private List<Double> distinctStartDelays = new ArrayList<>();
+    Logger logger = Logger.getLogger(WaveSpawnSystem.class.getName());
 
     /**
      * System to manage spawning of enemies based on spawn schedules, counts, paths, and types defined in the ECS components.
@@ -33,14 +36,19 @@ public class WaveSpawnSystem {
         List<Integer> toRemove = new ArrayList<>();
 
         for (int id : ecs.getAllEntities()) {
-            SpawnScheduleComponent scheduleComp = ecs.getSpawnSchedules().get(id);
-            SpawnCountComponent countComp = ecs.getSpawnCounts().get(id);
-            SpawnPathComponent pathComp = ecs.getSpawnPaths().get(id);
+            Optional<SpawnScheduleComponent> scheduleCompOpt = Optional.ofNullable(ecs.getSpawnSchedules().get(id));
+            Optional<SpawnCountComponent> countCompOpt = Optional.ofNullable(ecs.getSpawnCounts().get(id));
+            Optional<SpawnPathComponent> pathCompOpt = Optional.ofNullable(ecs.getSpawnPaths().get(id));
             SpawnTypeComponent typeComp = ecs.getSpawnTypes().get(id);
 
-            if (scheduleComp == null || countComp == null || pathComp == null) {
+            // Skip entities that don't have the required spawn components
+            if (scheduleCompOpt.isEmpty() || countCompOpt.isEmpty() || pathCompOpt.isEmpty()) {
                 continue;
             }
+
+            SpawnScheduleComponent scheduleComp = scheduleCompOpt.get();
+            SpawnCountComponent countComp = countCompOpt.get();
+            SpawnPathComponent pathComp = pathCompOpt.get();
 
             if (countComp.isDone()) {
                 toRemove.add(id);
@@ -53,11 +61,12 @@ public class WaveSpawnSystem {
             }
 
             List<Vector2D> path = pathComp.getPath();
-            if (path.isEmpty()) {
+            if (path == null || path.isEmpty()) {
                 toRemove.add(id);
                 continue;
             }
 
+            // Use List#get(0) so it works with any List implementation
             Vector2D spawnPoint = path.getFirst();
 
             String type = (typeComp != null) ? typeComp.getEnemyType() : "goblin";
@@ -70,7 +79,6 @@ public class WaveSpawnSystem {
 
             countComp.consumeOne();
             scheduleComp.resetToInterval();
-
         }
         nextWaveCountdown = ecs.getAllEntities().stream()
                 .filter(id -> {
@@ -97,7 +105,10 @@ public class WaveSpawnSystem {
      * @return the current wave number, calculated as totalWaves minus the count of entities that have spawn jobs (i.e., those with SpawnCountComponent)
      */
     public int getCurrentWave() {
-        if (ecsManager == null) return 0;
+        if (ecsManager == null) {
+            logger.warning("ecsManager is null");
+            return 0;
+        }
 
         // collect startDelays of waves that haven't started yet
         Set<Double> notStartedDelays = ecsManager.getAllEntities().stream()
@@ -144,7 +155,10 @@ public class WaveSpawnSystem {
     }
 
     public void reset() {
-        if (ecsManager==null) return;
+        if (ecsManager==null) {
+            logger.fine("reset() called before init(), skipping");
+            return;
+        }
         for (int id : ecsManager.getAllEntities()) {
             ecsManager.removeEntity(id);
         }

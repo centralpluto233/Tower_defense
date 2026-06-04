@@ -12,12 +12,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class BuildMenuPanel extends JPanel implements GameListener {
     private Consumer<InputCommand> commandSink = _ -> {
     };
-    private int selectedSpotIndex;
+    private Optional<Integer> selectedSpotIndex = Optional.empty();
     private final InputMapping inputMapping;
 
     private final JPanel towerOptionPanel = new JPanel();
@@ -51,8 +52,10 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         for (TowerOption towerOption : towerOptions) {
             JButton button = createTowerCard(towerOption, assetManager);
             button.addActionListener(_ -> {
-                commandSink.accept(InputCommand.placeTowerAtSpot(selectedSpotIndex, towerOption.type()));
-                closeBuildMenu();
+                if (selectedSpotIndex.isPresent()) {
+                    commandSink.accept(InputCommand.placeTowerAtSpot(selectedSpotIndex.get(), towerOption.type()));
+                    closeBuildMenu();
+                }
             });
             towerOptionPanel.add(button);
             towerOptionPanel.add(Box.createVerticalStrut(4));
@@ -133,6 +136,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
 
     public void closeBuildMenu() {
         setVisible(false);
+        selectedSpotIndex = Optional.empty();
     }
 
     @Override
@@ -144,7 +148,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
 
     @Override
     public void onBuildMenuRequested(int spotIndex, Vector2D spotPosition) {
-        this.selectedSpotIndex = spotIndex;
+        this.selectedSpotIndex = Optional.of(spotIndex);
         Point screenPos = inputMapping.worldToScreen(spotPosition);
         showAt(screenPos);
     }

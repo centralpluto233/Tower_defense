@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -61,9 +62,14 @@ public class SwingInputSource implements InputSource {
      * @param p the Point representing the screen coordinates of a mouse click, which will be translated into world coordinates and checked against the locations of tower spots in the game to determine if a build menu should be opened for that spot
      * @return the index of the tower spot that was clicked on, if the click is within the radius of a tower spot; otherwise, null if no valid tower spot was clicked
      */
-    private Integer findTowerSpotIndexFromPoint(Point p) {
-        Vector2D pScaled = inputMapping.screenToWorld(p);
-        if (pScaled == null) return null;
+    private Optional<Integer> findTowerSpotIndexFromPoint(Point p) {
+        Vector2D pScaled;
+        Optional<Vector2D> pScaledOpt = inputMapping.screenToWorld(p);
+        if (pScaledOpt.isEmpty()) {
+            return Optional.empty();
+        } else {
+            pScaled = pScaledOpt.get();
+        }
 
         List<Vector2D> spots = game.getTowerSpots();
 
@@ -79,9 +85,9 @@ public class SwingInputSource implements InputSource {
         }
 
         if (best >= 0) {
-            return best;
+            return Optional.of(best);
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -97,11 +103,11 @@ public class SwingInputSource implements InputSource {
                 if (!SwingUtilities.isLeftMouseButton(e)) {
                     return;
                 }
-                Integer spotIndex = findTowerSpotIndexFromPoint(e.getPoint());
-                if (spotIndex != null) {
-                    inputQueue.add(InputCommand.openBuildMenu(spotIndex));
-                } else {
+                Optional<Integer> spotIndex = findTowerSpotIndexFromPoint(e.getPoint());
+                if (spotIndex.isEmpty()) {
                     inputQueue.add(InputCommand.closeBuildMenu());
+                } else {
+                    inputQueue.add(InputCommand.openBuildMenu(spotIndex.get()));
                 }
             }
         });

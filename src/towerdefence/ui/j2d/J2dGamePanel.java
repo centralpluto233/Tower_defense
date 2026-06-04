@@ -19,8 +19,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Game game;
@@ -29,6 +31,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final J2dGraphicsContext graphicsContext;
     private final BuildMenuPanel buildMenuPanel;
     private final AssetManager assetManager;
+    private final Logger logger =  Logger.getLogger(getClass().getSimpleName());
 
     private record Decoration(BufferedImage sprite, int x, int y) {
     }
@@ -122,7 +125,6 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     @Override
     public void reset() {
-        this.backgroundCache = null;
         this.decorations.clear();
         generateDecorations();
         buildBackgroundCache();
@@ -169,7 +171,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     // Coordinate mapping
     // ---------------------------------------------------------------------
     @Override
-    public Vector2D screenToWorld(Point p) {
+    public Optional<Vector2D> screenToWorld(Point p) {
         double virtualW = config.getViewWidth();
         double virtualH = config.getViewHeight();
         double screenW = this.getWidth();
@@ -180,9 +182,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         double offsetY = (screenH - virtualH * scale) / 2;
 
         if (p.x < offsetX || p.y < offsetY || p.x > offsetX + virtualW * scale || p.y > offsetY + virtualH * scale) {
-            return null;
+            return Optional.empty();
         }
-        return new Vector2D(((p.x - offsetX) / scale) + config.getSpawnmargin(), ((p.y - offsetY) / scale) + config.getSpawnmargin());
+        return Optional.of(new Vector2D(((p.x - offsetX) / scale) + config.getSpawnmargin(), ((p.y - offsetY) / scale) + config.getSpawnmargin()));
     }
 
     @Override
@@ -265,7 +267,10 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     private void drawPath(Graphics2D g2d, BufferedImage pathTile) {
         List<Vector2D> path = game.getPath();
-        if (path == null || path.size() < 2) return;
+        if (path == null || path.size() < 2) {
+            logger.warning("path is null or to small");
+            return;
+        }
 
         int tileSize = 32;
         int half = tileSize / 2;
@@ -303,6 +308,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private void drawTowerSpots(Graphics2D g2d) {
         List<Vector2D> towerSpots = game.getTowerSpots();
         if (towerSpots == null || towerSpots.isEmpty()) {
+            logger.warning("towerSpots is null or empty");
             return;
         }
 

@@ -5,16 +5,12 @@ import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.stats.RunStats;
-import towerdefence.system.logging.GameLogger;
 import towerdefence.util.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class EntityManager {
-    private static final Logger logger = GameLogger.getLogger();
-
     private final List<Tower> towers = new ArrayList<>();
     private final List<EnemyEntity> enemies = new ArrayList<>();
     private final List<Projectile> projectiles = new ArrayList<>();
@@ -44,10 +40,6 @@ public class EntityManager {
      * @param entity entities to add to list
      */
     public void addEntity(Entity entity) {
-        if (entity == null) {
-            logger.warning("Attempted to add null entities to game");
-            return;
-        }
         if (entity instanceof Tower t) {
             towers.add(t);
         }

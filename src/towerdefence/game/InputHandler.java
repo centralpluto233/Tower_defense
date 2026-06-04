@@ -47,12 +47,17 @@ public class InputHandler {
 
         switch (command.action()) {
             case PLACE_TOWER_AT_INDEX -> {
-                Vector2D spot = levelData.getTowerSpots().get(command.spotIndex());
+                int spotIndex = command.spotIndex()
+                        .orElseThrow(() -> new IllegalArgumentException("Missing spot index"));
+
+                Vector2D spot = levelData.getTowerSpots().get(spotIndex);
+
                 if (entityManager.isTowerSpotOccupied(spot)) return;
+
                 if (command.towerType().isEmpty()) {
-                    game.notifyBuildMenuRequested(command.spotIndex(), spot);
+                    game.notifyBuildMenuRequested(spotIndex, spot);
                 } else {
-                    handlePlaceTower(command.spotIndex(), command.towerType().get());
+                    handlePlaceTower(spotIndex, command.towerType().get());
                 }
             }
             case PAUSE_TOGGLE -> game.togglePause();

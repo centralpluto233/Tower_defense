@@ -74,6 +74,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
      */
     protected void followPath(double dt) {
         if (path == null || path.isEmpty()) {
+            logger.warning("path is null or empty, cannot follow path");
             return;
         }
 
