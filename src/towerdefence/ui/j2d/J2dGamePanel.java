@@ -49,6 +49,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final BufferedImage half;
     private final BufferedImage empty;
     private final SpriteAnimation coin;
+    private final BufferedImage mouse;
 
     private double deltaTime = 0;
     int DECORATION_PATH_CLEARANCE = 32;
@@ -65,8 +66,10 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
 
+        this.mouse = assetManager.getSprite("ui/Cursor_1.png");
+
         setLayout(new OverlayLayout(this));
-        MenuOverlayPanel overlay = new MenuOverlayPanel(game);
+        MenuOverlayPanel overlay = new MenuOverlayPanel(game, mouse);
         overlay.setAlignmentX(0.0f);
         overlay.setAlignmentY(0.0f);
         add(overlay);
@@ -82,7 +85,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         BufferedImage castleSprite = assetManager.getSprite("sprites/map/castle.png");
         this.castle = new SpriteAnimation(castleSprite, 4, 30);
 
-        BufferedImage coinSprite = assetManager.getSprite("stats/Coin-Sheet.png");
+        BufferedImage coinSprite = assetManager.getSprite("ui/Coin-Sheet.png");
         this.coin = new SpriteAnimation(coinSprite, 4, 30);
 
         this.decSprites = List.of(
@@ -93,9 +96,11 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
                 assetManager.getSprite("sprites/map/decoration/rock_3.png")
         );
 
-        this.empty = assetManager.getSprite("stats/heart_empty.png");
-        this.half = assetManager.getSprite("stats/heart_half.png");
-        this.full = assetManager.getSprite("stats/heart_full.png");
+        this.empty = assetManager.getSprite("ui/heart_empty.png");
+        this.half = assetManager.getSprite("ui/heart_half.png");
+        this.full = assetManager.getSprite("ui/heart_full.png");
+
+
 
         generateDecorations();
         buildBackgroundCache();
@@ -118,6 +123,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setFocusable(true);
+        this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(mouse, new Point(0, 0), "custom cursor"));
 
         frame.setFocusTraversalKeysEnabled(false);
         SwingUtilities.invokeLater(this::requestFocusInWindow);

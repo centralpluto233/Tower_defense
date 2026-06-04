@@ -42,14 +42,15 @@ public class AssetManager {
         load("sprites/map/decoration/rock_3.png");
         load("sprites/map/castle.png");
         load("sprites/entities/towers/archer_icon.png");
-        load("stats/heart_full.png");
-        load("stats/heart_half.png");
-        load("stats/heart_empty.png");
-        load("stats/Coin-Sheet.png");
+        load("ui/heart_full.png");
+        load("ui/heart_half.png");
+        load("ui/heart_empty.png");
+        load("ui/Coin-Sheet.png");
         load("sprites/entities/projectiles/cannonball.png");
         load("sprites/entities/towers/cannon.png");
         load("sprites/entities/enemies/big_slime.png");
         load("sprites/effects/cannon_hit_ground.png");
+        load("ui/Cursor_1.png");
     }
 
     /**
