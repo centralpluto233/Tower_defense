@@ -98,13 +98,27 @@ public class EntityManager {
     private void checkProjectileCollisions() {
         for (Projectile p : projectiles) {
             if (p.isMarkedForRemoval()) continue;
+
+            boolean impacted = false;
+
             for (EnemyEntity e : enemies) {
                 if (!e.isMarkedForRemoval() && p.overlaps(e)) {
                     p.dealDamage(e);
-                    p.markForRemoval();
+                    impacted = true;
                     break;
                 }
             }
+
+            if (!impacted && p.hasReachedTarget()) {
+                impacted = true;
+            }
+
+            if (!impacted) continue;
+
+            p.getSplashComponent().ifPresent(sc ->
+                    sc.apply(p.getPosition(), p.getDamage(), enemies));
+
+            p.markForRemoval();
         }
     }
 

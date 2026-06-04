@@ -1,12 +1,16 @@
 package towerdefence.game.entities.projectile;
 
+import towerdefence.game.ecs.components.SplashComponent;
 import towerdefence.game.entities.MovingEntity;
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.util.Vector2D;
 
+import java.util.Optional;
+
 public abstract class Projectile extends MovingEntity {
     private final int damage;
     protected final Vector2D targetPos;
+    private Optional<SplashComponent> splashComponentOptional = Optional.empty();
 
     /**
      * Creates a new Projectile with the given position, size, speed, damage, and target position.
@@ -52,5 +56,23 @@ public abstract class Projectile extends MovingEntity {
      */
     public void dealDamage(EnemyEntity enemy) {
         enemy.takeDamage(damage);
+    }
+
+    public void setSplashComponent(SplashComponent splashComponentOptional) {
+        this.splashComponentOptional = Optional.of(splashComponentOptional);
+    }
+
+    public Optional<SplashComponent> getSplashComponent() {
+        return splashComponentOptional;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public boolean hasReachedTarget() {
+        Vector2D toTarget = targetPos.subtract(getPosition());
+        Vector2D dir = new Vector2D(getVelocity().x(), getVelocity().y());
+        return dir.dot(toTarget) < 0;
     }
 }

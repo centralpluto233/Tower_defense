@@ -1,8 +1,11 @@
 package towerdefence.game.entities.projectile;
 
+import towerdefence.game.ecs.components.SplashComponent;
+import towerdefence.game.entities.Entity;
 import towerdefence.util.Vector2D;
 
 import static towerdefence.system.config.Constants.ProjectileConstants.CannonBall.*;
+import static towerdefence.system.config.Constants.TowerConstants.Cannon.SPLASHRADIUS;
 
 public abstract class CannonBall extends Projectile {
     private final Vector2D start;
@@ -58,5 +61,16 @@ public abstract class CannonBall extends Projectile {
         super(x, y, WIDTH, HEIGHT, SPEED, damage, targetPosition);
         this.start = new Vector2D(x, y);
         this.duration = start.distanceTo(targetPosition) / SPEED;
+        setSplashComponent(new SplashComponent(SPLASHRADIUS));
+    }
+
+    @Override
+    public boolean overlaps(Entity enemy) {
+        return false;
+    }
+
+    @Override
+    public boolean hasReachedTarget() {
+        return progress >= 1.0;
     }
 }

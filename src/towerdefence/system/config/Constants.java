@@ -43,7 +43,6 @@ public class Constants {
             public static final int COST = 30;
             public static final double RANGE = 135.0;
             public static final int DAMAGE = 18;
-            public static final double SPLASHDAMAGE = 10;
             public static final double SPLASHRADIUS = 35;
             public static final double COOLDOWN = 2.2;
             // visual
