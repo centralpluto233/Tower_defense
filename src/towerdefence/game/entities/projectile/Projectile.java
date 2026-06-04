@@ -41,12 +41,6 @@ public abstract class Projectile extends MovingEntity {
     @Override
     public void update(double dt) {
         move(dt);
-
-        Vector2D toTarget = targetPos.subtract(getPosition());
-        Vector2D dir = new Vector2D(getVelocity().x(), getVelocity().y());
-        if (dir.dot(toTarget) < 0) {
-            markForRemoval();
-        }
     }
 
     /**

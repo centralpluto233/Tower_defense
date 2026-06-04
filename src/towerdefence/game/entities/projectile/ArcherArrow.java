@@ -26,10 +26,6 @@ public abstract class ArcherArrow extends Projectile {
         setY(currentPos.y());
 
         setVelocity(nextPos.subtract(currentPos).normalize());
-
-        if (progress >= 1.0) {
-            markForRemoval();
-        }
     }
 
     /**
@@ -58,5 +54,10 @@ public abstract class ArcherArrow extends Projectile {
         super(x, y, WIDTH, HEIGHT, SPEED, damage, targetPosition);
         this.start = new Vector2D(x, y);
         this.duration = start.distanceTo(targetPosition) / SPEED;
+    }
+
+    @Override
+    public boolean hasReachedTarget() {
+        return progress >= 1.0;
     }
 }
