@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MenuOverlayPanel extends JPanel implements GameListener {
     private final Game game;
@@ -27,8 +28,12 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     private final GameButton pauseButton = GameButton.muted("Pause");
     private final GameButton nextLevelButton = GameButton.primary(" Continue ");
 
-    public MenuOverlayPanel(Game game) {
+    private final Cursor hoverCursor;
+
+    public MenuOverlayPanel(Game game,Cursor hover) {
         this.game = game;
+        this.hoverCursor = hover;
+
         setOpaque(false);
         setLayout(new BorderLayout());
 
@@ -45,6 +50,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         add(centerPanel, BorderLayout.CENTER);
 
         refresh();
+        applyCustomCursors(this);
     }
 
     // factory methods voor herbruikbare buttons
@@ -68,6 +74,26 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         GameButton btn = GameButton.primary("   Level  ");
         btn.addActionListener(_ -> showCard(CARD_LEVELS));
         return btn;
+    }
+
+    private void applyCustomCursors(Container container) {
+        for (Component c: container.getComponents()) {
+            if (c instanceof JButton btn) {
+                btn.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        btn.setCursor(hoverCursor);
+                    }
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        btn.setCursor(null);
+                    }
+                });
+            }
+            if (c instanceof Container sub) {
+                applyCustomCursors(sub);
+            }
+        }
     }
 
     // top bar
@@ -132,14 +158,12 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     }
 
     private JPanel buildLevelWonCard() {
-        nextLevelButton.addActionListener(_ -> {
-            game.getNextLevel().ifPresent(nextLevel -> {
-                game.loadLevel(nextLevel);
-                game.start();
-                refresh();
-                requestFocusForGame();
-            });
-        });
+        nextLevelButton.addActionListener(_ -> game.getNextLevel().ifPresent(nextLevel -> {
+            game.loadLevel(nextLevel);
+            game.start();
+            refresh();
+            requestFocusForGame();
+        }));
 
         return column("Level Won!", nextLevelButton, makeLevelButton(), makeSettingsButton(), makeExitButton());
     }

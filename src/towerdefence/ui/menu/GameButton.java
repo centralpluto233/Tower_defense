@@ -92,4 +92,17 @@ public class GameButton extends JButton {
         }
         return shape.contains(x, y);
     }
+
+    public static void applyCustomCursors(JButton button, Cursor hover) {
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                button.setCursor(hover);
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                button.setCursor(null);
+            }
+        });
+    }
 }

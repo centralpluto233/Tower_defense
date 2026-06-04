@@ -26,6 +26,9 @@ public class SwingInputSource implements InputSource {
 
     private final Queue<InputCommand> inputQueue = new ConcurrentLinkedQueue<>();
 
+    private final Cursor buildCursor;
+    private final Cursor normalCursor;
+
     /**
      * Creates a new SwingInputSource with the given game, config, input mapping, and component. The input source will listen for mouse clicks on the component and translate them into game commands based on the input mapping and game state.
      *
@@ -34,11 +37,13 @@ public class SwingInputSource implements InputSource {
      * @param inputMapping the InputMapping instance responsible for translating screen coordinates to world coordinates, allowing the input source to determine which game entities (e.g., tower spots) are being interacted with based on mouse clicks
      * @param component    the JComponent to which this input source will attach mouse listeners for detecting user input; typically this would be the main game view component where the user interacts with the game
      */
-    public SwingInputSource(Game game, Config config, InputMapping inputMapping, JComponent component) {
+    public SwingInputSource(Game game, Config config, InputMapping inputMapping, JComponent component, Cursor buildCursor, Cursor normalCursor) {
         this.game = game;
         this.config = config;
         this.inputMapping = inputMapping;
         this.component = component;
+        this.buildCursor = buildCursor;
+        this.normalCursor = normalCursor;
     }
 
     /**
@@ -109,6 +114,13 @@ public class SwingInputSource implements InputSource {
                 } else {
                     inputQueue.add(InputCommand.openBuildMenu(spotIndex.get()));
                 }
+            }
+        });
+        component.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Optional<Integer> spot = findTowerSpotIndexFromPoint(e.getPoint());
+                component.setCursor(spot.isPresent() ? buildCursor : normalCursor);
             }
         });
         SwingUtilities.invokeLater(component::requestFocusInWindow);

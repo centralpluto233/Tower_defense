@@ -52,7 +52,7 @@ public class J2dFactory extends AbstractGameFactory {
     @Override
     public InputSource createInputSource(Game game, Config config, GameView gameView) {
         J2dGamePanel panel = (J2dGamePanel) gameView;
-        SwingInputSource inputSource = new SwingInputSource(game, config, panel, panel);
+        SwingInputSource inputSource = new SwingInputSource(game, config, panel, panel, panel.getBuildCursor(), panel.getNormalCursor());
         gamePanel.setCommandSink(inputSource::queueCommand);
         return inputSource;
     }

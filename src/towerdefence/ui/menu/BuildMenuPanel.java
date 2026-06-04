@@ -23,6 +23,8 @@ public class BuildMenuPanel extends JPanel implements GameListener {
 
     private final JPanel towerOptionPanel = new JPanel();
 
+    private final Cursor hoverCursor;
+
     private static final List<TowerOption> towerOptions = List.of(
             new TowerOption("Archer", Constants.TowerConstants.Archer.COST,
                     "sprites/entities/towers/archer_icon.png",
@@ -40,8 +42,9 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     //TODO: images in constants and preloaded at start
     //TODO: full clean up of classes, functions, tasks, ....
 
-    public BuildMenuPanel(InputMapping inputMapping, AssetManager assetManager) {
+    public BuildMenuPanel(InputMapping inputMapping, AssetManager assetManager, Cursor hoverCursor) {
         this.inputMapping = inputMapping;
+        this.hoverCursor = hoverCursor;
         setOpaque(false);
         setLayout(null);
 
@@ -105,7 +108,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         btn.setBorderPainted(false);
         btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        GameButton.applyCustomCursors(btn, hoverCursor);
         return btn;
     }
 

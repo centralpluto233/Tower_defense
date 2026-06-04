@@ -49,7 +49,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final BufferedImage half;
     private final BufferedImage empty;
     private final SpriteAnimation coin;
-    private final BufferedImage mouse;
+    private final Cursor normalCursor;
+    private final Cursor hoverCursor;
+    private final Cursor buildCursor;
 
     private double deltaTime = 0;
     int DECORATION_PATH_CLEARANCE = 32;
@@ -66,16 +68,23 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
 
-        this.mouse = assetManager.getSprite("ui/Cursor_1.png");
+        BufferedImage normalCursorImg = assetManager.getSprite("ui/Cursor_1.png");
+        this.normalCursor = Toolkit.getDefaultToolkit().createCustomCursor(normalCursorImg, new Point(0, 0), "normalCursor");
+
+        BufferedImage hoverCursorImg = assetManager.getSprite("ui/Cursor_2.png");
+        this.hoverCursor = Toolkit.getDefaultToolkit().createCustomCursor(hoverCursorImg, new Point(0, 0), "hoverCursor");
+
+        BufferedImage buildCursorImg = assetManager.getSprite("ui/BuildCursor.png");
+        this.buildCursor = Toolkit.getDefaultToolkit().createCustomCursor(buildCursorImg, new Point(0, 0), "buildCursor");
 
         setLayout(new OverlayLayout(this));
-        MenuOverlayPanel overlay = new MenuOverlayPanel(game, mouse);
+        MenuOverlayPanel overlay = new MenuOverlayPanel(game, hoverCursor);
         overlay.setAlignmentX(0.0f);
         overlay.setAlignmentY(0.0f);
         add(overlay);
         game.addGameListener(overlay);
 
-        BuildMenuPanel buildMenu = new BuildMenuPanel(this, assetManager);
+        BuildMenuPanel buildMenu = new BuildMenuPanel(this, assetManager, hoverCursor);
         buildMenu.setAlignmentX(0.0f);
         buildMenu.setAlignmentY(0.0f);
         add(buildMenu);
@@ -123,7 +132,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setFocusable(true);
-        this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(mouse, new Point(0, 0), "custom cursor"));
+        this.setCursor(normalCursor);
 
         frame.setFocusTraversalKeysEnabled(false);
         SwingUtilities.invokeLater(this::requestFocusInWindow);
@@ -171,6 +180,14 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     // ---------------------------------------------------------------------
     public void setCommandSink(Consumer<InputCommand> commandSink) {
         buildMenuPanel.setCommandSink(commandSink);
+    }
+
+    public Cursor getBuildCursor() {
+        return buildCursor;
+    }
+
+    public Cursor getNormalCursor() {
+        return normalCursor;
     }
 
     // ---------------------------------------------------------------------
@@ -499,19 +516,19 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         percentage = Math.clamp(percentage, 0, 1);
 
         int r, g, b;
+        double t;// 0 to 1 over second half
         if (percentage < 0.5) {
             // Red to Yellow (0% to 50%)
-            double t = percentage * 2; // 0 to 1 over first half
+            t = percentage * 2;
             r = 255;
             g = (int) (165 * t);  // 0 → 165
-            b = 0;
         } else {
             // Yellow to Green (50% to 100%)
-            double t = (percentage - 0.5) * 2; // 0 to 1 over second half
+            t = (percentage - 0.5) * 2;
             r = (int) (255 - 255 * t);  // 255 → 0
             g = 255;
-            b = 0;
         }
+        b = 0;
         return new Color(r, g, b);
     }
 
