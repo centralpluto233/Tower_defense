@@ -77,6 +77,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         BufferedImage buildCursorImg = assetManager.getSprite("ui/BuildCursor.png");
         this.buildCursor = Toolkit.getDefaultToolkit().createCustomCursor(buildCursorImg, new Point(0, 0), "buildCursor");
 
+        BufferedImage noMoneyCursorImg = assetManager.getSprite("ui/Cursor_3.png");
+        Cursor noMoneyCursor = Toolkit.getDefaultToolkit().createCustomCursor(noMoneyCursorImg, new Point(0, 0), "noMoneyCursor");
+
         setLayout(new OverlayLayout(this));
         MenuOverlayPanel overlay = new MenuOverlayPanel(game, hoverCursor);
         overlay.setAlignmentX(0.0f);
@@ -84,7 +87,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         add(overlay);
         game.addGameListener(overlay);
 
-        BuildMenuPanel buildMenu = new BuildMenuPanel(this, assetManager, hoverCursor);
+        BuildMenuPanel buildMenu = new BuildMenuPanel(game,this, assetManager, hoverCursor, noMoneyCursor);
         buildMenu.setAlignmentX(0.0f);
         buildMenu.setAlignmentY(0.0f);
         add(buildMenu);

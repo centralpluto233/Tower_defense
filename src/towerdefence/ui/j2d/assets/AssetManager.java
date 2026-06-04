@@ -53,6 +53,7 @@ public class AssetManager {
         load("ui/Cursor_1.png");
         load("ui/Cursor_2.png");
         load("ui/BuildCursor.png");
+        load("ui/Cursor_3.png");
     }
 
     /**

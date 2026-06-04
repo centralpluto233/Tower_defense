@@ -1,5 +1,6 @@
 package towerdefence.ui.menu;
 
+import towerdefence.game.Game;
 import towerdefence.game.GameListener;
 import towerdefence.game.entities.tower.TowerOption;
 import towerdefence.game.input.InputCommand;
@@ -10,6 +11,8 @@ import towerdefence.util.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,9 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     private final JPanel towerOptionPanel = new JPanel();
 
     private final Cursor hoverCursor;
+    private final Cursor noMoneyCursor;
+
+    private final Game game;
 
     private static final List<TowerOption> towerOptions = List.of(
             new TowerOption("Archer", Constants.TowerConstants.Archer.COST,
@@ -42,9 +48,11 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     //TODO: images in constants and preloaded at start
     //TODO: full clean up of classes, functions, tasks, ....
 
-    public BuildMenuPanel(InputMapping inputMapping, AssetManager assetManager, Cursor hoverCursor) {
+    public BuildMenuPanel(Game game, InputMapping inputMapping, AssetManager assetManager, Cursor hoverCursor, Cursor noMoneyCursor) {
         this.inputMapping = inputMapping;
         this.hoverCursor = hoverCursor;
+        this.noMoneyCursor = noMoneyCursor;
+        this.game = game;
         setOpaque(false);
         setLayout(null);
 
@@ -108,7 +116,18 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         btn.setBorderPainted(false);
         btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
-        GameButton.applyCustomCursors(btn, hoverCursor);
+        btn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                boolean canAfford = game.getResources() >= option.cost();
+                btn.setCursor(canAfford ? hoverCursor : noMoneyCursor);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                btn.setCursor(null);
+            }
+        });
         return btn;
     }
 
