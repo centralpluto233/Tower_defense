@@ -91,13 +91,14 @@ public class LuaEngine {
      */
     private LevelData loadLevelDataFromLoadedScript() {
         String levelName = globals.get("level_name").checkjstring();
+        String levelFile = globals.get("level_file").checkjstring();
         int lives = globals.get("lives").checkint();
         int resources = globals.get("resources").checkint();
         List<Vector2D> path = this.toWorld(this.readVectorTable("main_path"));
         List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
         List<WaveData> waves = this.readWaveTable();
 
-        return new LevelData(levelName, lives, resources, path, towerSpots, waves);
+        return new LevelData(levelName, levelFile, lives, resources, path, towerSpots, waves);
     }
 
     /**

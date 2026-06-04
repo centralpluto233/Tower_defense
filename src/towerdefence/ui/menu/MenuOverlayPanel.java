@@ -25,6 +25,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     private final JPanel cards = new JPanel(new CardLayout());
 
     private final GameButton pauseButton = GameButton.muted("Pause");
+    private final GameButton nextLevelButton = GameButton.primary(" Continue ");
 
     public MenuOverlayPanel(Game game) {
         this.game = game;
@@ -131,7 +132,16 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     }
 
     private JPanel buildLevelWonCard() {
-        return column("Level Won!", makeLevelButton(), makeSettingsButton(), makeExitButton());
+        nextLevelButton.addActionListener(_ -> {
+            game.getNextLevel().ifPresent(nextLevel -> {
+                game.loadLevel(nextLevel);
+                game.start();
+                refresh();
+                requestFocusForGame();
+            });
+        });
+
+        return column("Level Won!", nextLevelButton, makeLevelButton(), makeSettingsButton(), makeExitButton());
     }
 
     private JPanel buildLevelPickerCard() {
@@ -209,6 +219,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
         topBar.setVisible(running || paused);
         pauseButton.setVisible(running);
+        nextLevelButton.setVisible(game.getNextLevel().isPresent());
         centerPanel.setVisible(state != GameState.RUNNING);
 
         String card = switch (state) {

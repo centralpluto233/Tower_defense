@@ -1,4 +1,5 @@
 level_name = "Level 2"
+level_file = "Level2.lua"
 lives = 20
 resources = 150
 

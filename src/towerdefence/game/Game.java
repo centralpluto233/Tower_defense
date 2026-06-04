@@ -20,6 +20,7 @@ import towerdefence.util.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
@@ -111,6 +112,15 @@ public class Game {
             view.reset();
             waveSpawnSystem.reset();
         }
+    }
+
+    public Optional<String> getNextLevel() {
+        List<String> levels = Constants.LevelConstants.LEVEL_NAMES;
+        int currentIndex = levels.indexOf(currentLevel.getLevelFile()); // exacte match
+        if (currentIndex >= 0 && currentIndex < levels.size() - 1) {
+            return Optional.of(levels.get(currentIndex + 1));
+        }
+        return Optional.empty();
     }
 
     // ---------------------------------------------------------------------

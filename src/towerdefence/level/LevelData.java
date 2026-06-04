@@ -6,6 +6,7 @@ import java.util.List;
 
 public class LevelData {
     private final String levelName;
+    private final String levelFile;
     private final int lives;
     private final int resources;
     private final List<Vector2D> path;
@@ -22,8 +23,9 @@ public class LevelData {
      * @param towerSpots the locations where the player can build towers, represented as a list of Vector2D
      * @param waves      the list of waves of enemies that will spawn in this level, represented as a list of WaveData
      */
-    public LevelData(String levelName, int lives, int resources, List<Vector2D> path, List<Vector2D> towerSpots, List<WaveData> waves) {
+    public LevelData(String levelName, String levelFile, int lives, int resources, List<Vector2D> path, List<Vector2D> towerSpots, List<WaveData> waves) {
         this.levelName = levelName;
+        this.levelFile = levelFile;
         this.lives = lives;
         this.resources = resources;
         this.path = List.copyOf(path);
@@ -38,6 +40,14 @@ public class LevelData {
      */
     public String getLevelName() {
         return levelName;
+    }
+
+    /**
+     * Returns the file path of the level's Lua script, which can be used for debugging or display purposes.
+     * @return the level file path
+     */
+    public String getLevelFile() {
+        return levelFile;
     }
 
     /**

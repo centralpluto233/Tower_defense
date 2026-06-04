@@ -1,4 +1,5 @@
 level_name = "Debug"
+level_file = "Debug.lua"
 lives = 2
 resources = 2000
 
