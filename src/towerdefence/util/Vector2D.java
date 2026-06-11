@@ -72,4 +72,11 @@ public record Vector2D(double x, double y) {
     public double dot(Vector2D other) {
         return x * other.x + y * other.y;
     }
+
+    public boolean overlaps(Vector2D other, double width, double height) {
+        return (this.x() >= other.x() &&
+                this.x() <= other.x() + width &&
+                this.y() >= other.y() &&
+                this.y() <= other.y() + height);
+    }
 }

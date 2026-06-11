@@ -23,6 +23,10 @@ public record InputCommand(InputAction action, Optional<Integer> spotIndex, Opti
         return new InputCommand(InputAction.CLOSE_BUILD_MENU, Optional.empty(), Optional.empty());
     }
 
+    public static InputCommand sellTower(int towerIndex) {
+        return new InputCommand(InputAction.SELL_TOWER, Optional.of(towerIndex), Optional.empty());
+    }
+
     /**
      * Creates an InputCommand to place a tower of the specified type at the specified tower spot.
      *

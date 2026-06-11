@@ -57,6 +57,13 @@ public class EntityManager {
         projectiles.clear();
     }
 
+    public int sellTower(int towerIndex) {
+        Tower tower= towers.get(towerIndex);
+        int refund = tower.getRefund();
+        tower.markForRemoval();
+        return refund;
+    }
+
     // ---------------------------------------------------------------------
     // Update loop
     // ---------------------------------------------------------------------

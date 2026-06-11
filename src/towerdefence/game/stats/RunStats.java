@@ -27,7 +27,7 @@ public class RunStats {
     }
 
     /**
-     * Updates the ui when an enemy is killed. Increments the kill count and adds the reward resources to the total resources.
+     * Updates the hud when an enemy is killed. Increments the kill count and adds the reward resources to the total resources.
      *
      * @param rewardResources the amount of resources awarded to the player for killing the enemy, which will be added to the total resources
      */
@@ -38,7 +38,7 @@ public class RunStats {
     }
 
     /**
-     * Updates the ui when an enemy escapes. Increments the escaped count and subtracts the damage from the player's lives. If lives drop to 0 or below, they are set to 0.
+     * Updates the hud when an enemy escapes. Increments the escaped count and subtracts the damage from the player's lives. If lives drop to 0 or below, they are set to 0.
      *
      * @param damage the amount of damage the enemy deals to the player when it escapes, which will be subtracted from the player's lives
      */
@@ -67,6 +67,10 @@ public class RunStats {
             logger.info("Resources spent: " + cost + ", remaining: " + resources);
             return true;
         }
+    }
+
+    public void addResources(int amount) {
+        this.resources+= amount;
     }
 
     /**

@@ -50,8 +50,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final BufferedImage empty;
     private final SpriteAnimation coin;
     private final Cursor normalCursor;
-    private final Cursor hoverCursor;
     private final Cursor buildCursor;
+    private final Cursor noMoneyCursor;
+    private final Cursor sellCursor;
 
     private double deltaTime = 0;
     int DECORATION_PATH_CLEARANCE = 32;
@@ -68,17 +69,20 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
 
-        BufferedImage normalCursorImg = assetManager.getSprite("ui/Cursor_1.png");
+        BufferedImage normalCursorImg = assetManager.getSprite("sprites/hud/Cursor_1.png");
         this.normalCursor = Toolkit.getDefaultToolkit().createCustomCursor(normalCursorImg, new Point(0, 0), "normalCursor");
 
-        BufferedImage hoverCursorImg = assetManager.getSprite("ui/Cursor_2.png");
-        this.hoverCursor = Toolkit.getDefaultToolkit().createCustomCursor(hoverCursorImg, new Point(0, 0), "hoverCursor");
+        BufferedImage hoverCursorImg = assetManager.getSprite("sprites/hud/Cursor_2.png");
+        Cursor hoverCursor = Toolkit.getDefaultToolkit().createCustomCursor(hoverCursorImg, new Point(0, 0), "hoverCursor");
 
-        BufferedImage buildCursorImg = assetManager.getSprite("ui/BuildCursor.png");
+        BufferedImage buildCursorImg = assetManager.getSprite("sprites/hud/BuildCursor.png");
         this.buildCursor = Toolkit.getDefaultToolkit().createCustomCursor(buildCursorImg, new Point(0, 0), "buildCursor");
 
-        BufferedImage noMoneyCursorImg = assetManager.getSprite("ui/Cursor_3.png");
-        Cursor noMoneyCursor = Toolkit.getDefaultToolkit().createCustomCursor(noMoneyCursorImg, new Point(0, 0), "noMoneyCursor");
+        BufferedImage sellCursorImg = assetManager.getSprite("sprites/hud/sellcursor.png");
+        this.sellCursor = Toolkit.getDefaultToolkit().createCustomCursor(sellCursorImg, new Point(0, 0), "buildCursor");
+
+        BufferedImage noMoneyCursorImg = assetManager.getSprite("sprites/hud/Cursor_3.png");
+        this.noMoneyCursor = Toolkit.getDefaultToolkit().createCustomCursor(noMoneyCursorImg, new Point(0, 0), "noMoneyCursor");
 
         setLayout(new OverlayLayout(this));
         MenuOverlayPanel overlay = new MenuOverlayPanel(game, hoverCursor);
@@ -97,7 +101,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         BufferedImage castleSprite = assetManager.getSprite("sprites/map/castle.png");
         this.castle = new SpriteAnimation(castleSprite, 4, 30);
 
-        BufferedImage coinSprite = assetManager.getSprite("ui/Coin-Sheet.png");
+        BufferedImage coinSprite = assetManager.getSprite("sprites/hud/Coin-Sheet.png");
         this.coin = new SpriteAnimation(coinSprite, 4, 30);
 
         this.decSprites = List.of(
@@ -108,9 +112,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
                 assetManager.getSprite("sprites/map/decoration/rock_3.png")
         );
 
-        this.empty = assetManager.getSprite("ui/heart_empty.png");
-        this.half = assetManager.getSprite("ui/heart_half.png");
-        this.full = assetManager.getSprite("ui/heart_full.png");
+        this.empty = assetManager.getSprite("sprites/hud/heart_empty.png");
+        this.half = assetManager.getSprite("sprites/hud/heart_half.png");
+        this.full = assetManager.getSprite("sprites/hud/heart_full.png");
 
 
 
@@ -191,6 +195,10 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     public Cursor getNormalCursor() {
         return normalCursor;
+    }
+
+    public Cursor getSellCursor() {
+        return sellCursor;
     }
 
     // ---------------------------------------------------------------------

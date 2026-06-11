@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AssetManager {
@@ -28,31 +29,48 @@ public class AssetManager {
      * Preloads all necessary sprites into the cache. This method should be called once at the start of the game to ensure that all sprites are loaded and ready for use when needed.
      */
     public void loadAll() {
-        load("sprites/entities/enemies/bat.png");
-        load("sprites/entities/enemies/goblin.png");
-        load("sprites/entities/projectiles/arrow_archer.png");
-        load("sprites/entities/projectiles/arrow_crossbow.png");
-        load("sprites/entities/towers/archer.png");
-        load("sprites/entities/towers/crossbow.png");
-        load("sprites/map/path.png");
-        load("sprites/map/grass.png");
-        load("sprites/map/decoration/mushroom.png");
-        load("sprites/map/decoration/rock_1.png");
-        load("sprites/map/decoration/rock_2.png");
-        load("sprites/map/decoration/rock_3.png");
-        load("sprites/map/castle.png");
-        load("sprites/entities/towers/archer_icon.png");
-        load("ui/heart_full.png");
-        load("ui/heart_half.png");
-        load("ui/heart_empty.png");
-        load("ui/Coin-Sheet.png");
-        load("sprites/entities/projectiles/cannonball.png");
-        load("sprites/entities/towers/cannon.png");
-        load("sprites/entities/enemies/big_slime.png");
-        load("ui/Cursor_1.png");
-        load("ui/Cursor_2.png");
-        load("ui/BuildCursor.png");
-        load("ui/Cursor_3.png");
+        List<String> spritePaths = List.of(
+        // Enemies
+        "sprites/entities/enemies/bat.png",
+        "sprites/entities/enemies/goblin.png",
+        "sprites/entities/enemies/big_slime.png",
+
+        // Projectiles
+        "sprites/entities/projectiles/arrow_archer.png",
+        "sprites/entities/projectiles/arrow_crossbow.png",
+        "sprites/entities/projectiles/cannonball.png",
+
+        // Towers
+        "sprites/entities/towers/archer.png",
+        "sprites/entities/towers/crossbow.png",
+        "sprites/entities/towers/cannon.png",
+
+        // Map
+        "sprites/map/path.png",
+        "sprites/map/grass.png",
+        "sprites/map/decoration/mushroom.png",
+        "sprites/map/decoration/rock_1.png",
+        "sprites/map/decoration/rock_2.png",
+        "sprites/map/decoration/rock_3.png",
+        "sprites/map/castle.png",
+
+        // HUD
+        "sprites/entities/towers/archer_icon.png",
+        "sprites/hud/heart_full.png",
+        "sprites/hud/heart_half.png",
+        "sprites/hud/heart_empty.png",
+        "sprites/hud/Coin-Sheet.png",
+
+        // Cursors
+        "sprites/hud/Cursor_1.png",
+        "sprites/hud/Cursor_2.png",
+        "sprites/hud/BuildCursor.png",
+        "sprites/hud/Cursor_3.png",
+        "sprites/hud/sellcursor.png");
+
+        for (String path : spritePaths) {
+            load(path);
+        }
     }
 
     /**

@@ -21,7 +21,7 @@ public class InputHandler {
      * Constructs an InputHandler with the necessary dependencies.
      *
      * @param factory       the game factory used to create new entities like towers
-     * @param stats         the RunStats object used to track player resources and other ui during the game
+     * @param stats         the RunStats object used to track player resources and other hud during the game
      * @param entityManager the EntityManager used to manage game entities, allowing the InputHandler to add new towers to the game when they are placed
      * @param levelData     the LevelData containing information about the current level, such as tower spots, which the InputHandler uses to determine where towers can be placed
      */
@@ -59,6 +59,13 @@ public class InputHandler {
                 } else {
                     handlePlaceTower(spotIndex, command.towerType().get());
                 }
+            }
+            case SELL_TOWER -> {
+                int towerIndex = command.spotIndex()
+                        .orElseThrow(() -> new IllegalArgumentException("Missing tower index"));
+
+                int refund = entityManager.sellTower(towerIndex);
+                stats.addResources(refund);
             }
             case PAUSE_TOGGLE -> game.togglePause();
             case QUIT_GAME -> game.stop();

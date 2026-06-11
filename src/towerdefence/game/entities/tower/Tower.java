@@ -159,6 +159,10 @@ public abstract class Tower extends Entity implements Attacker {
         return cost;
     }
 
+    public int getRefund() {
+        return (int) (get_cost() * Constants.TowerConstants.SELLPERCENTAGE);
+    }
+
     /**
      * Gets the spawn position of the projectile, this is dependent of the graphics that are used; therefore abstract
      *

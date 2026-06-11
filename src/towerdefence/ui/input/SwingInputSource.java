@@ -1,6 +1,7 @@
 package towerdefence.ui.input;
 
 import towerdefence.game.Game;
+import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.system.config.Config;
@@ -28,6 +29,7 @@ public class SwingInputSource implements InputSource {
 
     private final Cursor buildCursor;
     private final Cursor normalCursor;
+    private final Cursor sellCursor;
 
     /**
      * Creates a new SwingInputSource with the given game, config, input mapping, and component. The input source will listen for mouse clicks on the component and translate them into game commands based on the input mapping and game state.
@@ -37,13 +39,14 @@ public class SwingInputSource implements InputSource {
      * @param inputMapping the InputMapping instance responsible for translating screen coordinates to world coordinates, allowing the input source to determine which game entities (e.g., tower spots) are being interacted with based on mouse clicks
      * @param component    the JComponent to which this input source will attach mouse listeners for detecting user input; typically this would be the main game view component where the user interacts with the game
      */
-    public SwingInputSource(Game game, Config config, InputMapping inputMapping, JComponent component, Cursor buildCursor, Cursor normalCursor) {
+    public SwingInputSource(Game game, Config config, InputMapping inputMapping, JComponent component, Cursor buildCursor, Cursor normalCursor, Cursor sellCursor) {
         this.game = game;
         this.config = config;
         this.inputMapping = inputMapping;
         this.component = component;
         this.buildCursor = buildCursor;
         this.normalCursor = normalCursor;
+        this.sellCursor = sellCursor;
     }
 
     /**
@@ -96,6 +99,16 @@ public class SwingInputSource implements InputSource {
         }
     }
 
+    private Optional<Tower> overTower(Point p) {
+        Optional<Vector2D> pScaledOpt = inputMapping.screenToWorld(p);
+        if (pScaledOpt.isEmpty()) return Optional.empty();
+        Vector2D pScaled = pScaledOpt.get();
+
+        return game.getTowers().stream()
+                .filter(tower -> pScaled.overlaps(tower.getDrawPosition(), tower.getWidth(), tower.getHeight()))
+                .findFirst();
+    }
+
     /**
      * Installs mouse listeners on the component to detect user input and translate it into game commands. When the user clicks on the component, the mouse listener checks if the click is a left mouse button click and then uses the findTowerSpotIndexFromPoint method to determine if the click was on a tower spot. If a valid tower spot index is found, an InputCommand to open the build menu for that spot is added to the input queue; otherwise, an InputCommand to close the build menu is added to the input queue. This allows the game to respond to user interactions with the game view by opening or closing the build menu based on where the user clicks.
      */
@@ -105,14 +118,20 @@ public class SwingInputSource implements InputSource {
         component.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!SwingUtilities.isLeftMouseButton(e)) {
+                if (!SwingUtilities.isLeftMouseButton(e)) return;
+
+                Optional<Tower> towerOpt = overTower(e.getPoint());
+                if (towerOpt.isPresent()) {
+                    int towerIndex = game.getTowers().indexOf(towerOpt.get());
+                    inputQueue.add(InputCommand.sellTower(towerIndex));
                     return;
                 }
+
                 Optional<Integer> spotIndex = findTowerSpotIndexFromPoint(e.getPoint());
-                if (spotIndex.isEmpty()) {
-                    inputQueue.add(InputCommand.closeBuildMenu());
-                } else {
+                if (spotIndex.isPresent()) {
                     inputQueue.add(InputCommand.openBuildMenu(spotIndex.get()));
+                } else {
+                    inputQueue.add(InputCommand.closeBuildMenu());
                 }
             }
         });
@@ -120,7 +139,13 @@ public class SwingInputSource implements InputSource {
             @Override
             public void mouseMoved(MouseEvent e) {
                 Optional<Integer> spot = findTowerSpotIndexFromPoint(e.getPoint());
-                component.setCursor(spot.isPresent() ? buildCursor : normalCursor);
+                if (spot.isPresent() && overTower(e.getPoint()).isEmpty()) {
+                    component.setCursor(buildCursor);
+                } else if (overTower(e.getPoint()).isPresent()) {
+                    component.setCursor(sellCursor);
+                } else {
+                    component.setCursor(normalCursor);
+                }
             }
         });
         SwingUtilities.invokeLater(component::requestFocusInWindow);

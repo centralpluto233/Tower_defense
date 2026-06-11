@@ -29,6 +29,8 @@ public class Constants {
     }
 
     public static class TowerConstants {
+        public static final double SELLPERCENTAGE = 0.25;
+
         public static final class Archer {
             public static final int COST = 10;
             public static final double RANGE = 120.0;
