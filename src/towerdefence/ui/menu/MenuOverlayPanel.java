@@ -3,6 +3,7 @@ package towerdefence.ui.menu;
 import towerdefence.game.Game;
 import towerdefence.game.GameListener;
 import towerdefence.game.GameState;
+import towerdefence.system.config.Config;
 import towerdefence.system.config.Constants;
 import towerdefence.util.Vector2D;
 
@@ -14,12 +15,14 @@ import java.awt.event.MouseEvent;
 
 public class MenuOverlayPanel extends JPanel implements GameListener {
     private final Game game;
+    private final Config config;
 
     private static final String CARD_MENU = "MENU";
     private static final String CARD_PAUSE = "PAUSE";
     private static final String CARD_GAME_OVER = "GAME_OVER";
     private static final String CARD_LEVEL_WON = "LEVEL_WON";
     private static final String CARD_LEVELS = "LEVELS";
+    private static final String SETTINGS = "SETTINGS";
 
     private final JPanel topBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
     private final JPanel centerPanel = new JPanel();
@@ -30,9 +33,10 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     private final Cursor hoverCursor;
 
-    public MenuOverlayPanel(Game game,Cursor hover) {
+    public MenuOverlayPanel(Game game,Config config, Cursor hover) {
         this.game = game;
         this.hoverCursor = hover;
+        this.config=config;
 
         setOpaque(false);
         setLayout(new BorderLayout());
@@ -44,6 +48,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
         buildTopBar();
         buildCenterPanel();
+        buildSettingsCard();
         wireTopBar();
 
         add(topBar, BorderLayout.NORTH);
@@ -57,7 +62,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     private GameButton makeSettingsButton() {
         GameButton btn = GameButton.muted(" Settings ");
-        btn.addActionListener(_ -> JOptionPane.showMessageDialog(this, "Settings komt later."));
+        btn.addActionListener(_ -> showCard(SETTINGS));
         return btn;
     }
 
@@ -78,7 +83,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     private void applyCustomCursors(Container container) {
         for (Component c: container.getComponents()) {
-            if (c instanceof JButton btn) {
+            if (c instanceof AbstractButton btn) {
                 btn.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseEntered(MouseEvent e) {
@@ -122,6 +127,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         cards.add(buildGameOverCard(), CARD_GAME_OVER);
         cards.add(buildLevelWonCard(), CARD_LEVEL_WON);
         cards.add(buildLevelPickerCard(), CARD_LEVELS);
+        cards.add(buildSettingsCard(), SETTINGS);
 
         centerPanel.add(cards);
     }
@@ -166,6 +172,28 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         }));
 
         return column("Level Won!", nextLevelButton, makeLevelButton(), makeSettingsButton(), makeExitButton());
+    }
+
+    private JPanel buildSettingsCard() {
+        JPanel panel = emptyColumn();
+        panel.add(styledLabel("Settings", 32));
+        panel.add(Box.createVerticalStrut(24));
+
+        ToggleButton fpsToggle = new ToggleButton("Debugmode", config.getDebug());
+        fpsToggle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fpsToggle.addActionListener(_ -> {
+            config.setDebug(fpsToggle.isSelected());
+            config.save();
+        });
+        panel.add(fpsToggle);
+        panel.add(Box.createVerticalStrut(16));
+
+        GameButton backButton = GameButton.muted("  Back  ");
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        backButton.addActionListener(_ -> refresh());
+        panel.add(backButton);
+
+        return panel;
     }
 
     private JPanel buildLevelPickerCard() {

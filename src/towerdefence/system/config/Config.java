@@ -217,6 +217,10 @@ public class Config {
         return getBoolean("debugmode.enabled");
     }
 
+    public void setDebug(boolean state) {
+        this.set("debugmode.enabled", Boolean.toString(state));
+    }
+
     /**
      * Gets the speedup factor for debug mode from the config.
      *

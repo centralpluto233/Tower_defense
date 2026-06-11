@@ -48,6 +48,8 @@ public class GameButton extends JButton {
         return new GameButton(text, new Color(80, 85, 100));
     }
 
+
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
@@ -91,18 +93,5 @@ public class GameButton extends JButton {
             shape = new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), ARC, ARC);
         }
         return shape.contains(x, y);
-    }
-
-    public static void applyCustomCursors(JButton button, Cursor hover) {
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                button.setCursor(hover);
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                button.setCursor(null);
-            }
-        });
     }
 }

@@ -85,7 +85,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.noMoneyCursor = Toolkit.getDefaultToolkit().createCustomCursor(noMoneyCursorImg, new Point(0, 0), "noMoneyCursor");
 
         setLayout(new OverlayLayout(this));
-        MenuOverlayPanel overlay = new MenuOverlayPanel(game, hoverCursor);
+        MenuOverlayPanel overlay = new MenuOverlayPanel(game, config, hoverCursor);
         overlay.setAlignmentX(0.0f);
         overlay.setAlignmentY(0.0f);
         add(overlay);
