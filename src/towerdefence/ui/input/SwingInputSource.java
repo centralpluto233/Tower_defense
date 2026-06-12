@@ -86,7 +86,7 @@ public class SwingInputSource implements InputSource {
 
         for (int i = 0; i < spots.size(); i++) {
             double d = pScaled.distanceTo(spots.get(i));
-            if (d <= config.getTowerSpotRadius() && d < bestD) {
+            if (d <= (double) config.getTileSize() /2 && d < bestD) {
                 bestD = d;
                 best = i;
             }

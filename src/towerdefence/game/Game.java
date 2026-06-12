@@ -303,6 +303,10 @@ public class Game {
         return currentLevel.getTowerSpots();
     }
 
+    public boolean towerSpotOccupied(Vector2D spot) {
+        return entityManager.isTowerSpotOccupied(spot);
+    }
+
     // ---------------------------------------------------------------------
     // State getters
     // ---------------------------------------------------------------------

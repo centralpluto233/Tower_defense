@@ -231,15 +231,6 @@ public class Config {
     }
 
     /**
-     * Gets the radius for tower spot interaction from the config.
-     *
-     * @return the radius for tower spot interaction
-     */
-    public int getTowerSpotRadius() {
-        return getInt("interaction.towerspot.radius");
-    }
-
-    /**
      * Gets the target frames per second (FPS) for rendering from the config.
      *
      * @return the target FPS for rendering

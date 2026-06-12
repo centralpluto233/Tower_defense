@@ -57,16 +57,19 @@ public class AssetManager {
         "sprites/map/foliage/tree1.png",
         "sprites/map/foliage/tree2.png",
         "sprites/map/foliage/path.png",
+        "sprites/map/foliage/towerspot.png",
 
         "sprites/map/autumn/grass.png",
         "sprites/map/autumn/tree1.png",
         "sprites/map/autumn/tree2.png",
         "sprites/map/autumn/path.png",
+        "sprites/map/autumn/towerspot.png",
 
         "sprites/map/den/grass.png",
         "sprites/map/den/tree1.png",
         "sprites/map/den/tree2.png",
         "sprites/map/den/path.png",
+        "sprites/map/den/towerspot.png",
 
 
         // HUD

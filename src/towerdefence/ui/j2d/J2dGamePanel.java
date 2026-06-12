@@ -34,6 +34,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Logger logger =  Logger.getLogger(getClass().getSimpleName());
 
     private record Decoration(BufferedImage sprite, int x, int y) {}
+    private record Tree(int x, int y, int type, double scale) {}
+
+    private final List<Tree> trees = new ArrayList<>();
 
     private final List<Decoration> decorations = new ArrayList<>();
     private final List<BufferedImage> decSprites;
@@ -62,7 +65,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private MapTheme currentTheme;
 
     private double deltaTime = 0;
-    int DECORATION_PATH_CLEARANCE = 32;
+    int DECORATION_PATH_CLEARANCE;
 
     private final Map<TileType, BufferedImage> pathTiles = new EnumMap<>(TileType.class);
 
@@ -81,6 +84,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
         this.currentTheme = MapTheme.valueOf(config.getMapTheme().toUpperCase());
+
+        this.DECORATION_PATH_CLEARANCE= config.getTileSize();
 
         BufferedImage normalCursorImg = assetManager.getSprite("sprites/hud/Cursor_1.png");
         this.normalCursor = Toolkit.getDefaultToolkit().createCustomCursor(normalCursorImg, new Point(0, 0), "normalCursor");
@@ -132,6 +137,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.box = assetManager.getSprite("sprites/hud/box.png");
 
         loadPathTiles();
+        generateTrees();
 
         generateDecorations();
         buildBackgroundCache();
@@ -147,6 +153,19 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         pathTiles.put(TileType.PATH_V,    pathSheet.getSubimage(0,   s, s, s));
         pathTiles.put(TileType.CORNER_RU, pathSheet.getSubimage(0, 2*s, s, s));
         pathTiles.put(TileType.CORNER_LU, pathSheet.getSubimage(2*s, 2*s, s, s));
+    }
+
+    private void generateTrees() {
+        trees.clear();
+        Random rng = new Random(5);
+        int count = 20;
+        for (int i = 0; i < count; i++) {
+            int x = rng.nextInt(config.getGameWidth());
+            int y = rng.nextInt(config.getGameHeight());
+            if (isTooCloseToPath(x, y, DECORATION_PATH_CLEARANCE)) continue;
+            double scale = 1.5 + rng.nextDouble();
+            trees.add(new Tree(x, y, rng.nextInt(2), scale));
+        }
     }
 
     // ---------------------------------------------------------------------
@@ -176,6 +195,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     public void reset() {
         this.decorations.clear();
         generateDecorations();
+        generateTrees();
         buildBackgroundCache();
     }
 
@@ -200,6 +220,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         g2d.drawImage(backgroundCache, 0, 0, null);
 
+        drawTowerSpots(g2d);
         drawEntities(this.deltaTime);
         drawFloatingTexts(g2d, this.deltaTime);
         this.drawCastle(g2d, game.getPath().getLast());
@@ -271,7 +292,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         drawBackground(g, grassTile);
         drawPath(g);
         drawDecorations(g);
-        drawTowerSpots(g);
+        drawTrees(g);
         g.dispose();
     }
 
@@ -406,25 +427,45 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         }
     }
 
+    private void drawTrees(Graphics2D g2d) {
+        String folder = "sprites/map/" + currentTheme.folder() + "/";
+        BufferedImage[] sprites = {
+                assetManager.getSprite(folder + "tree1.png"),
+                assetManager.getSprite(folder + "tree2.png")
+        };
+        for (Tree t : trees) {
+            BufferedImage sprite = sprites[t.type()];
+            int w = (int) (sprite.getWidth()  * t.scale());
+            int h = (int) (sprite.getHeight() * t.scale());
+            g2d.drawImage(sprite, t.x() - w / 2, t.y() - h / 2, w, h, null);
+        }
+    }
+
     private void drawTowerSpots(Graphics2D g2d) {
+        BufferedImage spotSprite = assetManager.getSprite(
+                "sprites/map/" + currentTheme.folder() + "/towerspot.png"
+        );
         List<Vector2D> towerSpots = game.getTowerSpots();
         if (towerSpots == null || towerSpots.isEmpty()) {
             logger.warning("towerSpots is null or empty");
             return;
         }
 
-        g2d.setColor(new Color(80, 170, 255));
-        int r = config.getTowerSpotRadius();
+        int tileSize = config.getTileSize();
+        int size = (int) (tileSize * 0.8);
 
-        for (Vector2D spot : towerSpots) {
-            int x = (int) spot.x() - r;
-            int y = (int) spot.y() - r;
-            g2d.fillOval(x, y, r * 2, r * 2);
+        for (Vector2D towerSpot : towerSpots) {
+            boolean hasTower = game.towerSpotOccupied(towerSpot);
+            if (hasTower) continue;
+
+            int x = (int) towerSpot.x() - size / 2;
+            int y = (int) towerSpot.y() - size / 2;
+            g2d.drawImage(spotSprite, x, y, size, size, null);
         }
     }
 
     private void generateDecorations() {
-        double density = 0.1;
+        double density = 0.12;
         Random rng = new Random();
         int count = (int) (config.getGameWidth() * config.getGameHeight() * density / 1000);
 
