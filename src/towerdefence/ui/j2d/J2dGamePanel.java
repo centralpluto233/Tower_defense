@@ -10,6 +10,7 @@ import towerdefence.level.TileType;
 import towerdefence.system.config.Config;
 import towerdefence.ui.input.InputMapping;
 import towerdefence.ui.j2d.assets.AssetManager;
+import towerdefence.ui.j2d.assets.MapTheme;
 import towerdefence.ui.j2d.assets.SpriteAnimation;
 import towerdefence.ui.menu.BuildMenuPanel;
 import towerdefence.ui.menu.MenuOverlayPanel;
@@ -58,6 +59,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Cursor noMoneyCursor;
     private final Cursor sellCursor;
 
+    private MapTheme currentTheme;
+
     private double deltaTime = 0;
     int DECORATION_PATH_CLEARANCE = 32;
 
@@ -77,6 +80,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         setPreferredSize(new Dimension(config.getGameWidth(), config.getGameHeight()));
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
+        this.currentTheme = MapTheme.valueOf(config.getMapTheme().toUpperCase());
 
         BufferedImage normalCursorImg = assetManager.getSprite("sprites/hud/Cursor_1.png");
         this.normalCursor = Toolkit.getDefaultToolkit().createCustomCursor(normalCursorImg, new Point(0, 0), "normalCursor");
@@ -94,7 +98,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.noMoneyCursor = Toolkit.getDefaultToolkit().createCustomCursor(noMoneyCursorImg, new Point(0, 0), "noMoneyCursor");
 
         setLayout(new OverlayLayout(this));
-        MenuOverlayPanel overlay = new MenuOverlayPanel(game, config, hoverCursor);
+        MenuOverlayPanel overlay = new MenuOverlayPanel(game, config, hoverCursor, this::setTheme);
         overlay.setAlignmentX(0.0f);
         overlay.setAlignmentY(0.0f);
         add(overlay);
@@ -127,17 +131,22 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         this.box = assetManager.getSprite("sprites/hud/box.png");
 
-        BufferedImage pathSheet = assetManager.getSprite("sprites/map/path.png");
-        int s = 16;
-        pathTiles.put(TileType.CORNER_RD, pathSheet.getSubimage(0, 0, s, s));
-        pathTiles.put(TileType.PATH_H,    pathSheet.getSubimage(s, 0, s, s));
-        pathTiles.put(TileType.CORNER_LD, pathSheet.getSubimage(2*s, 0, s, s));
-        pathTiles.put(TileType.PATH_V,    pathSheet.getSubimage(0, s, s, s));
-        pathTiles.put(TileType.CORNER_RU, pathSheet.getSubimage(0, 2*s, s, s));
-        pathTiles.put(TileType.CORNER_LU, pathSheet.getSubimage(2*s, 2*s, s, s));
+        loadPathTiles();
 
         generateDecorations();
         buildBackgroundCache();
+    }
+
+    private void loadPathTiles() {
+        pathTiles.clear();
+        BufferedImage pathSheet = assetManager.getSprite("sprites/map/" + currentTheme.folder() + "/path.png");
+        int s = 16;
+        pathTiles.put(TileType.CORNER_RD, pathSheet.getSubimage(0,   0, s, s));
+        pathTiles.put(TileType.PATH_H,    pathSheet.getSubimage(s,   0, s, s));
+        pathTiles.put(TileType.CORNER_LD, pathSheet.getSubimage(2*s, 0, s, s));
+        pathTiles.put(TileType.PATH_V,    pathSheet.getSubimage(0,   s, s, s));
+        pathTiles.put(TileType.CORNER_RU, pathSheet.getSubimage(0, 2*s, s, s));
+        pathTiles.put(TileType.CORNER_LU, pathSheet.getSubimage(2*s, 2*s, s, s));
     }
 
     // ---------------------------------------------------------------------
@@ -255,7 +264,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     // Internal rendering setup
     // ---------------------------------------------------------------------
     private void buildBackgroundCache() {
-        BufferedImage grassTile = assetManager.getSprite("sprites/map/grass.png");
+        BufferedImage grassTile = assetManager.getSprite("sprites/map/"+currentTheme.folder()+"/grass.png");
 
         backgroundCache = new BufferedImage(config.getGameWidth(), config.getGameHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = backgroundCache.createGraphics();
@@ -383,6 +392,12 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
                 g2d.drawString(name, x + 2, y + ts - 2);
             }
         }
+    }
+
+    public void setTheme(MapTheme theme) {
+        this.currentTheme = theme;
+        loadPathTiles();
+        buildBackgroundCache();
     }
 
     private void drawDecorations(Graphics2D g2d) {

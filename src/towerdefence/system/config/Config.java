@@ -260,4 +260,14 @@ public class Config {
     public int getTileSize() {
         return getInt("game.tileSize");
     }
+
+    public String getMapTheme() {
+        return get("map.theme");
+    }
+
+    public void setMapTheme(String mapTheme) {
+        this.set("map.theme", mapTheme);
+    }
+
+
 }

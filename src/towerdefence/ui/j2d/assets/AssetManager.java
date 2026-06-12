@@ -46,13 +46,28 @@ public class AssetManager {
         "sprites/entities/towers/cannon.png",
 
         // Map
-        "sprites/map/path.png",
-        "sprites/map/grass.png",
         "sprites/map/decoration/mushroom.png",
         "sprites/map/decoration/rock_1.png",
         "sprites/map/decoration/rock_2.png",
         "sprites/map/decoration/rock_3.png",
         "sprites/map/castle.png",
+
+        // Theme
+        "sprites/map/foliage/grass.png",
+        "sprites/map/foliage/tree1.png",
+        "sprites/map/foliage/tree2.png",
+        "sprites/map/foliage/path.png",
+
+        "sprites/map/autumn/grass.png",
+        "sprites/map/autumn/tree1.png",
+        "sprites/map/autumn/tree2.png",
+        "sprites/map/autumn/path.png",
+
+        "sprites/map/den/grass.png",
+        "sprites/map/den/tree1.png",
+        "sprites/map/den/tree2.png",
+        "sprites/map/den/path.png",
+
 
         // HUD
         "sprites/entities/towers/archer_icon.png",

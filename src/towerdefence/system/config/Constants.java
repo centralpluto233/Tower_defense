@@ -89,7 +89,7 @@ public class Constants {
     }
 
     public static class EnemyConstants {
-        public static final double MAX_OFFSET = 5.0;
+        public static final double MAX_OFFSET = 4.0;
         public static final double HIT_FLASH_DURATION = 0.15;
 
         public static final class Goblin {
