@@ -103,7 +103,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.noMoneyCursor = Toolkit.getDefaultToolkit().createCustomCursor(noMoneyCursorImg, new Point(0, 0), "noMoneyCursor");
 
         setLayout(new OverlayLayout(this));
-        MenuOverlayPanel overlay = new MenuOverlayPanel(game, config, hoverCursor, this::setTheme);
+        MenuOverlayPanel overlay = new MenuOverlayPanel(game, config, hoverCursor, this::setTheme, assetManager);
         overlay.setAlignmentX(0.0f);
         overlay.setAlignmentY(0.0f);
         add(overlay);
@@ -157,7 +157,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     private void generateTrees() {
         trees.clear();
-        Random rng = new Random(5);
+        Random rng = new Random(18);
         int count = 20;
         for (int i = 0; i < count; i++) {
             int x = rng.nextInt(config.getGameWidth());

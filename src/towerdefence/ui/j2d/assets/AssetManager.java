@@ -78,6 +78,7 @@ public class AssetManager {
         "sprites/hud/heart_half.png",
         "sprites/hud/heart_empty.png",
         "sprites/hud/Coin-Sheet.png",
+        "sprites/hud/pause.png",
 
 
         // Cursors

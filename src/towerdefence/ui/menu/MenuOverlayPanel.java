@@ -5,6 +5,7 @@ import towerdefence.game.GameListener;
 import towerdefence.game.GameState;
 import towerdefence.system.config.Config;
 import towerdefence.system.config.Constants;
+import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.MapTheme;
 import towerdefence.util.Vector2D;
 
@@ -18,6 +19,7 @@ import java.util.function.Consumer;
 public class MenuOverlayPanel extends JPanel implements GameListener {
     private final Game game;
     private final Config config;
+    private final AssetManager assetManager;
     private final Consumer<MapTheme> onThemeChanged;
 
     private static final String CARD_MENU = "MENU";
@@ -31,16 +33,19 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     private final JPanel centerPanel = new JPanel();
     private final JPanel cards = new JPanel(new CardLayout());
 
-    private final GameButton pauseButton = GameButton.muted("Pause");
+    private final GameButton pauseButton;
     private final GameButton nextLevelButton = GameButton.primary(" Continue ");
 
     private final Cursor hoverCursor;
 
-    public MenuOverlayPanel(Game game, Config config, Cursor hover, Consumer<MapTheme> onThemeChanged) {
+    public MenuOverlayPanel(Game game, Config config, Cursor hover, Consumer<MapTheme> onThemeChanged, AssetManager assetManager) {
         this.game = game;
         this.hoverCursor = hover;
         this.config=config;
         this.onThemeChanged = onThemeChanged;
+        this.assetManager = assetManager;
+
+        this.pauseButton = GameButton.icon(assetManager.getSprite("sprites/hud/pause.png"),5);
 
         setOpaque(false);
         setLayout(new BorderLayout());
