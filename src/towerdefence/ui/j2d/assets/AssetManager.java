@@ -61,12 +61,15 @@ public class AssetManager {
         "sprites/hud/heart_empty.png",
         "sprites/hud/Coin-Sheet.png",
 
+
         // Cursors
         "sprites/hud/Cursor_1.png",
         "sprites/hud/Cursor_2.png",
         "sprites/hud/BuildCursor.png",
         "sprites/hud/Cursor_3.png",
-        "sprites/hud/sellcursor.png");
+        "sprites/hud/sellcursor.png",
+        "sprites/hud/box.png"
+        );
 
         for (String path : spritePaths) {
             load(path);

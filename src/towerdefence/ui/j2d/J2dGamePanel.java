@@ -51,6 +51,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final BufferedImage full;
     private final BufferedImage half;
     private final BufferedImage empty;
+    private final BufferedImage box;
 
     private final SpriteAnimation coin;
     private final Cursor normalCursor;
@@ -123,7 +124,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.half = assetManager.getSprite("sprites/hud/heart_half.png");
         this.full = assetManager.getSprite("sprites/hud/heart_full.png");
 
-
+        this.box = assetManager.getSprite("sprites/hud/box.png");
 
         generateDecorations();
         buildBackgroundCache();
@@ -433,9 +434,14 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     }
 
     private void drawStats(Graphics2D g2d) {
+        drawHudBox(g2d);
         drawHealthBar(g2d);
         drawResources(g2d);
         drawWaveInfo(g2d);
+    }
+
+    private void drawHudBox(Graphics2D g2d) {
+        g2d.drawImage(box, config.getSpawnmargin(), config.getSpawnmargin(), 128*2, 45*2, null);
     }
 
     private void drawHealthBar(Graphics2D g2d) {
