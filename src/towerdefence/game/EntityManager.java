@@ -18,6 +18,7 @@ public class EntityManager {
     private final List<Projectile> projectiles = new ArrayList<>();
 
     private Optional<Consumer<EnemyEntity>> onEnemyKilledCallback= Optional.empty();
+    private Optional<Consumer<EnemyEntity>> onEnemyEscapedCallback= Optional.empty();
     private Optional<Consumer<Tower>> onTowerPlacedCallback= Optional.empty();
     private Optional<Consumer<Tower>> onTowerSoldCallback= Optional.empty();
 
@@ -46,6 +47,10 @@ public class EntityManager {
 
     public void setOnTowerSoldCallback(Consumer<Tower> callback) {
         this.onTowerSoldCallback = Optional.of(callback);
+    }
+
+    public void setOnEnemyEscapedCallback(Consumer<EnemyEntity> callback) {
+        this.onEnemyEscapedCallback = Optional.of(callback);
     }
 
     // ---------------------------------------------------------------------
@@ -164,6 +169,7 @@ public class EntityManager {
                 } else {
                     // Enemy escaped
                     stats.onEnemyEscaped(enemy.getDamage());
+                    onEnemyEscapedCallback.ifPresent(enemyEntityConsumer -> enemyEntityConsumer.accept(enemy));
                     if (stats.isDefeated()) {
                         isDefeated = true;
                     }

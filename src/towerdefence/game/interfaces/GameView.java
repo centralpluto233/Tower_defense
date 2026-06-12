@@ -15,6 +15,8 @@ public interface GameView {
 
     void enemyKilled(int reward,int x, int y);
 
+    void enemyReachedBase(int damage);
+
     void towerPlaced(int price, int x, int y);
 
     void towerSold(int refund, int x, int y);

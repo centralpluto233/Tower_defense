@@ -122,6 +122,11 @@ public class Game {
                 int refund= tower.getRefund();
                 view.towerSold(refund,(int) tower.getX(),(int) tower.getY());
             });
+
+            entityManager.setOnEnemyEscapedCallback(enemy -> {
+                int damage= enemy.getDamage();
+                view.enemyReachedBase(damage);
+            });
         }
     }
 

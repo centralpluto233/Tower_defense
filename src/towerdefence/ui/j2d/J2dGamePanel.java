@@ -33,8 +33,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final AssetManager assetManager;
     private final Logger logger =  Logger.getLogger(getClass().getSimpleName());
 
-    private record Decoration(BufferedImage sprite, int x, int y) {
-    }
+    private record Decoration(BufferedImage sprite, int x, int y) {}
 
     private final List<Decoration> decorations = new ArrayList<>();
     private final List<BufferedImage> decSprites;
@@ -45,9 +44,14 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private int fpsFrames = 0;
     private int fps = 0;
 
+    private double healthBarShakeTimer = 0.0;
+    private static final double SHAKE_DURATION= 0.4;
+    private static final int SHAKE_INTENSITY = 4;
+
     private final BufferedImage full;
     private final BufferedImage half;
     private final BufferedImage empty;
+
     private final SpriteAnimation coin;
     private final Cursor normalCursor;
     private final Cursor buildCursor;
@@ -435,6 +439,15 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     }
 
     private void drawHealthBar(Graphics2D g2d) {
+        int shakeX = 0;
+        int shakeY = 0;
+
+        if (healthBarShakeTimer > 0) {
+            shakeX = (int) ((Math.random() - 0.5) * 2 * SHAKE_INTENSITY);
+            shakeY = (int) ((Math.random() - 0.5) * 2 * SHAKE_INTENSITY);
+            healthBarShakeTimer -= deltaTime;
+        }
+
         int lives = game.getLives();
         int maxLives = game.getMaxLives();
 
@@ -453,8 +466,10 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
             } else {
                 sprite = empty;
             }
-            g2d.drawImage(sprite, (int) (10 + config.getSpawnmargin() + i * (heartSize_x + 4)), 10 + config.getSpawnmargin(), (int) heartSize_x, (int) heartSize_y, null);
+            g2d.drawImage(sprite, (int) ((10 + config.getSpawnmargin() + i * (heartSize_x + 4))+shakeX), (10 + config.getSpawnmargin()+shakeY), (int) heartSize_x, (int) heartSize_y, null);
         }
+
+        healthBarShakeTimer = Math.max(0, healthBarShakeTimer - deltaTime);
     }
 
     @Override
@@ -470,6 +485,11 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     @Override
     public void towerSold(int refund,int x, int y) {
         spawnFloatingText("+" + refund, new Color(255, 213, 65), x, y);
+    }
+
+    @Override
+    public void enemyReachedBase(int damage) {
+        healthBarShakeTimer= SHAKE_DURATION;
     }
 
     private void drawFloatingTexts(Graphics2D g2d, double dt) {
