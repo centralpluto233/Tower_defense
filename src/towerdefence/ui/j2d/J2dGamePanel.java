@@ -129,11 +129,11 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         BufferedImage pathSheet = assetManager.getSprite("sprites/map/path.png");
         int s = 16;
-        pathTiles.put(TileType.CORNER_RD, pathSheet.getSubimage(0*s, 0*s, s, s));
-        pathTiles.put(TileType.PATH_H,    pathSheet.getSubimage(1*s, 0*s, s, s));
-        pathTiles.put(TileType.CORNER_LD, pathSheet.getSubimage(2*s, 0*s, s, s));
-        pathTiles.put(TileType.PATH_V,    pathSheet.getSubimage(0*s, 1*s, s, s));
-        pathTiles.put(TileType.CORNER_RU, pathSheet.getSubimage(0*s, 2*s, s, s));
+        pathTiles.put(TileType.CORNER_RD, pathSheet.getSubimage(0, 0, s, s));
+        pathTiles.put(TileType.PATH_H,    pathSheet.getSubimage(s, 0, s, s));
+        pathTiles.put(TileType.CORNER_LD, pathSheet.getSubimage(2*s, 0, s, s));
+        pathTiles.put(TileType.PATH_V,    pathSheet.getSubimage(0, s, s, s));
+        pathTiles.put(TileType.CORNER_RU, pathSheet.getSubimage(0, 2*s, s, s));
         pathTiles.put(TileType.CORNER_LU, pathSheet.getSubimage(2*s, 2*s, s, s));
 
         generateDecorations();
@@ -197,8 +197,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         drawStats(g2d);
         if (config.getDebug()) {
             drawFps(g2d);
+            drawPathDebug(g2d);
         }
-        drawPathDebug(g2d);
         g2d.dispose();
     }
 
@@ -324,20 +324,18 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     private void drawPath(Graphics2D g2d) {
         if (game.getGrid() == null) return;
-        int ts = config.getTileSize();
+        int ts  = config.getTileSize();
         int margin = config.getSpawnmargin();
 
         for (int row = 0; row < game.getGrid().getRows(); row++) {
             for (int col = 0; col < game.getGrid().getCols(); col++) {
-                TileType type = game.getGrid().getTile(col, row);
+                TileType type = game.getGrid().getTile(row, col);
                 BufferedImage tile = pathTiles.get(type);
                 if (tile == null) continue;
 
                 g2d.drawImage(tile,
-                        margin + col * ts,
-                        margin + row * ts,
-                        margin + col * ts + ts,
-                        margin + row * ts + ts,
+                        margin + col * ts, margin + row * ts,
+                        margin + col * ts + ts, margin + row * ts + ts,
                         0, 0, tile.getWidth(), tile.getHeight(),
                         null);
             }
@@ -347,16 +345,17 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private void drawPathDebug(Graphics2D g2d) {
         if (game.getGrid() == null) return;
         int ts = config.getTileSize();
+        int margin = config.getSpawnmargin();
 
         g2d.setFont(new Font("Consolas", Font.BOLD, 8));
 
         for (int row = 0; row < game.getGrid().getRows(); row++) {
             for (int col = 0; col < game.getGrid().getCols(); col++) {
-                TileType type = game.getGrid().getTile(col, row);
+                TileType type = game.getGrid().getTile(row, col);
                 if (type == TileType.GRASS) continue;
 
-                int x = col * ts;
-                int y = row * ts;
+                int x = margin + col * ts;
+                int y = margin+ row * ts;
 
                 // gekleurde achtergrond per type
                 g2d.setColor(switch (type) {
