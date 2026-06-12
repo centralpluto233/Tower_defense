@@ -4,23 +4,26 @@ lives = 20
 resources = 150
 
 main_path = {
-    {x = -10,  y = 100},
-    {x = 200,  y = 100},
-    {x = 200,  y = 400},
-    {x = 100,  y = 400},
-    {x = 100,  y = 500},
-    {x = 500,  y = 500},
-    {x = 500,  y = 200},
-    {x = 650,  y = 200},
-    {x = 650,  y = 450},
-    {x = 750,  y = 450},
+    {x=-1, y=2},
+    {x=25, y=2},
+    {x=25, y=8},
+    {x=5,  y=8},
+    {x=5,  y=14},
+    {x=27, y=14},
+    {x=27, y=14}
 }
 
 tower_spots = {
-    {x = 120,  y = 230},   -- inside first U-turn (between y=100 and y=400)
-    {x = 320,  y = 430},   -- covers bottom stretch toward x=500
-    {x = 320,  y = 570},   -- covers bottom stretch from below
-    {x = 580,  y = 320},   -- inside second U-turn (between y=200 and y=500)
+    {x=8,  y=1},  {x=8,  y=3},
+    {x=15, y=1},  {x=15, y=3},
+    {x=22, y=1},  {x=22, y=3},
+    {x=24, y=5},  {x=26, y=5},
+    {x=24, y=9},  {x=26, y=9},
+    {x=10, y=7},  {x=10, y=9},
+    {x=16, y=7},  {x=16, y=9},
+    {x=6,  y=11}, {x=4,  y=11},
+    {x=12, y=13}, {x=12, y=15},
+    {x=20, y=13}, {x=20, y=15},
 }
 
 waves = {

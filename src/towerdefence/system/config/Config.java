@@ -256,4 +256,8 @@ public class Config {
     public int getSpawnmargin() {
         return getInt("game.spawnmargin");
     }
+
+    public int getTileSize() {
+        return getInt("game.tileSize");
+    }
 }

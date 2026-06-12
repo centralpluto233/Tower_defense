@@ -12,6 +12,7 @@ public class LevelData {
     private final List<Vector2D> path;
     private final List<Vector2D> towerSpots;
     private final List<WaveData> waves;
+    private final GameGrid grid;
 
     /**
      * Constructs a new LevelData object with the specified parameters.
@@ -23,7 +24,7 @@ public class LevelData {
      * @param towerSpots the locations where the player can build towers, represented as a list of Vector2D
      * @param waves      the list of waves of enemies that will spawn in this level, represented as a list of WaveData
      */
-    public LevelData(String levelName, String levelFile, int lives, int resources, List<Vector2D> path, List<Vector2D> towerSpots, List<WaveData> waves) {
+    public LevelData(String levelName, String levelFile, int lives, int resources, List<Vector2D> path, List<Vector2D> towerSpots, List<WaveData> waves, GameGrid grid) {
         this.levelName = levelName;
         this.levelFile = levelFile;
         this.lives = lives;
@@ -31,6 +32,7 @@ public class LevelData {
         this.path = List.copyOf(path);
         this.towerSpots = List.copyOf(towerSpots);
         this.waves = List.copyOf(waves);
+        this.grid = grid;
     }
 
     /**
@@ -44,6 +46,7 @@ public class LevelData {
 
     /**
      * Returns the file path of the level's Lua script, which can be used for debugging or display purposes.
+     *
      * @return the level file path
      */
     public String getLevelFile() {

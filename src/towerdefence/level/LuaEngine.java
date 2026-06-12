@@ -52,7 +52,12 @@ public class LuaEngine {
      * @return a new list of Vector2D points where each point has been transformed to the game's world coordinate system (origin at top-left corner of the level plus spawn margin)
      */
     private List<Vector2D> toWorld(List<Vector2D> points) {
-        points.replaceAll(point -> new Vector2D(config.getSpawnmargin(), config.getSpawnmargin()).add(point));
+        int ts = config.getTileSize();
+        int margin = config.getSpawnmargin();
+        points.replaceAll(p -> new Vector2D(
+                margin + p.x() * ts + ts / 2.0,
+                margin + p.y() * ts + ts / 2.0
+        ));
         return points;
     }
 
@@ -94,11 +99,19 @@ public class LuaEngine {
         String levelFile = globals.get("level_file").checkjstring();
         int lives = globals.get("lives").checkint();
         int resources = globals.get("resources").checkint();
-        List<Vector2D> path = this.toWorld(this.readVectorTable("main_path"));
+
+        List<Vector2D> rawPath = this.readVectorTable("main_path");
         List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
+
+        GameGrid grid = new GameGrid(config.getViewHeight() / config.getTileSize(),
+                config.getViewWidth()  / config.getTileSize(),
+                config.getTileSize());
+        grid.buildFromPath(rawPath);
+
+        List<Vector2D> path = this.toWorld(rawPath);
         List<WaveData> waves = this.readWaveTable();
 
-        return new LevelData(levelName, levelFile, lives, resources, path, towerSpots, waves);
+        return new LevelData(levelName, levelFile, lives, resources, path, towerSpots, waves, grid);
     }
 
     /**
