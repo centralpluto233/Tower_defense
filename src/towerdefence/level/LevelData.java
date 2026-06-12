@@ -98,6 +98,10 @@ public class LevelData {
         return waves;
     }
 
+    public GameGrid getGrid() {
+        return grid;
+    }
+
     /**
      * Returns a string representation of the LevelData object, including the level name, lives, resources, path, tower spots, and waves.
      *

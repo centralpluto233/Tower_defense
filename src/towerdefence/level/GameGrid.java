@@ -37,24 +37,38 @@ public class GameGrid {
     }
 
     private TileType determineTileType(Vector2D prev, Vector2D cur, Vector2D next) {
-        int dxIn  = prev == null ? 0 : (int)(cur.x() - prev.x());
-        int dyIn  = prev == null ? 0 : (int)(cur.y() - prev.y());
-        int dxOut = next == null ? 0 : (int)(next.x() - cur.x());
-        int dyOut = next == null ? 0 : (int)(next.y() - cur.y());
+        int dxIn  = prev == null ? 0 : (int) Math.signum(cur.x() - prev.x());
+        int dyIn  = prev == null ? 0 : (int) Math.signum(cur.y() - prev.y());
+        int dxOut = next == null ? 0 : (int) Math.signum(next.x() - cur.x());
+        int dyOut = next == null ? 0 : (int) Math.signum(next.y() - cur.y());
 
-        // rechtdoor horizontaal
+        // rechtdoor
         if (dxIn != 0 && dxOut != 0) return TileType.PATH_H;
-        // rechtdoor verticaal
         if (dyIn != 0 && dyOut != 0) return TileType.PATH_V;
 
-        // bochten: combinatie van inkomende en uitgaande richting
-        if ((dyIn > 0 && dxOut > 0) || (dxIn < 0 && dyOut < 0)) return TileType.CORNER_RU;
-        if ((dyIn > 0 && dxOut < 0) || (dxIn > 0 && dyOut < 0)) return TileType.CORNER_LU;
-        if ((dyIn < 0 && dxOut > 0) || (dxIn < 0 && dyOut > 0)) return TileType.CORNER_RD;
-        if ((dyIn < 0 && dxOut < 0) || (dxIn > 0 && dyOut > 0)) return TileType.CORNER_LD;
+        // start/einde
+        if (prev == null) return dxOut != 0 ? TileType.PATH_H : TileType.PATH_V;
+        if (next == null) return dxIn  != 0 ? TileType.PATH_H : TileType.PATH_V;
 
-        // start/einde van pad: kijk enkel naar de richting die beschikbaar is
-        if (dxOut != 0) return TileType.PATH_H;
-        return TileType.PATH_V;
+        if ((dxIn > 0 || dxOut > 0) && (dyIn > 0 || dyOut > 0)) return TileType.CORNER_RD; // rechts+onder
+        if ((dxIn < 0 || dxOut < 0) && (dyIn > 0 || dyOut > 0)) return TileType.CORNER_LD; // links+onder
+        if ((dxIn > 0 || dxOut > 0) && (dyIn < 0 || dyOut < 0)) return TileType.CORNER_RU; // rechts+boven
+        if ((dxIn < 0 || dxOut < 0) && (dyIn < 0 || dyOut < 0)) return TileType.CORNER_LU; // links+boven
+
+        return TileType.PATH_H; // fallback
+    }
+
+    public int getRows() {
+        return rows;
+    }
+    public int getCols() {
+        return cols;
+    }
+    public int getTileSize() {
+        return tileSize;
+    }
+    public TileType getTile(int row, int col) {
+        if (col < 0 || col >= cols || row < 0 || row >= rows) return TileType.GRASS;
+        return tiles[row][col];
     }
 }

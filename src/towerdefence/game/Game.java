@@ -10,6 +10,7 @@ import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.game.stats.RunStats;
+import towerdefence.level.GameGrid;
 import towerdefence.level.LevelData;
 import towerdefence.level.LuaEngine;
 import towerdefence.system.config.Config;
@@ -336,6 +337,10 @@ public class Game {
 
     public double getNextWaveCountdown() {
         return waveSpawnSystem.getNextWaveCountdown();
+    }
+
+    public GameGrid getGrid() {
+        return currentLevel.getGrid();
     }
 
     // ---------------------------------------------------------------------

@@ -6,6 +6,7 @@ import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
+import towerdefence.level.TileType;
 import towerdefence.system.config.Config;
 import towerdefence.ui.input.InputMapping;
 import towerdefence.ui.j2d.assets.AssetManager;
@@ -17,10 +18,8 @@ import towerdefence.util.Vector2D;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
@@ -61,6 +60,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     private double deltaTime = 0;
     int DECORATION_PATH_CLEARANCE = 32;
+
+    private final Map<TileType, BufferedImage> pathTiles = new EnumMap<>(TileType.class);
 
     private record FloatingText(String text, Color color, double x, double y, double startLifetime, double lifetime) {}
     private final List<FloatingText> floatingTexts = new ArrayList<>();
@@ -126,6 +127,15 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         this.box = assetManager.getSprite("sprites/hud/box.png");
 
+        BufferedImage pathSheet = assetManager.getSprite("sprites/map/path.png");
+        int s = 16;
+        pathTiles.put(TileType.CORNER_RD, pathSheet.getSubimage(0*s, 0*s, s, s));
+        pathTiles.put(TileType.PATH_H,    pathSheet.getSubimage(1*s, 0*s, s, s));
+        pathTiles.put(TileType.CORNER_LD, pathSheet.getSubimage(2*s, 0*s, s, s));
+        pathTiles.put(TileType.PATH_V,    pathSheet.getSubimage(0*s, 1*s, s, s));
+        pathTiles.put(TileType.CORNER_RU, pathSheet.getSubimage(0*s, 2*s, s, s));
+        pathTiles.put(TileType.CORNER_LU, pathSheet.getSubimage(2*s, 2*s, s, s));
+
         generateDecorations();
         buildBackgroundCache();
     }
@@ -188,6 +198,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         if (config.getDebug()) {
             drawFps(g2d);
         }
+        drawPathDebug(g2d);
         g2d.dispose();
     }
 
@@ -244,13 +255,12 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     // Internal rendering setup
     // ---------------------------------------------------------------------
     private void buildBackgroundCache() {
-        BufferedImage pathTile = assetManager.getSprite("sprites/map/path.png");
         BufferedImage grassTile = assetManager.getSprite("sprites/map/grass.png");
 
         backgroundCache = new BufferedImage(config.getGameWidth(), config.getGameHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = backgroundCache.createGraphics();
         drawBackground(g, grassTile);
-        drawPath(g, pathTile);
+        drawPath(g);
         drawDecorations(g);
         drawTowerSpots(g);
         g.dispose();
@@ -300,7 +310,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     }
 
     private void drawBackground(Graphics2D g2d, BufferedImage grassTile) {
-        int tileSize = 32;
+        int tileSize = config.getTileSize();
 
         int cols = (int) Math.ceil((double) config.getGameWidth() / tileSize);
         int rows = (int) Math.ceil((double) config.getGameHeight() / tileSize);
@@ -312,36 +322,66 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         }
     }
 
-    private void drawPath(Graphics2D g2d, BufferedImage pathTile) {
-        List<Vector2D> path = game.getPath();
-        if (path == null || path.size() < 2) {
-            logger.warning("path is null or to small");
-            return;
+    private void drawPath(Graphics2D g2d) {
+        if (game.getGrid() == null) return;
+        int ts = config.getTileSize();
+        int margin = config.getSpawnmargin();
+
+        for (int row = 0; row < game.getGrid().getRows(); row++) {
+            for (int col = 0; col < game.getGrid().getCols(); col++) {
+                TileType type = game.getGrid().getTile(col, row);
+                BufferedImage tile = pathTiles.get(type);
+                if (tile == null) continue;
+
+                g2d.drawImage(tile,
+                        margin + col * ts,
+                        margin + row * ts,
+                        margin + col * ts + ts,
+                        margin + row * ts + ts,
+                        0, 0, tile.getWidth(), tile.getHeight(),
+                        null);
+            }
         }
+    }
 
-        int tileSize = 32;
-        int half = tileSize / 2;
+    private void drawPathDebug(Graphics2D g2d) {
+        if (game.getGrid() == null) return;
+        int ts = config.getTileSize();
 
-        for (int i = 0; i < path.size() - 1; i++) {
-            Vector2D a = path.get(i);
-            Vector2D b = path.get(i + 1);
+        g2d.setFont(new Font("Consolas", Font.BOLD, 8));
 
-            double dx = b.x() - a.x();
-            double dy = b.y() - a.y();
-            double dist = Math.hypot(dx, dy);
-            double angle = Math.atan2(dy, dx);
+        for (int row = 0; row < game.getGrid().getRows(); row++) {
+            for (int col = 0; col < game.getGrid().getCols(); col++) {
+                TileType type = game.getGrid().getTile(col, row);
+                if (type == TileType.GRASS) continue;
 
-            int count = (int) Math.ceil(dist / tileSize);
+                int x = col * ts;
+                int y = row * ts;
 
-            for (int s = 0; s <= count; s++) {
-                double t = (count == 0) ? 0 : (double) s / count;
-                int tx = (int) (a.x() + dx * t);
-                int ty = (int) (a.y() + dy * t);
+                // gekleurde achtergrond per type
+                g2d.setColor(switch (type) {
+                    case PATH_H    -> new Color(200, 100,   0, 180);
+                    case PATH_V    -> new Color(  0, 100, 200, 180);
+                    case CORNER_RD -> new Color(200,   0,   0, 180);
+                    case CORNER_LD -> new Color(  0, 200,   0, 180);
+                    case CORNER_RU -> new Color(200, 200,   0, 180);
+                    case CORNER_LU -> new Color(200,   0, 200, 180);
+                    default        -> new Color(128, 128, 128, 180);
+                });
+                g2d.fillRect(x, y, ts, ts);
 
-                Graphics2D g2dTile = (Graphics2D) g2d.create();
-                g2dTile.rotate(angle, tx, ty);
-                g2dTile.drawImage(pathTile, tx - half, ty - half, tileSize, tileSize, null);
-                g2dTile.dispose();
+                // naam
+                g2d.setColor(Color.WHITE);
+                String name = switch (type) {
+                    case PATH_H    -> "H";
+                    case PATH_V    -> "V";
+                    case CORNER_RD -> "RD";
+                    case CORNER_LD -> "LD";
+                    case CORNER_RU -> "RU";
+                    case CORNER_LU -> "LU";
+                    default        -> "?";
+                };
+                g2d.drawString(name, x + 2, y + ts - 2);
             }
         }
     }
