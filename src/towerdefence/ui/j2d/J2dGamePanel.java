@@ -158,7 +158,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private void generateTrees() {
         trees.clear();
         Random rng = new Random(18);
-        int count = 20;
+        int count = 25;
         for (int i = 0; i < count; i++) {
             int x = rng.nextInt(config.getGameWidth());
             int y = rng.nextInt(config.getGameHeight());

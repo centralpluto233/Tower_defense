@@ -5,7 +5,8 @@ import java.util.Arrays;
 public enum MapTheme {
     FOLIAGE, // loofbomen
     DEN, // dennenbomen
-    AUTUMN; // herfst
+    AUTUMN,  // herfst
+    CHERRY;
 
     public String folder() {
         return name().toLowerCase();

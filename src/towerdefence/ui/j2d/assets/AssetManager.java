@@ -52,25 +52,6 @@ public class AssetManager {
         "sprites/map/decoration/rock_3.png",
         "sprites/map/castle.png",
 
-        // Theme
-        "sprites/map/foliage/grass.png",
-        "sprites/map/foliage/tree1.png",
-        "sprites/map/foliage/tree2.png",
-        "sprites/map/foliage/path.png",
-        "sprites/map/foliage/towerspot.png",
-
-        "sprites/map/autumn/grass.png",
-        "sprites/map/autumn/tree1.png",
-        "sprites/map/autumn/tree2.png",
-        "sprites/map/autumn/path.png",
-        "sprites/map/autumn/towerspot.png",
-
-        "sprites/map/den/grass.png",
-        "sprites/map/den/tree1.png",
-        "sprites/map/den/tree2.png",
-        "sprites/map/den/path.png",
-        "sprites/map/den/towerspot.png",
-
 
         // HUD
         "sprites/entities/towers/archer_icon.png",
@@ -89,6 +70,15 @@ public class AssetManager {
         "sprites/hud/sellcursor.png",
         "sprites/hud/box.png"
         );
+
+        // Themes
+        for (String theme : MapTheme.getTypes()) {
+            load("sprites/map/" + theme + "/grass.png");
+            load("sprites/map/" + theme + "/tree1.png");
+            load("sprites/map/" + theme + "/tree2.png");
+            load("sprites/map/" + theme + "/path.png");
+            load("sprites/map/" + theme + "/towerspot.png");
+        }
 
         for (String path : spritePaths) {
             load(path);
