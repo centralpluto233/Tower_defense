@@ -533,7 +533,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         g2d.drawImage(frame, x, y, (int) frameSize, (int) frameSize, null);
 
-        g2d.setColor(new Color(255, 213, 65));
+        g2d.setColor(new Color(255, 182, 27));
         g2d.setFont(new Font("Consolas", Font.BOLD, 17));
         g2d.drawString(String.valueOf(resources), x + 28, y + 17);
     }
@@ -559,7 +559,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         if (countdown > 0) {
             g2d.setFont(new Font("Consolas", Font.PLAIN, 13));
-            g2d.setColor(new Color(255, 210, 60));
+            g2d.setColor(new Color(255, 182, 27));
             FontMetrics fmSmall = g2d.getFontMetrics();
             String nextText = "Next: " + String.format("%.0f", countdown) + "s";
             g2d.drawString(nextText, rightEdge - fmSmall.stringWidth(nextText), y + 33);
