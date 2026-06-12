@@ -57,6 +57,9 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private double deltaTime = 0;
     int DECORATION_PATH_CLEARANCE = 32;
 
+    private record FloatingText(String text, Color color, double x, double y, double startLifetime, double lifetime) {}
+    private final List<FloatingText> floatingTexts = new ArrayList<>();
+
     // ---------------------------------------------------------------------
     // Construction / initialization
     // ---------------------------------------------------------------------
@@ -174,6 +177,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         g2d.drawImage(backgroundCache, 0, 0, null);
 
         drawEntities(this.deltaTime);
+        drawFloatingTexts(g2d, this.deltaTime);
         this.drawCastle(g2d, game.getPath().getLast());
         drawStats(g2d);
         if (config.getDebug()) {
@@ -256,6 +260,10 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
             fpsFrames = 0;
             fpsLastTime = now;
         }
+    }
+
+    private void spawnFloatingText(String text, Color color, double x, double y) {
+        this.floatingTexts.add(new FloatingText(text,color,x,y,0.3,0.3));
     }
 
     // ---------------------------------------------------------------------
@@ -447,6 +455,45 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
             }
             g2d.drawImage(sprite, (int) (10 + config.getSpawnmargin() + i * (heartSize_x + 4)), 10 + config.getSpawnmargin(), (int) heartSize_x, (int) heartSize_y, null);
         }
+    }
+
+    @Override
+    public void enemyKilled(int reward,int x, int y) {
+        spawnFloatingText("+" + reward, new Color(255, 213, 65), x, y);
+    }
+
+    @Override
+    public void towerPlaced(int price,int x, int y) {
+        spawnFloatingText("-" + price, new Color(255, 0, 0), x, y);
+    }
+
+    @Override
+    public void towerSold(int refund,int x, int y) {
+        spawnFloatingText("+" + refund, new Color(255, 213, 65), x, y);
+    }
+
+    private void drawFloatingTexts(Graphics2D g2d, double dt) {
+        floatingTexts.removeIf(ft -> ft.lifetime() <= 0);
+        List<FloatingText> updated = new ArrayList<>();
+
+        g2d.setFont(new Font("Consolas", Font.BOLD, 14));
+
+        for (FloatingText ft : floatingTexts) {
+            double progress = 1.0 - (ft.lifetime() / ft.startLifetime());
+            int offsetY = (int) (progress * 30);
+            double fadeStart = 0.3;
+            double alphaRatio = Math.min(1.0, ft.lifetime() / fadeStart);
+            int alpha = (int) (255 * alphaRatio);
+
+            Color c = ft.color();
+            g2d.setColor(new Color(c.getRed(),c.getGreen(),c.getBlue(), Math.max(0, alpha)));
+            g2d.drawString(ft.text(), (int) ft.x(), (int) ft.y() - offsetY);
+
+            updated.add(new FloatingText(ft.text(), c, ft.x(), ft.y(), ft.startLifetime(),ft.lifetime() - dt));
+        }
+
+        floatingTexts.clear();
+        floatingTexts.addAll(updated);
     }
 
     private void drawResources(Graphics2D g2d) {

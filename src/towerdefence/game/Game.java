@@ -87,6 +87,7 @@ public class Game {
         resetGameState();
 
         this.view = factory.createGameView(this, config);
+        setCallbacks();
         this.inputSource = factory.createInputSource(this, config, this.view);
         this.inputSource.installHandlers();
 
@@ -102,6 +103,26 @@ public class Game {
         stats = new RunStats(currentLevel.getLives(), currentLevel.getResources());
         entityManager = new EntityManager(stats);
         inputHandler = new InputHandler(factory, stats, entityManager, currentLevel);
+        setCallbacks();
+    }
+
+    private void setCallbacks() {
+        if (view != null) {
+            entityManager.setOnEnemyKilledCallback(enemy -> {
+                int reward = enemy.getScoreValue();
+                view.enemyKilled(reward,(int) enemy.getX(),(int) enemy.getY());
+            });
+
+            entityManager.setOnTowerPlacedCallback(tower -> {
+                int price = tower.get_cost();
+                view.towerPlaced(price,(int) tower.getX(),(int) tower.getY());
+            });
+
+            entityManager.setOnTowerSoldCallback(tower -> {
+                int refund= tower.getRefund();
+                view.towerSold(refund,(int) tower.getX(),(int) tower.getY());
+            });
+        }
     }
 
     public void loadLevel(String levelName) {

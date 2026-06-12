@@ -12,4 +12,10 @@ public interface GameView {
      * Resets the game view to its initial state. This method should be called when starting a new game or when restarting after a game over. It should clear any existing game state and prepare the view for a new game session.
      */
     void reset();
+
+    void enemyKilled(int reward,int x, int y);
+
+    void towerPlaced(int price, int x, int y);
+
+    void towerSold(int refund, int x, int y);
 }

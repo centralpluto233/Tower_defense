@@ -9,11 +9,17 @@ import towerdefence.util.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class EntityManager {
     private final List<Tower> towers = new ArrayList<>();
     private final List<EnemyEntity> enemies = new ArrayList<>();
     private final List<Projectile> projectiles = new ArrayList<>();
+
+    private Optional<Consumer<EnemyEntity>> onEnemyKilledCallback= Optional.empty();
+    private Optional<Consumer<Tower>> onTowerPlacedCallback= Optional.empty();
+    private Optional<Consumer<Tower>> onTowerSoldCallback= Optional.empty();
 
     private final RunStats stats;
 
@@ -30,6 +36,18 @@ public class EntityManager {
         this.stats = stats;
     }
 
+    public void setOnEnemyKilledCallback(Consumer<EnemyEntity> callback) {
+        this.onEnemyKilledCallback = Optional.of(callback);
+    }
+
+    public void setOnTowerPlacedCallback(Consumer<Tower> callback) {
+        this.onTowerPlacedCallback = Optional.of(callback);
+    }
+
+    public void setOnTowerSoldCallback(Consumer<Tower> callback) {
+        this.onTowerSoldCallback = Optional.of(callback);
+    }
+
     // ---------------------------------------------------------------------
     // Entity mutation
     // ---------------------------------------------------------------------
@@ -42,6 +60,7 @@ public class EntityManager {
     public void addEntity(Entity entity) {
         if (entity instanceof Tower t) {
             towers.add(t);
+            onTowerPlacedCallback.ifPresent(callback -> callback.accept(t));
         }
         if (entity instanceof Projectile p) {
             projectiles.add(p);
@@ -61,6 +80,7 @@ public class EntityManager {
         Tower tower= towers.get(towerIndex);
         int refund = tower.getRefund();
         tower.markForRemoval();
+        onTowerSoldCallback.ifPresent(callback -> callback.accept(tower));
         return refund;
     }
 
@@ -140,6 +160,7 @@ public class EntityManager {
                 if (enemy.isDead()) {
                     // Enemy was killed
                     stats.onEnemyKilled(enemy.getScoreValue());
+                    onEnemyKilledCallback.ifPresent(enemyEntityConsumer -> enemyEntityConsumer.accept(enemy));
                 } else {
                     // Enemy escaped
                     stats.onEnemyEscaped(enemy.getDamage());
