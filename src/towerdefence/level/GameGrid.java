@@ -3,6 +3,7 @@ package towerdefence.level;
 import towerdefence.util.Vector2D;
 
 import java.util.List;
+import java.util.Optional;
 
 public class GameGrid {
     private final int cols;
@@ -24,12 +25,12 @@ public class GameGrid {
     public void buildFromPath(List<Vector2D> path) {
         for (int i = 0; i < path.size(); i++) {
             Vector2D cur  = path.get(i);
-            Vector2D prev = i > 0 ? path.get(i - 1) : null;
-            Vector2D next = i < path.size() - 1 ? path.get(i + 1) : null;
+            Optional<Vector2D> prev = i > 0 ? Optional.of(path.get(i - 1)) : Optional.empty();
+            Optional<Vector2D> next = i < path.size() - 1 ? Optional.of(path.get(i + 1)) : Optional.empty();
 
             // vul alle tiles tussen vorige waypoint en huidige in
-            if (prev != null) {
-                int x0 = (int) prev.x(), y0 = (int) prev.y();
+            if (prev.isPresent()) {
+                int x0 = (int) prev.get().x(), y0 = (int) prev.get().y();
                 int x1 = (int) cur.x(),  y1 = (int) cur.y();
 
                 int dx = (int) Math.signum(x1 - x0);
@@ -55,20 +56,20 @@ public class GameGrid {
         }
     }
 
-    private TileType determineTileType(Vector2D prev, Vector2D cur, Vector2D next) {
-        int dxIn  = prev == null ? 0 : (int) Math.signum(cur.x() - prev.x());
-        int dyIn  = prev == null ? 0 : (int) Math.signum(cur.y() - prev.y());
-        int dxOut = next == null ? 0 : (int) Math.signum(next.x() - cur.x());
-        int dyOut = next == null ? 0 : (int) Math.signum(next.y() - cur.y());
+    private TileType determineTileType(Optional<Vector2D> prev, Vector2D cur, Optional<Vector2D> next) {
+        int dxIn  = prev.map(vector2D -> (int) Math.signum(cur.x() - vector2D.x())).orElse(0);
+        int dyIn  = prev.map(vector2D -> (int) Math.signum(cur.y() - vector2D.y())).orElse(0);
+        int dxOut = next.map(vector2D -> (int) Math.signum(vector2D.x() - cur.x())).orElse(0);
+        int dyOut = next.map(vector2D -> (int) Math.signum(vector2D.y() - cur.y())).orElse(0);
 
         if (dxIn != 0 && dxOut != 0) return TileType.PATH_H;
         if (dyIn != 0 && dyOut != 0) return TileType.PATH_V;
 
-        // start/einde
-        if (prev == null) return dxOut != 0 ? TileType.PATH_H : TileType.PATH_V;
-        if (next == null) return dxIn  != 0 ? TileType.PATH_H : TileType.PATH_V;
+        // start/end
+        if (prev.isEmpty()) return dxOut != 0 ? TileType.PATH_H : TileType.PATH_V;
+        if (next.isEmpty()) return dxIn  != 0 ? TileType.PATH_H : TileType.PATH_V;
 
-        // bochten — "van X naar Y"
+        // turns
         if (dxIn > 0 && dyOut > 0) return TileType.CORNER_LD; // van links, naar onder
         if (dxIn > 0 && dyOut < 0) return TileType.CORNER_LU; // van links, naar boven
         if (dxIn < 0 && dyOut > 0) return TileType.CORNER_RD; // van rechts, naar onder
