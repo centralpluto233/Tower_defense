@@ -8,6 +8,7 @@ import towerdefence.util.Vector2D;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 /**
@@ -21,11 +22,11 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     private final int maxHealth;
     private final int scoreValue;
     private final int damage;
+    private final double[] offset;
 
     protected List<Vector2D> path;
     protected int currentWaypointIndex = 0;
 
-    private static final double HIT_FLASH_DURATION = 0.15;
     private double hitFlashTimer = 0.0;
 
     /**
@@ -47,7 +48,22 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         this.maxHealth = health;
         this.scoreValue = scoreValue;
         this.damage = damage;
-        this.path = path;
+        this.offset = computeOffset();
+
+        setX(x+offset[0]);
+        setY(y+offset[1]);
+        this.path = path.stream()
+                .map(wp -> new Vector2D(wp.x()+offset[0],wp.y()+offset[1]))
+                .toList();
+    }
+
+    private static double[] computeOffset() {
+        Random rand = new Random();
+        double angle =  rand.nextDouble() * 2 * Math.PI;
+        double offset = rand.nextDouble() * 2 * Constants.EnemyConstants.MAX_OFFSET;
+        double x = Math.cos(angle) * offset;
+        double y = Math.sin(angle) * offset;
+        return new double[]{x,y};
     }
 
     /**
@@ -142,7 +158,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     public void takeDamage(int damage) {
         this.health -= damage;
         this.health = Math.max(0, this.health);
-        hitFlashTimer = HIT_FLASH_DURATION;
+        hitFlashTimer = Constants.EnemyConstants.HIT_FLASH_DURATION;
         logger.fine("Enemy took " + damage + " damage, health: " + this.health + "/" + this.maxHealth);
         if (isDead()) {
             logger.info("Enemy died, score: " + scoreValue);
