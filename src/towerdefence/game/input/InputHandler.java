@@ -1,7 +1,9 @@
-package towerdefence.game;
+package towerdefence.game.input;
 
+import towerdefence.game.AbstractGameFactory;
+import towerdefence.game.entities.EntityManager;
+import towerdefence.game.Game;
 import towerdefence.game.entities.tower.Tower;
-import towerdefence.game.input.InputCommand;
 import towerdefence.game.stats.RunStats;
 import towerdefence.level.LevelData;
 import towerdefence.system.logging.GameLogger;
@@ -40,11 +42,6 @@ public class InputHandler {
      * @param game    the Game instance, which is passed to this method so that it can call methods on the game to perform actions like starting the game, toggling pause, or notifying the game of build menu interactions
      */
     public void handleCommand(InputCommand command, Game game) {
-        if (command == null) {
-            logger.warning("Command is null");
-            return;
-        }
-
         switch (command.action()) {
             case PLACE_TOWER_AT_INDEX -> {
                 int spotIndex = command.spotIndex()

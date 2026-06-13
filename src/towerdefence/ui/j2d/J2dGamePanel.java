@@ -226,7 +226,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     }
 
     // -------------------------------------------------------------------------
-    // Static helper, gebruikt door entity-klassen
+    // static helpers used by entity draw methods
     // -------------------------------------------------------------------------
 
     public static void drawEntityHealthBar(Graphics2D g2d, double x, double y,

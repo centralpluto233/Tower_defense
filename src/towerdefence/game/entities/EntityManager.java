@@ -1,6 +1,6 @@
-package towerdefence.game;
+package towerdefence.game.entities;
 
-import towerdefence.game.entities.Entity;
+import towerdefence.game.Game;
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;

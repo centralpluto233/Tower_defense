@@ -17,10 +17,6 @@ import towerdefence.util.Vector2D;
 
 import java.util.List;
 
-/**
- * Abstract factory for creating game entities
- * Subclasses provide visuals
- */
 public abstract class AbstractGameFactory {
     /**
      * Factory method to create a GameView instance based on the provided Game and Config objects.

@@ -3,10 +3,12 @@ package towerdefence.game;
 import towerdefence.game.ecs.ECSManager;
 import towerdefence.game.ecs.systems.WaveSpawnSystem;
 import towerdefence.game.entities.Entity;
+import towerdefence.game.entities.EntityManager;
 import towerdefence.game.entities.enemy.EnemyEntity;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.input.InputCommand;
+import towerdefence.game.input.InputHandler;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.game.stats.RunStats;
@@ -75,7 +77,7 @@ public class Game {
      * @param factory factory for creating game objects
      */
     public void init(Config config, AbstractGameFactory factory) {
-        logger.info("Creating Game with factory: " + (factory == null ? "null" : factory.getClass().getSimpleName()));
+        logger.info("Creating Game with factory: " + factory.getClass().getSimpleName());
         this.factory = factory;
         this.config = config;
 
