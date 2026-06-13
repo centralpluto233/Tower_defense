@@ -3,7 +3,7 @@ level_file = "Debug.lua"
 lives = 2
 resources = 2000
 
-main_path = {
+path0 = {
     {x=-1,  y=10},
     {x=27,  y=10}
 }
@@ -17,5 +17,5 @@ tower_spots = {
 }
 
 waves = {
-    { count = 2, interval = 1.5, startDelay = 0,  enemyType = "bat" }
+    { count = 2, interval = 1.5, startDelay = 0,  enemyType = "bat", pathIndex = 0 }
 }

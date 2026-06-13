@@ -3,7 +3,7 @@ level_file = "Level2.lua"
 lives = 20
 resources = 150
 
-main_path = {
+path0 = {
     {x=-1, y=4},
     {x=25, y=4},
     {x=25, y=8},
@@ -27,10 +27,10 @@ tower_spots = {
 }
 
 waves = {
-    { count = 6,  interval = 1.2, startDelay = 5.0, enemyType = "goblin" },
-    { count = 10, interval = 0.7, startDelay = 5.0, enemyType = "bat"    },
-    { count = 5,  interval = 1.0, startDelay = 15.0, enemyType = "goblin" },
-    { count = 8,  interval = 0.5, startDelay = 17.0, enemyType = "bat"    },
-    { count = 4,  interval = 1.5, startDelay = 20.0, enemyType = "bigslime" },
-    { count = 4,  interval = 1.5, startDelay = 20.0, enemyType = "goblin" },
+    { count = 6,  interval = 1.2, startDelay = 5.0, enemyType = "goblin", pathIndex = 0 },
+    { count = 10, interval = 0.7, startDelay = 5.0, enemyType = "bat", pathIndex = 0  },
+    { count = 5,  interval = 1.0, startDelay = 15.0, enemyType = "goblin", pathIndex = 0 },
+    { count = 8,  interval = 0.5, startDelay = 17.0, enemyType = "bat", pathIndex = 0  },
+    { count = 4,  interval = 1.5, startDelay = 20.0, enemyType = "bigslime", pathIndex = 0 },
+    { count = 4,  interval = 1.5, startDelay = 20.0, enemyType = "goblin", pathIndex = 0 },
 }

@@ -89,6 +89,16 @@ public class LuaEngine {
         }
     }
 
+    private List<List<Vector2D>> readPathsTable() {
+        List<List<Vector2D>> paths = new ArrayList<>();
+        int i = 0;
+        while (!globals.get("path" + i).isnil()) {
+            paths.add(readVectorTable("path" + i));
+            i++;
+        }
+        return paths;
+    }
+
     /**
      * After a Lua script has been loaded and executed, this method reads the relevant global variables and tables defined in the script (such as "level_name", "lives", "resources", "main_path", "tower_spots", and "waves") and constructs a LevelData object containing all of this information, which can then be used by the game to set up the level accordingly.
      *
@@ -99,21 +109,25 @@ public class LuaEngine {
         String levelFile = globals.get("level_file").checkjstring();
         int lives = globals.get("lives").checkint();
         int resources = globals.get("resources").checkint();
+        List<List<Vector2D>> paths = readPathsTable();
 
-        List<Vector2D> rawPath = this.readVectorTable("main_path");
         List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
 
         GameGrid grid = new GameGrid(config.getViewHeight() / config.getTileSize(),
                 config.getViewWidth()  / config.getTileSize());
-        grid.buildFromPath(rawPath);
+        grid.buildFromPath(paths.getFirst());
         if (config.getDebug()) {
             System.out.println(grid);
         }
+        paths.forEach(grid::buildFromPath);
 
-        List<Vector2D> path = this.toWorld(rawPath);
+        paths = paths.stream()
+                .map(p -> toWorld(new ArrayList<>(p)))
+                .toList();
+
         List<WaveData> waves = this.readWaveTable();
 
-        return new LevelData(levelName, levelFile, lives, resources, path, towerSpots, waves, grid);
+        return new LevelData(levelName, levelFile, lives, resources, paths, towerSpots, waves, grid);
     }
 
     /**
@@ -164,8 +178,9 @@ public class LuaEngine {
             double interval = wave.get("interval").checkdouble();
             double startDelay = wave.get("startDelay").checkdouble();
             String enemyType = wave.get("enemyType").optjstring(Constants.Gameplay.DEFAULT_ENEMY_TYPE);
+            int pathIndex = wave.get("pathIndex").checkint();
 
-            waves.add(new WaveData(count, interval, startDelay, enemyType));
+            waves.add(new WaveData(count, interval, startDelay, enemyType,pathIndex));
         }
         return waves;
     }

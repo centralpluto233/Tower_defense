@@ -296,7 +296,7 @@ public class Game {
     }
 
     public List<Vector2D> getPath() {
-        return currentLevel.getPath();
+        return currentLevel.getPath(0);
     }
 
     public List<Vector2D> getTowerSpots() {

@@ -149,7 +149,7 @@ public class WaveSpawnSystem {
             ecs.addSpawnJob(id, new SpawnScheduleComponent(wave.intervalSeconds(),
                             wave.startDelaySeconds()),
                     new SpawnCountComponent(wave.count()),
-                    new SpawnPathComponent(levelData.getPath()),
+                    new SpawnPathComponent(levelData.getPath(0)),
                     new SpawnTypeComponent(wave.enemyType()));
         }
     }

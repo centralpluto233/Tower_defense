@@ -9,9 +9,9 @@ public class LevelData {
     private final String levelFile;
     private final int lives;
     private final int resources;
-    private final List<Vector2D> path;
     private final List<Vector2D> towerSpots;
     private final List<WaveData> waves;
+    private final List<List<Vector2D>> paths;
     private final GameGrid grid;
 
     /**
@@ -20,16 +20,16 @@ public class LevelData {
      * @param levelName  the name of the level
      * @param lives      the number of lives the player starts with in this level
      * @param resources  the amount of resources the player starts with in this level
-     * @param path       the path that enemies will follow, represented as a list of waypoints (Vector2D)
+     * @param paths      the paths that enemies will follow in this level, represented as a list of lists of Vector2D
      * @param towerSpots the locations where the player can build towers, represented as a list of Vector2D
      * @param waves      the list of waves of enemies that will spawn in this level, represented as a list of WaveData
      */
-    public LevelData(String levelName, String levelFile, int lives, int resources, List<Vector2D> path, List<Vector2D> towerSpots, List<WaveData> waves, GameGrid grid) {
+    public LevelData(String levelName, String levelFile, int lives, int resources, List<List<Vector2D>> paths, List<Vector2D> towerSpots, List<WaveData> waves, GameGrid grid) {
         this.levelName = levelName;
         this.levelFile = levelFile;
         this.lives = lives;
         this.resources = resources;
-        this.path = List.copyOf(path);
+        this.paths = paths.stream().map(List::copyOf).toList();
         this.towerSpots = List.copyOf(towerSpots);
         this.waves = List.copyOf(waves);
         this.grid = grid;
@@ -76,8 +76,12 @@ public class LevelData {
      *
      * @return the enemy path
      */
-    public List<Vector2D> getPath() {
-        return path;
+    public List<Vector2D> getPath(int index) {
+        return paths.get(index);
+    }
+
+    public List<List<Vector2D>> getPaths() {
+        return paths;
     }
 
     /**
@@ -113,7 +117,7 @@ public class LevelData {
                 "levelName='" + levelName + '\'' +
                 ", lives=" + lives +
                 ", resources=" + resources +
-                ", path=" + path +
+                ", paths=" + paths +
                 ", towerSpots=" + towerSpots +
                 ", waves=" + waves +
                 '}';
