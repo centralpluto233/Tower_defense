@@ -63,4 +63,12 @@ public class PoisonEffectComponent {
         this.timeRemaining = duration;
     }
 
+    public double getDuration() {
+        return duration;
+    }
+
+    public double getInterval() {
+        return tickInterval;
+    }
+
 }

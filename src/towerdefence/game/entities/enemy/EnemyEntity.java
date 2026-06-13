@@ -231,13 +231,18 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * applies a poison effect to the enemy. If the enemy is already poisoned, the poison effect will be refreshed (duration reset).
-     * @param poison the poison effect to apply to the enemy
+     * @param poison the poison effect to apply to the enemy, gets scaled to with the enemy resistance
      */
     public void applyPoisonEffect(PoisonEffectComponent poison) {
+        if (getPoisonResistance() >= 1.0) {
+            return;
+        }
         if (poisonComponent.isPresent()) {
             poisonComponent.get().refresh();
         } else {
-            poisonComponent = Optional.of(poison);
+            int scaledDamage = (int) (poison.getDamagePerTick() * (1.0 - getPoisonResistance()));
+            PoisonEffectComponent scaled = new PoisonEffectComponent(poison.getDuration(), poison.getInterval(), scaledDamage);
+            poisonComponent = Optional.of(scaled);
         }
     }
 
@@ -297,6 +302,15 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
      */
     public boolean isPoisoned() {
         return poisonComponent.isPresent();
+    }
+
+    /**
+     * returns resistance to poison damage as a value between 0.0 and 1.0, where 0.0 means no resistance (full poison damage) and 1.0 means full resistance (no poison damage).
+     * This can be overridden by subclasses to give certain enemy types resistance to poison.
+     * @return the poison resistance of the enemy, between 0.0 and 1.0
+     */
+    public double getPoisonResistance() {
+        return 0.0;
     }
 
     // ---------------------------------------
