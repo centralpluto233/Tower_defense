@@ -7,6 +7,7 @@ import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.system.config.Config;
+import towerdefence.system.logging.GameLogger;
 import towerdefence.ui.input.InputMapping;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.MapTheme;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
@@ -30,6 +32,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final BuildMenuPanel     buildMenuPanel;
     private final MenuOverlayPanel   menuOverlayPanel;
     private final AssetManager       assets;
+    private static final Logger logger = GameLogger.getLogger();
 
     private final J2dMapRenderer mapRenderer;
     private final J2dHudRenderer hudRenderer;
@@ -206,6 +209,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.currentTheme = theme;
         mapRenderer.rebuild(theme);
         menuOverlayPanel.updateThemeBackground(theme,assets);
+        logger.info("Theme changed to: " + theme);
     }
 
     // -------------------------------------------------------------------------

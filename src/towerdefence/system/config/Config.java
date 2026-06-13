@@ -1,10 +1,10 @@
 package towerdefence.system.config;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -12,6 +12,8 @@ import java.util.logging.Level;
  * Loads configuration properties from a file and provides access to them.
  */
 public class Config {
+    private static final Path EXTERNAL_CONFIG = Path.of(System.getProperty("user.dir"), "config", "config.properties");
+
     private final Properties properties;
 
     /**
@@ -19,6 +21,14 @@ public class Config {
      */
     public Config() {
         properties = new Properties();
+
+        if (Files.exists(EXTERNAL_CONFIG)) {
+            try (InputStream input = Files.newInputStream(EXTERNAL_CONFIG)) {
+                properties.load(input);
+                return;
+            } catch (IOException e) { /* val terug op classpath */ }
+        }
+
         try (InputStream input = Config.class.getResourceAsStream(Constants.Paths.CONFIG)) {
             if (input == null) {
                 throw new RuntimeException("config.properties not found in resources.");
@@ -118,8 +128,11 @@ public class Config {
      * Saves the current config back to the file.
      */
     public void save() {
-        try (OutputStream output = new FileOutputStream(Objects.requireNonNull(Config.class.getResource(Constants.Paths.CONFIG)).getPath())) {
-            properties.store(output, "Game Configuration");
+        try {
+            Files.createDirectories(EXTERNAL_CONFIG.getParent());
+            try (OutputStream output = Files.newOutputStream(EXTERNAL_CONFIG)) {
+                properties.store(output, "Game Configuration");
+            }
         } catch (IOException e) {
             throw new RuntimeException("Failed to save config: " + e.getMessage());
         }
@@ -219,6 +232,7 @@ public class Config {
 
     /**
      * Sets whether debug mode is enabled in the config.
+     *
      * @param state true to enable debug mode, false to disable it
      */
     public void setDebug(boolean state) {
@@ -254,6 +268,7 @@ public class Config {
 
     /**
      * Gets the tile size for the game from the config, which is used to determine the size of each tile in the game world.
+     *
      * @return the tile size for the game
      */
     public int getTileSize() {
@@ -262,6 +277,7 @@ public class Config {
 
     /**
      * Gets the map theme from the config, which is used to determine the visual style of the game map.
+     *
      * @return the map theme for the game
      */
     public String getMapTheme() {
@@ -270,6 +286,7 @@ public class Config {
 
     /**
      * Sets the map theme in the config, which is used to determine the visual style of the game map.
+     *
      * @param mapTheme the map theme to set in the config
      */
     public void setMapTheme(String mapTheme) {
