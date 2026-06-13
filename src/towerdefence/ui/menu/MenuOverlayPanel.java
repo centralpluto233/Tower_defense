@@ -335,9 +335,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        if (state == GameState.MENU
-                || state == GameState.GAME_OVER
-                || state == GameState.LEVEL_WON) {
+        if (state == GameState.MENU) {
 
             if (background != null) {
                 g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);

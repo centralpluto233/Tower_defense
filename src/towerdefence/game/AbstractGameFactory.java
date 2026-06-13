@@ -3,6 +3,7 @@ package towerdefence.game;
 import towerdefence.game.entities.enemy.BatEnemy;
 import towerdefence.game.entities.enemy.BigSlime;
 import towerdefence.game.entities.enemy.GoblinEnemy;
+import towerdefence.game.entities.enemy.SkeletonEnemy;
 import towerdefence.game.entities.projectile.ArcherArrow;
 import towerdefence.game.entities.projectile.CannonBall;
 import towerdefence.game.entities.projectile.CrossBowArrow;
@@ -43,6 +44,8 @@ public abstract class AbstractGameFactory {
     public abstract BatEnemy createBat(double x, double y, List<Vector2D> path);
 
     public abstract BigSlime createBigSlime(double x, double y, List<Vector2D> path);
+
+    public abstract SkeletonEnemy createSkeleton(double x, double y, List<Vector2D> path);
 
     // Towers
     public abstract CrossBowTower createCrossBowTower(double x, double y);

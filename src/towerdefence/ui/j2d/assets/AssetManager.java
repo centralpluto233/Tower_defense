@@ -34,6 +34,7 @@ public class AssetManager {
                 "sprites/entities/enemies/bat.png",
                 "sprites/entities/enemies/goblin.png",
                 "sprites/entities/enemies/big_slime.png",
+                "sprites/entities/enemies/skeleton.png",
 
                 // Projectiles
                 "sprites/entities/projectiles/arrow_archer.png",

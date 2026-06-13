@@ -141,13 +141,24 @@ public class Constants {
             public static final double WIDTH = 14.0 * 2;
             public static final double HEIGHT = 8.0 * 2;
         }
+
+        public static final class Skeleton {
+            public static final double SPEED = 40.0;
+            public static final int HEALTH = 40;
+            public static final int SCORE_VALUE = 15;
+            public static final int BASE_DAMAGE = 2;
+            // visual
+            public static final double WIDTH = 8.0 * 2;
+            public static final double HEIGHT = 7.0 * 2;
+        }
     }
 
     public static class LevelConstants {
         public static final List<String> LEVEL_NAMES = List.of(
                 "Level1.lua",
                 "Level2.lua",
-                "Level3.lua"
+                "Level3.lua",
+                "Level4.lua"
         );
     }
 }
