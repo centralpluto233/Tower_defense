@@ -73,6 +73,14 @@ public record Vector2D(double x, double y) {
         return x * other.x + y * other.y;
     }
 
+    /**
+     * Checks if this vector overlaps with a rectangle defined by the top-left corner (other) and the specified width and height.
+     * The rectangle is considered to be axis-aligned.
+     * @param other The top-left corner of the rectangle to check for overlap.
+     * @param width The width of the rectangle.
+     * @param height The height of the rectangle.
+     * @return true if this vector is within the bounds of the rectangle defined by other, width, and height; false otherwise.
+     */
     public boolean overlaps(Vector2D other, double width, double height) {
         return (this.x() >= other.x() &&
                 this.x() <= other.x() + width &&

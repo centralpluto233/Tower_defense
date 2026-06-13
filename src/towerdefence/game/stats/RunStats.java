@@ -26,6 +26,10 @@ public class RunStats {
         this.kills = 0;
     }
 
+    // ----------------------------------------------------------------
+    // Game-events
+    // ----------------------------------------------------------------
+
     /**
      * Updates the hud when an enemy is killed. Increments the kill count and adds the reward resources to the total resources.
      *
@@ -51,6 +55,10 @@ public class RunStats {
         logger.info("Enemy escaped! Total escaped: " + escaped + ", lives left: " + lives);
     }
 
+    // -------------------------------------------------------
+    // Resources
+    // -------------------------------------------------------
+
     /**
      * Attempts to spend the given amount of resources. If the player has enough resources, the cost is subtracted from the total resources and true is returned.
      * If not enough resources are available, a warning is logged and false is returned without changing the total resources.
@@ -69,13 +77,20 @@ public class RunStats {
         }
     }
 
+    /**
+     * Adds the given amount of resources to the player's total resources.
+     * @param amount the amount of resources to add, which will be added to the total resources
+     */
     public void addResources(int amount) {
         this.resources+= amount;
     }
 
+    // ----------------------------------------------------------
+    // Getters
+    // ----------------------------------------------------------
+
     /**
-     * Checks if the player has been defeated by verifying if the number of lives has dropped to 0. If lives are 0, the player is considered defeated and true is returned. Otherwise, false is returned.
-     *
+     * Checks if the player has been defeated
      * @return true if the player has been defeated (lives are 0), false otherwise
      */
     public boolean isDefeated() {
@@ -85,7 +100,7 @@ public class RunStats {
     /**
      * Returns the amount of lives the player has left
      *
-     * @return the current number of lives the player has remaining, which indicates how many more enemies can escape before the player is defeated
+     * @return the current number of lives the player has remaining
      */
     public int getLives() {
         return lives;
@@ -101,9 +116,8 @@ public class RunStats {
     }
 
     /**
-     * Returns the max amount of lives the player started with at the beginning of the run, which can be used for display purposes to show the player's progress towards defeat (e.g., "Lives: 3/10")
-     *
-     * @return the initial number of lives the player had at the start of the run, which represents the maximum lives and can be used for display purposes to show how many lives have been lost (e.g., "Lives: 3/10")
+     * Returns the max amount of lives the player started with at the beginning of the run
+     * @return the initial number of lives the player had at the start of the run
      */
     public int getMaxLives() {
         return maxLives;

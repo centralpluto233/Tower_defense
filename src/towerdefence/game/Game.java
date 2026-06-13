@@ -80,7 +80,12 @@ public class Game {
         this.config = config;
 
         this.luaEngine = new LuaEngine(config);
-        this.currentLevel = luaEngine.loadLevelData();
+        try {
+            this.currentLevel = luaEngine.loadLevelData();
+        } catch (Exception e) {
+            logger.warning("Failed to load default level: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
 
         this.manager = new ECSManager();
         this.waveSpawnSystem = new WaveSpawnSystem();
@@ -107,6 +112,9 @@ public class Game {
         setCallbacks();
     }
 
+    /**
+     * set callbacks for entity events to update the view accordingly, such as when an enemy is killed, a tower is placed or sold, or an enemy escapes
+     */
     private void setCallbacks() {
         if (view != null) {
             entityManager.setOnEnemyKilledCallback(enemy -> {
@@ -115,7 +123,7 @@ public class Game {
             });
 
             entityManager.setOnTowerPlacedCallback(tower -> {
-                int price = tower.get_cost();
+                int price = tower.getCost();
                 view.towerPlaced(price,(int) tower.getX(),(int) tower.getY());
             });
 
@@ -131,16 +139,28 @@ public class Game {
         }
     }
 
+    /**
+     * Load a new level by name, resetting the game state and notifying the view and wave spawn system of the new level data.
+     * @param levelName the name of the level to load, which should correspond to a Lua level script file that can be loaded by the LuaEngine
+     */
     public void loadLevel(String levelName) {
         if (gameState != GameState.MENU) stop();
-        LevelData newLevel = luaEngine.loadLevelData(levelName);
-        if (!newLevel.getLevelName().equals(currentLevel.getLevelName())) {
-            currentLevel = newLevel;
-            view.reset();
-            waveSpawnSystem.reset();
+        try {
+            LevelData newLevel = luaEngine.loadLevelData(levelName);
+            if (!newLevel.getLevelName().equals(currentLevel.getLevelName())) {
+                currentLevel = newLevel;
+                view.reset();
+                waveSpawnSystem.reset();
+            }
+        } catch (Exception e) {
+            logger.warning("Failed to load level: " + levelName + ". Error: " + e.getMessage());
         }
     }
 
+    /**
+     * Get the name of the next level in the sequence after the current level, if it exists.
+     * @return an Optional containing the name of the next level if it exists, or an empty Optional if the current level is the last one in the sequence or if the current level's name cannot be found in the list of levels
+     */
     public Optional<String> getNextLevel() {
         List<String> levels = Constants.LevelConstants.LEVEL_NAMES;
         int currentIndex = levels.indexOf(currentLevel.getLevelFile()); // exacte match
@@ -175,12 +195,18 @@ public class Game {
         logger.info("Stopping Game");
     }
 
+    /**
+     * exits the game
+     */
     public void exit() {
         gameState = GameState.EXIT;
         notifyListeners(GameListener::onGameStopped);
         logger.info("Exiting Game");
     }
 
+    /**
+     * toggles between paused and running
+     */
     public void togglePause() {
         if (gameState == GameState.RUNNING) {
             gameState = GameState.PAUSE;
@@ -220,6 +246,10 @@ public class Game {
         logger.info("Game loop finished");
     }
 
+    /**
+     * renders current frame if stopwatch tells it's time
+     * @param deltaTime time between frames, used for animations and smooth rendering
+     */
     private void render(double deltaTime) {
         if (renderStopwatch.hasTimePassed(1.0 / config.getTargetRenderFps())) {
             renderStopwatch.tick();
@@ -240,7 +270,12 @@ public class Game {
 
         logger.finest("Updating Game");
 
-        waveSpawnSystem.update(deltaTime, manager, this, factory);
+        try {
+            waveSpawnSystem.update(deltaTime, manager, this, factory);
+        } catch (Exception e) {
+            logger.warning("Error updating wave spawn system: " + e.getMessage());
+            this.exit();
+        }
 
         boolean defeated = entityManager.update(deltaTime, this);
         if (defeated) {
@@ -358,7 +393,6 @@ public class Game {
     private void notifyListeners(Consumer<GameListener> event) {
         gameListeners.forEach(event);
     }
-
 
     public void notifyBuildMenuRequested(int spotIndex, Vector2D spot) {
         notifyListeners(l -> l.onBuildMenuRequested(spotIndex, spot));

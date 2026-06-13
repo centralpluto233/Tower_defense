@@ -19,7 +19,6 @@ import java.util.function.Consumer;
 public class MenuOverlayPanel extends JPanel implements GameListener {
     private final Game game;
     private final Config config;
-    private final AssetManager assetManager;
     private final Consumer<MapTheme> onThemeChanged;
 
     private static final String CARD_MENU = "MENU";
@@ -43,7 +42,6 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         this.hoverCursor = hover;
         this.config=config;
         this.onThemeChanged = onThemeChanged;
-        this.assetManager = assetManager;
 
         this.pauseButton = GameButton.icon(assetManager.getSprite("sprites/hud/pause.png"),5);
 
@@ -306,7 +304,6 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         centerPanel.setVisible(state != GameState.RUNNING);
 
         String card = switch (state) {
-            case MENU -> CARD_MENU;
             case PAUSE -> CARD_PAUSE;
             case GAME_OVER -> CARD_GAME_OVER;
             case LEVEL_WON -> CARD_LEVEL_WON;

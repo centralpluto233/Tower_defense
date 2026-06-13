@@ -32,7 +32,7 @@ public class WaveSpawnSystem {
      * @param game    the Game instance, used to add new enemy entities when they spawn
      * @param factory the AbstractGameFactory, used to create new enemy entities based on their type when they spawn
      */
-    public void update(double dt, ECSManager ecs, Game game, AbstractGameFactory factory) {
+    public void update(double dt, ECSManager ecs, Game game, AbstractGameFactory factory) throws Exception {
         List<Integer> toRemove = new ArrayList<>();
 
         for (int id : ecs.getAllEntities()) {
@@ -66,7 +66,6 @@ public class WaveSpawnSystem {
                 continue;
             }
 
-            // Use List#get(0) so it works with any List implementation
             Vector2D spawnPoint = path.getFirst();
 
             String type = (typeComp != null) ? typeComp.getEnemyType() : "goblin";
@@ -74,7 +73,7 @@ public class WaveSpawnSystem {
                 case "bat" -> factory.createBat(spawnPoint.x(), spawnPoint.y(), path);
                 case "goblin" -> factory.createGoblin(spawnPoint.x(), spawnPoint.y(), path);
                 case "bigslime" -> factory.createBigSlime(spawnPoint.x(), spawnPoint.y(), path);
-                default -> throw new IllegalStateException("Unknown spawn type: " + type);
+                default -> throw new Exception("Unknown spawn type: " + type);
             });
 
             countComp.consumeOne();
@@ -84,9 +83,8 @@ public class WaveSpawnSystem {
                 .filter(id -> {
                     SpawnCountComponent count = ecs.getSpawnCounts().get(id);
                     SpawnScheduleComponent schedule = ecs.getSpawnSchedules().get(id);
-                    // only waves that haven't started yet (still at full count)
                     return count != null && schedule != null
-                            && count.hasNotSpawnedAny()  // ← need this method
+                            && count.hasNotSpawnedAny()
                             && schedule.getTimeLeftSeconds() > 0;
                 })
                 .map(id -> ecs.getSpawnSchedules().get(id))
@@ -127,14 +125,27 @@ public class WaveSpawnSystem {
         return (int) (distinctStartDelays.size() - notStartedGroups);
     }
 
+    /**
+     * Returns the total number of waves based on the distinct start delays collected during initialization.
+     * @return the total number of waves, which is the size of the distinctStartDelays list
+     */
     public int getTotalWaves() {
         return distinctStartDelays.size();
     }
 
+    /**
+     * Returns the countdown in seconds until the next wave starts, based on the minimum time left among all spawn schedules that haven't started yet.
+     * @return the countdown in seconds until the next wave starts, or 0 if there are no upcoming waves
+     */
     public double getNextWaveCountdown() {
         return nextWaveCountdown;
     }
 
+    /**
+     * Initializes the WaveSpawnSystem with the given LevelData and ECSManager. It creates spawn jobs for each wave defined in the LevelData, setting up their spawn schedules, counts, paths, and types in the ECSManager.
+     * @param levelData the LevelData containing wave definitions, including start delays, intervals, counts, paths, and enemy types
+     * @param ecs the ECSManager to which the spawn jobs will be added, allowing the system to manage enemy spawning based on the defined waves
+     */
     public void init(LevelData levelData, ECSManager ecs) {
         this.ecsManager = ecs;
 
@@ -154,6 +165,9 @@ public class WaveSpawnSystem {
         }
     }
 
+    /**
+     * Resets the WaveSpawnSystem by removing all entities from the ECSManager and resetting the next wave countdown to zero. This effectively clears all spawn jobs and prepares the system for a fresh start.
+     */
     public void reset() {
         if (ecsManager==null) {
             logger.fine("reset() called before init(), skipping");

@@ -6,206 +6,91 @@ import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.input.InputCommand;
 import towerdefence.game.interfaces.GameView;
-import towerdefence.level.TileType;
 import towerdefence.system.config.Config;
 import towerdefence.ui.input.InputMapping;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.MapTheme;
-import towerdefence.ui.j2d.assets.SpriteAnimation;
 import towerdefence.ui.menu.BuildMenuPanel;
 import towerdefence.ui.menu.MenuOverlayPanel;
 import towerdefence.util.Vector2D;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 public class J2dGamePanel extends JPanel implements GameView, InputMapping {
-    private final Game game;
-    private JFrame frame;
-    private final Config config;
+
+    private final Game               game;
+    private final Config             config;
     private final J2dGraphicsContext graphicsContext;
-    private final BuildMenuPanel buildMenuPanel;
-    private final AssetManager assetManager;
-    private final Logger logger =  Logger.getLogger(getClass().getSimpleName());
+    private final BuildMenuPanel     buildMenuPanel;
 
-    private record Decoration(BufferedImage sprite, int x, int y) {}
-    private record Tree(int x, int y, int type, double scale) {}
-
-    private final List<Tree> trees = new ArrayList<>();
-
-    private final List<Decoration> decorations = new ArrayList<>();
-    private final List<BufferedImage> decSprites;
-    private final SpriteAnimation castle;
-    private BufferedImage backgroundCache;
-
-    private long fpsLastTime = System.currentTimeMillis();
-    private int fpsFrames = 0;
-    private int fps = 0;
-
-    private double healthBarShakeTimer = 0.0;
-    private static final double SHAKE_DURATION= 0.4;
-    private static final int SHAKE_INTENSITY = 4;
-
-    private final BufferedImage full;
-    private final BufferedImage half;
-    private final BufferedImage empty;
-    private final BufferedImage box;
-
-    private final SpriteAnimation coin;
-    private final Cursor normalCursor;
-    private final Cursor buildCursor;
-    private final Cursor noMoneyCursor;
-    private final Cursor sellCursor;
+    private final J2dMapRenderer mapRenderer;
+    private final J2dHudRenderer hudRenderer;
 
     private MapTheme currentTheme;
+    private double   deltaTime = 0;
 
-    private double deltaTime = 0;
-    int DECORATION_PATH_CLEARANCE;
+    private long fpsLastTime = System.currentTimeMillis();
+    private int  fpsFrames   = 0;
+    private int  fps         = 0;
 
-    private final Map<TileType, BufferedImage> pathTiles = new EnumMap<>(TileType.class);
+    private final Cursor normalCursor;
+    private final Cursor buildCursor;
+    private final Cursor sellCursor;
 
-    private record FloatingText(String text, Color color, double x, double y, double startLifetime, double lifetime) {}
-    private final List<FloatingText> floatingTexts = new ArrayList<>();
+    private JFrame frame;
 
-    // ---------------------------------------------------------------------
-    // Construction / initialization
-    // ---------------------------------------------------------------------
-    public J2dGamePanel(Game game, Config config, J2dGraphicsContext graphicsContext, AssetManager assetManager) {
-        this.game = game;
-        this.config = config;
+    // -------------------------------------------------------------------------
+    // Construction
+    // -------------------------------------------------------------------------
+
+    public J2dGamePanel(Game game, Config config, J2dGraphicsContext graphicsContext, AssetManager assets) {
+        this.game            = game;
+        this.config          = config;
         this.graphicsContext = graphicsContext;
-        this.assetManager = assetManager;
+        this.currentTheme    = MapTheme.valueOf(config.getMapTheme().toUpperCase());
+
         setPreferredSize(new Dimension(config.getGameWidth(), config.getGameHeight()));
         setBackground(Color.BLACK);
         setDoubleBuffered(true);
-        this.currentTheme = MapTheme.valueOf(config.getMapTheme().toUpperCase());
 
-        this.DECORATION_PATH_CLEARANCE= config.getTileSize();
+        this.normalCursor = makeCursor(assets, "sprites/hud/Cursor_1.png",     "normalCursor");
+        Cursor hoverCursor = makeCursor(assets, "sprites/hud/Cursor_2.png",    "hoverCursor");
+        this.buildCursor  = makeCursor(assets, "sprites/hud/BuildCursor.png",  "buildCursor");
+        this.sellCursor   = makeCursor(assets, "sprites/hud/sellcursor.png",   "sellCursor");
+        Cursor noMoney    = makeCursor(assets, "sprites/hud/Cursor_3.png",     "noMoneyCursor");
 
-        BufferedImage normalCursorImg = assetManager.getSprite("sprites/hud/Cursor_1.png");
-        this.normalCursor = Toolkit.getDefaultToolkit().createCustomCursor(normalCursorImg, new Point(0, 0), "normalCursor");
-
-        BufferedImage hoverCursorImg = assetManager.getSprite("sprites/hud/Cursor_2.png");
-        Cursor hoverCursor = Toolkit.getDefaultToolkit().createCustomCursor(hoverCursorImg, new Point(0, 0), "hoverCursor");
-
-        BufferedImage buildCursorImg = assetManager.getSprite("sprites/hud/BuildCursor.png");
-        this.buildCursor = Toolkit.getDefaultToolkit().createCustomCursor(buildCursorImg, new Point(0, 0), "buildCursor");
-
-        BufferedImage sellCursorImg = assetManager.getSprite("sprites/hud/sellcursor.png");
-        this.sellCursor = Toolkit.getDefaultToolkit().createCustomCursor(sellCursorImg, new Point(0, 0), "buildCursor");
-
-        BufferedImage noMoneyCursorImg = assetManager.getSprite("sprites/hud/Cursor_3.png");
-        this.noMoneyCursor = Toolkit.getDefaultToolkit().createCustomCursor(noMoneyCursorImg, new Point(0, 0), "noMoneyCursor");
+        this.mapRenderer = new J2dMapRenderer(game, config, assets, currentTheme);
+        this.hudRenderer = new J2dHudRenderer(game, config, assets);
 
         setLayout(new OverlayLayout(this));
-        MenuOverlayPanel overlay = new MenuOverlayPanel(game, config, hoverCursor, this::setTheme, assetManager);
+
+        MenuOverlayPanel overlay = new MenuOverlayPanel(game, config, hoverCursor, this::setTheme, assets);
         overlay.setAlignmentX(0.0f);
         overlay.setAlignmentY(0.0f);
         add(overlay);
         game.addGameListener(overlay);
 
-        BuildMenuPanel buildMenu = new BuildMenuPanel(game,this, assetManager, hoverCursor, noMoneyCursor);
+        BuildMenuPanel buildMenu = new BuildMenuPanel(game, this, assets, hoverCursor, noMoney);
         buildMenu.setAlignmentX(0.0f);
         buildMenu.setAlignmentY(0.0f);
         add(buildMenu);
         this.buildMenuPanel = buildMenu;
         game.addGameListener(buildMenu);
-
-        BufferedImage castleSprite = assetManager.getSprite("sprites/map/castle.png");
-        this.castle = new SpriteAnimation(castleSprite, 4, 30);
-
-        BufferedImage coinSprite = assetManager.getSprite("sprites/hud/Coin-Sheet.png");
-        this.coin = new SpriteAnimation(coinSprite, 4, 30);
-
-        this.decSprites = List.of(
-                assetManager.getSprite("sprites/map/decoration/mushroom.png"),
-                assetManager.getSprite("sprites/map/decoration/mushroom.png"),
-                assetManager.getSprite("sprites/map/decoration/rock_1.png"),
-                assetManager.getSprite("sprites/map/decoration/rock_2.png"),
-                assetManager.getSprite("sprites/map/decoration/rock_3.png")
-        );
-
-        this.empty = assetManager.getSprite("sprites/hud/heart_empty.png");
-        this.half = assetManager.getSprite("sprites/hud/heart_half.png");
-        this.full = assetManager.getSprite("sprites/hud/heart_full.png");
-
-        this.box = assetManager.getSprite("sprites/hud/box.png");
-
-        loadPathTiles();
-        generateTrees();
-
-        generateDecorations();
-        buildBackgroundCache();
     }
 
-    private void loadPathTiles() {
-        pathTiles.clear();
-        BufferedImage s = assetManager.getSprite("sprites/map/" + currentTheme.folder() + "/path.png");
-        int t = 16;
-        // bestaande 6 tiles
-        pathTiles.put(TileType.CORNER_SE, s.getSubimage(0,     0, t, t));
-        pathTiles.put(TileType.PATH_H,    s.getSubimage(t,     0, t, t));
-        pathTiles.put(TileType.CORNER_SW, s.getSubimage(2*t,   0, t, t));
-        pathTiles.put(TileType.PATH_V,    s.getSubimage(0,     t, t, t));
-        pathTiles.put(TileType.CORNER_NE, s.getSubimage(0,   2*t, t, t));
-        pathTiles.put(TileType.CORNER_NW, s.getSubimage(2*t, 2*t, t, t));
-        // nieuwe 5 tiles — rij 3 en 4 in je spritesheet
-        pathTiles.put(TileType.T_NES,     s.getSubimage(0,   4*t, t, t));
-        pathTiles.put(TileType.T_WES,     s.getSubimage(t,   3*t, t, t));
-        pathTiles.put(TileType.T_WNE,     s.getSubimage(0, 3*t, t, t));
-        pathTiles.put(TileType.T_WNS,     s.getSubimage(2*t, 3*t, t, t));
-        pathTiles.put(TileType.CROSS,     s.getSubimage(t,   4*t, t, t));
-    }
+    // -------------------------------------------------------------------------
+    // GameView
+    // -------------------------------------------------------------------------
 
-    private void generateTrees() {
-        trees.clear();
-        Random rng = new Random(18);
-        int count = 25;
-        for (int i = 0; i < count; i++) {
-            int x = rng.nextInt(config.getGameWidth());
-            int y = rng.nextInt(config.getGameHeight());
-            if (isTooCloseToPath(x, y, DECORATION_PATH_CLEARANCE)) continue;
-            double scale = 1.5 + rng.nextDouble();
-            trees.add(new Tree(x, y, rng.nextInt(2), scale));
-        }
-    }
-
-    // ---------------------------------------------------------------------
-    // Window / lifecycle
-    // ---------------------------------------------------------------------
-    public void ensureWindow() {
-        if (frame != null) {
-            return;
-        }
-
-        frame = new JFrame(config.getWindowTitle());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        frame.setContentPane(this);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(true);
-        frame.setVisible(true);
-        frame.setResizable(false);
-        frame.setFocusable(true);
-        this.setCursor(normalCursor);
-
-        frame.setFocusTraversalKeysEnabled(false);
-        SwingUtilities.invokeLater(this::requestFocusInWindow);
-    }
-
-    @Override
-    public void reset() {
-        this.decorations.clear();
-        generateDecorations();
-        generateTrees();
-        buildBackgroundCache();
-    }
-
+    /**
+     * Called by the game every frame to render the current state of the game. This method should trigger a repaint of the panel, and can also be used to update any animations or other time-based effects in the game.
+     * @param deltaTime the time in seconds since the last frame was rendered. This can be used to update animations and other time-based effects in the game.
+     */
     @Override
     public void render(double deltaTime) {
         this.deltaTime = deltaTime;
@@ -214,99 +99,193 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         repaint();
     }
 
-    // ---------------------------------------------------------------------
-    // Paint / rendering entry point
-    // ---------------------------------------------------------------------
+    /**
+     * Called by the game when a new level is loaded, to reset the map renderer with the new level data.
+     */
+    @Override
+    public void reset() {
+        mapRenderer.rebuild(currentTheme);
+    }
+
+    /**
+     * Called by the game when an enemy is killed, to show the reward as floating text.
+     * @param reward the amount of money rewarded for killing the enemy
+     * @param x the x coordinate of the enemy that was killed
+     * @param y the y coordinate of the enemy that was killed
+     */
+    @Override
+    public void enemyKilled(int reward, int x, int y) {
+        hudRenderer.spawnFloatingText("+" + reward, new Color(255, 213, 65), x, y);
+    }
+
+    /**
+     * Called by the game when a tower is placed, to show the cost as floating text.
+     * @param price the amount of money spent on placing the tower
+     * @param x the x coordinate of the tower that was placed
+     * @param y the y coordinate of the tower that was placed
+     */
+    @Override
+    public void towerPlaced(int price, int x, int y) {
+        hudRenderer.spawnFloatingText("-" + price, new Color(255, 0, 0), x, y);
+    }
+
+    /**
+     * Called by the game when a tower is sold, to show the refund as floating text.
+     * @param refund the amount of money refunded for selling the tower
+     * @param x the x coordinate of the tower that was sold
+     * @param y the y coordinate of the tower that was sold
+     */
+    @Override
+    public void towerSold(int refund, int x, int y) {
+        hudRenderer.spawnFloatingText("+" + refund, new Color(255, 213, 65), x, y);
+    }
+
+    /**
+     * Called by the game when an enemy reaches the base, to trigger a shake effect on the HUD.
+     * @param damage the amount of damage dealt to the base by the enemy that reached it
+     */
+    @Override
+    public void enemyReachedBase(int damage) {
+        hudRenderer.triggerShake();
+    }
+
+    // -------------------------------------------------------------------------
+    // InputMapping
+    // -------------------------------------------------------------------------
+
+    /**
+     * Converts a point in screen coordinates (e.g. from a mouse click) to world coordinates in the game.
+     * This method takes into account the current scaling and offset of the view, and returns an Optional containing the world coordinates if the point is within the view, or an empty Optional if it is outside the view.
+     * @param p the point in screen coordinates to convert
+     * @return an Optional containing the world coordinates as a Vector2D if the point is within the view, or an empty Optional if it is outside the view
+     */
+    @Override
+    public Optional<Vector2D> screenToWorld(Point p) {
+        double vw = config.getViewWidth(),   vh = config.getViewHeight();
+        double sw = getWidth(),              sh = getHeight();
+        double scale = Math.min(sw / vw, sh / vh);
+        double ox = (sw - vw * scale) / 2,  oy = (sh - vh * scale) / 2;
+
+        if (p.x < ox || p.y < oy || p.x > ox + vw * scale || p.y > oy + vh * scale)
+            return Optional.empty();
+
+        return Optional.of(new Vector2D(
+                (p.x - ox) / scale + config.getSpawnmargin(),
+                (p.y - oy) / scale + config.getSpawnmargin()));
+    }
+
+    /**
+     * Converts a point in world coordinates (e.g. the position of an enemy or tower) to screen coordinates for rendering.
+     * This method takes into account the current scaling and offset of the view, and returns a Point containing the screen coordinates where the world point should be rendered.
+     * @param v the point in world coordinates to convert
+     * @return a Point containing the screen coordinates where the world point should be rendered
+     */
+    @Override
+    public Point worldToScreen(Vector2D v) {
+        return new Point(
+                (int) (v.x() * (double) getWidth()  / config.getGameWidth()),
+                (int) (v.y() * (double) getHeight() / config.getGameHeight()));
+    }
+
+    // -------------------------------------------------------------------------
+    // Cursor / thema
+    // -------------------------------------------------------------------------
+
+    public void setCommandSink(Consumer<InputCommand> sink) { buildMenuPanel.setCommandSink(sink); }
+    public Cursor getBuildCursor()  { return buildCursor;  }
+    public Cursor getNormalCursor() { return normalCursor; }
+    public Cursor getSellCursor()   { return sellCursor;   }
+
+    public void setTheme(MapTheme theme) {
+        this.currentTheme = theme;
+        mapRenderer.rebuild(theme);
+    }
+
+    // -------------------------------------------------------------------------
+    // Rendering
+    // -------------------------------------------------------------------------
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        Graphics2D g2d = (Graphics2D) g;
-        g2d = getScaledGraphics(g2d);
+        Graphics2D g2d = scaledContext((Graphics2D) g);
         graphicsContext.setGraphics2D(g2d);
 
-        g2d.drawImage(backgroundCache, 0, 0, null);
+        mapRenderer.drawBackground(g2d);
+        mapRenderer.drawTowerSpots(g2d);
+        drawEntities();
+        mapRenderer.drawCastle(g2d, deltaTime);
+        hudRenderer.draw(g2d, deltaTime);
 
-        drawTowerSpots(g2d);
-        drawEntities(this.deltaTime);
-        drawFloatingTexts(g2d, this.deltaTime);
-        this.drawCastle(g2d, game.getPaths().getFirst().getLast());
-        drawStats(g2d);
         if (config.getDebug()) {
-            drawFps(g2d);
-            drawPathDebug(g2d);
+            hudRenderer.drawFps(g2d, fps);
+            mapRenderer.drawPathDebug(g2d);
         }
+
         g2d.dispose();
     }
 
-    // ---------------------------------------------------------------------
-    // Input / callbacks
-    // ---------------------------------------------------------------------
-    public void setCommandSink(Consumer<InputCommand> commandSink) {
-        buildMenuPanel.setCommandSink(commandSink);
+    // -------------------------------------------------------------------------
+    // Static helper, gebruikt door entity-klassen
+    // -------------------------------------------------------------------------
+
+    public static void drawEntityHealthBar(Graphics2D g2d, double x, double y,
+                                           double entityWidth, int health, int maxHealth) {
+        int bw  = (int) Math.max(entityWidth, 20);
+        int bh  = 3;
+        int bx  = (int) (x - bw / 2.0);
+        int by  = (int) (y - bh / 2.0) - 12;
+        double pct = Math.clamp((double) health / maxHealth, 0, 1);
+
+        g2d.setColor(new Color(0, 0, 0, 160));
+        g2d.fillRoundRect(bx - 1, by - 1, bw + 2, bh + 2, 3, 3);
+        g2d.setColor(healthColor(pct));
+        g2d.fillRoundRect(bx, by, (int) (bw * pct), bh, 3, 3);
     }
 
-    public Cursor getBuildCursor() {
-        return buildCursor;
-    }
-
-    public Cursor getNormalCursor() {
-        return normalCursor;
-    }
-
-    public Cursor getSellCursor() {
-        return sellCursor;
-    }
-
-    // ---------------------------------------------------------------------
-    // Coordinate mapping
-    // ---------------------------------------------------------------------
-    @Override
-    public Optional<Vector2D> screenToWorld(Point p) {
-        double virtualW = config.getViewWidth();
-        double virtualH = config.getViewHeight();
-        double screenW = this.getWidth();
-        double screenH = this.getHeight();
-
-        double scale = Math.min(screenW / virtualW, screenH / virtualH);
-        double offsetX = (screenW - virtualW * scale) / 2;
-        double offsetY = (screenH - virtualH * scale) / 2;
-
-        if (p.x < offsetX || p.y < offsetY || p.x > offsetX + virtualW * scale || p.y > offsetY + virtualH * scale) {
-            return Optional.empty();
+    /**
+     * Helper method to determine the color of the health bar based on the percentage of health remaining.
+     * The color transitions smoothly from green (full health) to red (no health).
+     * @param pct the percentage of health remaining, as a value between 0 and 1
+     * @return a Color object representing the color of the health bar, where 1.0 is green and 0.0 is red
+     */
+    private static Color healthColor(double pct) {
+        if (pct < 0.5) {
+            return new Color(255, (int) (165 * pct * 2), 0);
+        } else {
+            return new Color((int) (255 * (1 - (pct - 0.5) * 2)), 255, 0);
         }
-        return Optional.of(new Vector2D(((p.x - offsetX) / scale) + config.getSpawnmargin(), ((p.y - offsetY) / scale) + config.getSpawnmargin()));
     }
 
-    @Override
-    public Point worldToScreen(Vector2D v) {
-        double scaleX = (double) getWidth() / config.getGameWidth();
-        double scaleY = (double) getHeight() / config.getGameHeight();
-        return new Point(
-                (int) (v.x() * scaleX),
-                (int) (v.y() * scaleY)
-        );
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * Ensures that the game window is created and visible.
+     * If the window has already been created, this method does nothing. Otherwise, it creates a new JFrame, sets it up with the appropriate properties (such as title, size, and close operation), and makes it visible.
+     */
+    private void ensureWindow() {
+        if (frame != null) return;
+        frame = new JFrame(config.getWindowTitle());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(this);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setUndecorated(true);
+        frame.setVisible(true);
+        frame.setResizable(false);
+        frame.setFocusTraversalKeysEnabled(false);
+        frame.setFocusable(true);
+        this.setCursor(normalCursor);
+        SwingUtilities.invokeLater(this::requestFocusInWindow);
     }
 
-    // ---------------------------------------------------------------------
-    // Internal rendering setup
-    // ---------------------------------------------------------------------
-    private void buildBackgroundCache() {
-        BufferedImage grassTile = assetManager.getSprite("sprites/map/"+currentTheme.folder()+"/grass.png");
-
-        backgroundCache = new BufferedImage(config.getGameWidth(), config.getGameHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = backgroundCache.createGraphics();
-        drawBackground(g, grassTile);
-        drawPath(g);
-        drawDecorations(g);
-        drawTrees(g);
-        g.dispose();
-    }
-
+    /**
+     * updates the fps counter
+     */
     private void updateFps() {
         fpsFrames++;
         long now = System.currentTimeMillis();
-
         if (now - fpsLastTime >= 1000) {
             fps = fpsFrames;
             fpsFrames = 0;
@@ -314,418 +293,45 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         }
     }
 
-    private void spawnFloatingText(String text, Color color, double x, double y) {
-        this.floatingTexts.add(new FloatingText(text,color,x,y,0.3,0.3));
+    private void drawEntities() {
+        List<EnemyEntity>  enemies     = new ArrayList<>(game.getEnemies());
+        List<Tower>        towers      = new ArrayList<>(game.getTowers());
+        List<Projectile>   projectiles = new ArrayList<>(game.getProjectiles());
+        enemies    .forEach(e -> e.draw(deltaTime));
+        towers     .forEach(t -> t.draw(deltaTime));
+        projectiles.forEach(p -> p.draw(deltaTime));
     }
 
-    // ---------------------------------------------------------------------
-    // Background / map helpers
-    // ---------------------------------------------------------------------
-    private Graphics2D getScaledGraphics(Graphics2D g2d) {
-        double virtualW = config.getViewWidth();
-        double virtualH = config.getViewHeight();
-        double screenW = this.getWidth();
-        double screenH = this.getHeight();
+    /**
+     * Creates a new Graphics2D context that is scaled and translated according to the current view configuration.
+     * @param g2d the original Graphics2D context to create a new context from
+     * @return a new Graphics2D context that is scaled and translated to fit the game view according to the configuration settings
+     */
+    private Graphics2D scaledContext(Graphics2D g2d) {
+        double vw = config.getViewWidth(),  vh = config.getViewHeight();
+        double sw = getWidth(),             sh = getHeight();
+        double scale = Math.min(sw / vw, sh / vh);
+        double ox = (sw - vw * scale) / 2, oy = (sh - vh * scale) / 2;
 
-        double scale = Math.min(screenW / virtualW, screenH / virtualH);
-        double offsetX = (screenW - virtualW * scale) / 2;
-        double offsetY = (screenH - virtualH * scale) / 2;
-
-        Graphics2D g2d2 = (Graphics2D) g2d.create();
-        g2d2.translate(offsetX, offsetY);
-        g2d2.scale(scale, scale);
-
-        g2d2.translate(-config.getSpawnmargin(), -config.getSpawnmargin());
-        g2d2.setClip(
-                config.getSpawnmargin(),
-                config.getSpawnmargin(),
-                config.getViewWidth(),
-                config.getViewHeight()
-        );
-
-        return g2d2;
+        Graphics2D ctx = (Graphics2D) g2d.create();
+        ctx.translate(ox, oy);
+        ctx.scale(scale, scale);
+        ctx.translate(-config.getSpawnmargin(), -config.getSpawnmargin());
+        ctx.setClip(config.getSpawnmargin(), config.getSpawnmargin(),
+                config.getViewWidth(),   config.getViewHeight());
+        return ctx;
     }
 
-    private void drawBackground(Graphics2D g2d, BufferedImage grassTile) {
-        int tileSize = config.getTileSize();
-
-        int cols = (int) Math.ceil((double) config.getGameWidth() / tileSize);
-        int rows = (int) Math.ceil((double) config.getGameHeight() / tileSize);
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                g2d.drawImage(grassTile, col * tileSize, row * tileSize, tileSize, tileSize, null);
-            }
-        }
+    /**
+     * Helper method to create a custom cursor from an image in the asset manager.
+     * The cursor will be created with the hotspot in the top-left corner (0, 0) and the specified name.
+     * @param assets the AssetManager to load the cursor image from
+     * @param path the path to the cursor image in the asset manager
+     * @param name the name to assign to the cursor (used for debugging purposes)
+     * @return a Cursor object representing the custom cursor created from the specified image
+     */
+    private static Cursor makeCursor(AssetManager assets, String path, String name) {
+        return Toolkit.getDefaultToolkit()
+                .createCustomCursor(assets.getSprite(path), new Point(0, 0), name);
     }
-
-    private void drawPath(Graphics2D g2d) {
-        if (game.getGrid() == null) return;
-        int ts  = config.getTileSize();
-        int margin = config.getSpawnmargin();
-
-        for (int row = 0; row < game.getGrid().getRows(); row++) {
-            for (int col = 0; col < game.getGrid().getCols(); col++) {
-                TileType type = game.getGrid().getTile(row, col);
-                BufferedImage tile = pathTiles.get(type);
-                if (tile == null) continue;
-
-                g2d.drawImage(tile,
-                        margin + col * ts, margin + row * ts,
-                        margin + col * ts + ts, margin + row * ts + ts,
-                        0, 0, tile.getWidth(), tile.getHeight(),
-                        null);
-            }
-        }
-    }
-
-    private void drawPathDebug(Graphics2D g2d) {
-        if (game.getGrid() == null) return;
-        int ts = config.getTileSize();
-        int margin = config.getSpawnmargin();
-
-        g2d.setFont(new Font("Consolas", Font.BOLD, 8));
-
-        for (int row = 0; row < game.getGrid().getRows(); row++) {
-            for (int col = 0; col < game.getGrid().getCols(); col++) {
-                TileType type = game.getGrid().getTile(row, col);
-                if (type == TileType.GRASS) continue;
-
-                int x = margin + col * ts;
-                int y = margin + row * ts;
-
-                g2d.setColor(switch (type) {
-                    case PATH_H    -> new Color(200, 100,   0, 180);
-                    case PATH_V    -> new Color(  0, 100, 200, 180);
-                    case CORNER_SE -> new Color(200,   0,   0, 180);
-                    case CORNER_SW -> new Color(  0, 200,   0, 180);
-                    case CORNER_NE -> new Color(200, 200,   0, 180);
-                    case CORNER_NW -> new Color(200,   0, 200, 180);
-                    case T_NES     -> new Color(255, 128,   0, 180);
-                    case T_WES     -> new Color(  0, 255, 128, 180);
-                    case T_WNE     -> new Color(128,   0, 255, 180);
-                    case T_WNS     -> new Color(  0, 128, 255, 180);
-                    case CROSS     -> new Color(255, 255, 255, 180);
-                    default        -> new Color(128, 128, 128, 180);
-                });
-                g2d.fillRect(x, y, ts, ts);
-
-                g2d.setColor(Color.WHITE);
-                String name = switch (type) {
-                    case PATH_H    -> "H";
-                    case PATH_V    -> "V";
-                    case CORNER_SE -> "SE";
-                    case CORNER_SW -> "SW";
-                    case CORNER_NE -> "NE";
-                    case CORNER_NW -> "NW";
-                    case T_NES     -> "TNES";
-                    case T_WES     -> "TWES";
-                    case T_WNE     -> "TWNE";
-                    case T_WNS     -> "TWNS";
-                    case CROSS     -> "X";
-                    default        -> "?";
-                };
-                g2d.drawString(name, x + 2, y + ts - 2);
-            }
-        }
-    }
-
-    public void setTheme(MapTheme theme) {
-        this.currentTheme = theme;
-        loadPathTiles();
-        buildBackgroundCache();
-    }
-
-    private void drawDecorations(Graphics2D g2d) {
-        for (Decoration d : decorations) {
-            g2d.drawImage(d.sprite(), d.x(), d.y(), null);
-        }
-    }
-
-    private void drawTrees(Graphics2D g2d) {
-        String folder = "sprites/map/" + currentTheme.folder() + "/";
-        BufferedImage[] sprites = {
-                assetManager.getSprite(folder + "tree1.png"),
-                assetManager.getSprite(folder + "tree2.png")
-        };
-        for (Tree t : trees) {
-            BufferedImage sprite = sprites[t.type()];
-            int w = (int) (sprite.getWidth()  * t.scale());
-            int h = (int) (sprite.getHeight() * t.scale());
-            g2d.drawImage(sprite, t.x() - w / 2, t.y() - h / 2, w, h, null);
-        }
-    }
-
-    private void drawTowerSpots(Graphics2D g2d) {
-        BufferedImage spotSprite = assetManager.getSprite(
-                "sprites/map/" + currentTheme.folder() + "/towerspot.png"
-        );
-        List<Vector2D> towerSpots = game.getTowerSpots();
-        if (towerSpots == null || towerSpots.isEmpty()) {
-            logger.warning("towerSpots is null or empty");
-            return;
-        }
-
-        int tileSize = config.getTileSize();
-        int size = (int) (tileSize * 0.8);
-
-        for (Vector2D towerSpot : towerSpots) {
-            boolean hasTower = game.towerSpotOccupied(towerSpot);
-            if (hasTower) continue;
-
-            int x = (int) towerSpot.x() - size / 2;
-            int y = (int) towerSpot.y() - size / 2;
-            g2d.drawImage(spotSprite, x, y, size, size, null);
-        }
-    }
-
-    private void generateDecorations() {
-        double density = 0.12;
-        Random rng = new Random();
-        int count = (int) (config.getGameWidth() * config.getGameHeight() * density / 1000);
-
-        for (int i = 0; i < count; i++) {
-            int x = rng.nextInt(config.getGameWidth());
-            int y = rng.nextInt(config.getGameHeight());
-
-            if (isTooCloseToPath(x, y, DECORATION_PATH_CLEARANCE)) continue;
-
-            BufferedImage sprite = decSprites.get(rng.nextInt(decSprites.size()));
-            decorations.add(new Decoration(sprite, x, y));
-        }
-    }
-
-    private boolean isTooCloseToPath(int cx, int cy, int minDist) {
-        List<List<Vector2D>> paths = game.getPaths();
-        for (List<Vector2D> path : paths) {
-            for (int i = 0; i < path.size() - 1; i++) {
-                Vector2D a = path.get(i);
-                Vector2D b = path.get(i + 1);
-
-                double dist = distanceToSegment(cx, cy, a.x(), a.y(), b.x(), b.y());
-                if (dist < minDist) return true;
-            }
-        }
-        return false;
-    }
-
-    private double distanceToSegment(double px, double py,
-                                     double ax, double ay,
-                                     double bx, double by) {
-        double dx = bx - ax, dy = by - ay;
-        if (dx == 0 && dy == 0) return Math.hypot(px - ax, py - ay);
-        double t = Math.clamp(((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy), 0, 1);
-        return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
-    }
-
-    // ---------------------------------------------------------------------
-    // Entity / stat rendering
-    // ---------------------------------------------------------------------
-    private void drawEntities(double deltaTime) {
-        List<EnemyEntity> enemiesSnapshot = new ArrayList<>(game.getEnemies());
-        List<Tower> towersSnapshot = new ArrayList<>(game.getTowers());
-        List<Projectile> projectilesSnapshot = new ArrayList<>(game.getProjectiles());
-
-        for (EnemyEntity e : enemiesSnapshot) {
-            e.draw(deltaTime);
-        }
-        for (Tower t : towersSnapshot) {
-            t.draw(deltaTime);
-        }
-        for (Projectile p : projectilesSnapshot) {
-            p.draw(deltaTime);
-        }
-    }
-
-    private void drawCastle(Graphics2D g2d, Vector2D end) {
-        castle.update(deltaTime);
-        BufferedImage frame = castle.getCurrentFrame();
-        double width = 52 * 2.5;
-        double height = 38 * 2.5;
-        g2d.drawImage(frame, (int) end.x() - (int) width / 2, (int) end.y() - (5 * (int) height / 6), (int) width, (int) height, null);
-    }
-
-    private void drawStats(Graphics2D g2d) {
-        drawHudBox(g2d);
-        drawHealthBar(g2d);
-        drawResources(g2d);
-        drawWaveInfo(g2d);
-    }
-
-    private void drawHudBox(Graphics2D g2d) {
-        g2d.drawImage(box, config.getSpawnmargin(), config.getSpawnmargin(), 128*2, 45*2, null);
-    }
-
-    private void drawHealthBar(Graphics2D g2d) {
-        int shakeX = 0;
-        int shakeY = 0;
-
-        if (healthBarShakeTimer > 0) {
-            shakeX = (int) ((Math.random() - 0.5) * 2 * SHAKE_INTENSITY);
-            shakeY = (int) ((Math.random() - 0.5) * 2 * SHAKE_INTENSITY);
-            healthBarShakeTimer -= deltaTime;
-        }
-
-        int lives = game.getLives();
-        int maxLives = game.getMaxLives();
-
-        double heartSize_x = 10 * 2;
-        double heartSize_y = 9 * 2;
-        int fullHearts = lives / 2;
-        boolean hasHalf = (lives % 2) != 0;
-        int totalHearts = maxLives / 2;
-
-        for (int i = 0; i < totalHearts; i++) {
-            BufferedImage sprite;
-            if (i < fullHearts) {
-                sprite = full;
-            } else if (i == fullHearts && hasHalf) {
-                sprite = half;
-            } else {
-                sprite = empty;
-            }
-            g2d.drawImage(sprite, (int) ((10 + config.getSpawnmargin() + i * (heartSize_x + 4))+shakeX), (10 + config.getSpawnmargin()+shakeY), (int) heartSize_x, (int) heartSize_y, null);
-        }
-
-        healthBarShakeTimer = Math.max(0, healthBarShakeTimer - deltaTime);
-    }
-
-    @Override
-    public void enemyKilled(int reward,int x, int y) {
-        spawnFloatingText("+" + reward, new Color(255, 213, 65), x, y);
-    }
-
-    @Override
-    public void towerPlaced(int price,int x, int y) {
-        spawnFloatingText("-" + price, new Color(255, 0, 0), x, y);
-    }
-
-    @Override
-    public void towerSold(int refund,int x, int y) {
-        spawnFloatingText("+" + refund, new Color(255, 213, 65), x, y);
-    }
-
-    @Override
-    public void enemyReachedBase(int damage) {
-        healthBarShakeTimer= SHAKE_DURATION;
-    }
-
-    private void drawFloatingTexts(Graphics2D g2d, double dt) {
-        floatingTexts.removeIf(ft -> ft.lifetime() <= 0);
-        List<FloatingText> updated = new ArrayList<>();
-
-        g2d.setFont(new Font("Consolas", Font.BOLD, 14));
-
-        for (FloatingText ft : floatingTexts) {
-            double progress = 1.0 - (ft.lifetime() / ft.startLifetime());
-            int offsetY = (int) (progress * 30);
-            double fadeStart = 0.3;
-            double alphaRatio = Math.min(1.0, ft.lifetime() / fadeStart);
-            int alpha = (int) (255 * alphaRatio);
-
-            Color c = ft.color();
-            g2d.setColor(new Color(c.getRed(),c.getGreen(),c.getBlue(), Math.max(0, alpha)));
-            g2d.drawString(ft.text(), (int) ft.x(), (int) ft.y() - offsetY);
-
-            updated.add(new FloatingText(ft.text(), c, ft.x(), ft.y(), ft.startLifetime(),ft.lifetime() - dt));
-        }
-
-        floatingTexts.clear();
-        floatingTexts.addAll(updated);
-    }
-
-    private void drawResources(Graphics2D g2d) {
-        coin.update(deltaTime);
-        BufferedImage frame = coin.getCurrentFrame();
-        double frameSize = 8 * 2.5;
-        int resources = game.getResources();
-
-        int x = 10 + config.getSpawnmargin();
-        int y = 40 + config.getSpawnmargin();
-
-        g2d.drawImage(frame, x, y, (int) frameSize, (int) frameSize, null);
-
-        g2d.setColor(new Color(255, 182, 27));
-        g2d.setFont(new Font("Consolas", Font.BOLD, 17));
-        g2d.drawString(String.valueOf(resources), x + 28, y + 17);
-    }
-
-    private void drawWaveInfo(Graphics2D g2d) {
-        if (game.isGameNotRunning()) return;
-
-        int currentWave = game.getCurrentWave();
-        int totalWaves = game.getTotalWaves();
-        double countdown = game.getNextWaveCountdown();
-
-        int totalHearts = game.getMaxLives() / 2;
-        int rightEdge = config.getSpawnmargin() + totalHearts * (20 + 4);
-
-        int y = 40 + config.getSpawnmargin();
-
-        // draw wave text right-aligned to rightEdge
-        g2d.setFont(new Font("Consolas", Font.BOLD, 17));
-        g2d.setColor(Color.WHITE);
-        String waveText = "Wave " + currentWave + " / " + totalWaves;
-        FontMetrics fm = g2d.getFontMetrics();
-        g2d.drawString(waveText, rightEdge - fm.stringWidth(waveText), y + 17);
-
-        if (countdown > 0) {
-            g2d.setFont(new Font("Consolas", Font.PLAIN, 13));
-            g2d.setColor(new Color(255, 182, 27));
-            FontMetrics fmSmall = g2d.getFontMetrics();
-            String nextText = "Next: " + String.format("%.0f", countdown) + "s";
-            g2d.drawString(nextText, rightEdge - fmSmall.stringWidth(nextText), y + 33);
-        }
-    }
-
-    // ---------------------------------------------------------------------
-    // Frame / debug overlays
-    // ---------------------------------------------------------------------
-    private void drawFps(Graphics2D g2d) {
-        g2d.setFont(new Font("Consolas", Font.BOLD, 18));
-
-        g2d.setColor(Color.WHITE);
-        g2d.drawString("FPS: " + fps, 650 + config.getSpawnmargin(), 50 + config.getSpawnmargin());
-    }
-
-    // ---------------------------------------------------------------------
-    // Static helpers
-    // ---------------------------------------------------------------------
-    public static void drawEntityHealthBar(Graphics2D g2d, double x, double y, double entityWidth, int health, int maxHealth) {
-        int barWidth = (int) Math.max(entityWidth, 20);
-        int barHeight = 3;
-        int bx = (int) (x - barWidth / 2.0);
-        int by = (int) (y - barHeight / 2.0) - 12;
-        double percentage = (double) health / maxHealth;
-
-        Color fill = gradientHealthColor(percentage);
-
-        g2d.setColor(new Color(0, 0, 0, 160));
-        g2d.fillRoundRect(bx - 1, by - 1, barWidth + 2, barHeight + 2, 3, 3);
-
-        g2d.setColor(fill);
-        g2d.fillRoundRect(bx, by, (int) (barWidth * percentage), barHeight, 3, 3);
-    }
-
-    private static Color gradientHealthColor(double percentage) { // GitHub Copilot gradient color
-        // Clamp to [0, 1]
-        percentage = Math.clamp(percentage, 0, 1);
-
-        int r, g, b;
-        double t;// 0 to 1 over second half
-        if (percentage < 0.5) {
-            // Red to Yellow (0% to 50%)
-            t = percentage * 2;
-            r = 255;
-            g = (int) (165 * t);  // 0 → 165
-        } else {
-            // Yellow to Green (50% to 100%)
-            t = (percentage - 0.5) * 2;
-            r = (int) (255 - 255 * t);  // 255 → 0
-            g = 255;
-        }
-        b = 0;
-        return new Color(r, g, b);
-    }
-
 }

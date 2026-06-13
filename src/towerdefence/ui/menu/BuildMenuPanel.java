@@ -45,8 +45,6 @@ public class BuildMenuPanel extends JPanel implements GameListener {
                     Constants.TowerConstants.Cannon.WIDTH,
                     Constants.TowerConstants.Cannon.HEIGHT)
     );
-    //TODO: images in constants and preloaded at start
-    //TODO: full clean up of classes, functions, tasks, ....
 
     public BuildMenuPanel(Game game, InputMapping inputMapping, AssetManager assetManager, Cursor hoverCursor, Cursor noMoneyCursor) {
         this.inputMapping = inputMapping;
@@ -121,7 +119,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
                     g2.setColor(new Color(255, 120, 120));
                 }
                 g2.setFont(new Font("Arial", Font.PLAIN, 12));
-                g2.drawString("€ " + option.cost(), 56, 40);
+                g2.drawString(""+option.cost(), 56, 40);
 
                 g2.dispose();
             }

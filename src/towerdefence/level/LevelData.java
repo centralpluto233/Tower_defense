@@ -72,14 +72,18 @@ public class LevelData {
     }
 
     /**
-     * Returns the path that enemies will follow in this level, represented as a list of waypoints (Vector2D).
-     *
-     * @return the enemy path
+     * Returns the paths that enemies will follow in this level, represented as a list of lists of Vector2D.
+     * @param index the index of the path to retrieve, since there can be multiple paths in a level
+     * @return the path at the specified index
      */
     public List<Vector2D> getPath(int index) {
         return paths.get(index);
     }
 
+    /**
+     * Returns the paths that enemies will follow in this level, represented as a list of lists of Vector2D.
+     * @return the list of paths
+     */
     public List<List<Vector2D>> getPaths() {
         return paths;
     }
@@ -102,6 +106,10 @@ public class LevelData {
         return waves;
     }
 
+    /**
+     * Returns the GameGrid object representing the grid layout of the level, which can be used for pathfinding and other grid-based calculations.
+     * @return the GameGrid for this level
+     */
     public GameGrid getGrid() {
         return grid;
     }

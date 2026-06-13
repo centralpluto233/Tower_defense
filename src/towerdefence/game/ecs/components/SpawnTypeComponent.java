@@ -12,6 +12,10 @@ public class SpawnTypeComponent {
         this.enemyType = type;
     }
 
+    /**
+     * Gets the type of enemy that should spawn.
+     * @return the type of enemy to spawn, as a string. This should correspond to a key in the AbstractGameFactory that the spawn system uses to create enemies.
+     */
     public String getEnemyType() {
         return this.enemyType;
     }

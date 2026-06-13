@@ -23,6 +23,10 @@ public abstract class Entity {
         this.position = new Vector2D(x, y);
     }
 
+    // ---------------------------------------------
+    // Positie
+    // ---------------------------------------------
+
     /**
      * Returns the x-coordinate of the entity's position.
      *
@@ -60,6 +64,28 @@ public abstract class Entity {
     }
 
     /**
+     * Returns the position of the entities.
+     *
+     * @return the position
+     */
+    public Vector2D getPosition() {
+        return position;
+    }
+
+    /**
+     * Returns the position of the entities adjusted for drawing, which is the top-left corner of the bounding box.
+     *
+     * @return the draw position as a Vector2D
+     */
+    public Vector2D getDrawPosition() {
+        return new Vector2D(getX() - getWidth() / 2, getY() - getHeight() / 2);
+    }
+
+    // --------------------------------------------------
+    // dimensions/ collisions
+    // --------------------------------------------------
+
+    /**
      * Returns the width of the entities.
      *
      * @return the width
@@ -78,23 +104,10 @@ public abstract class Entity {
     }
 
     /**
-     * Returns the position of the entities.
-     *
-     * @return the position
+     * checks if bounding boxes collide
+     * @param target the target entity to check for collision with
+     * @return true if the entities' bounding boxes overlap, false otherwise
      */
-    public Vector2D getPosition() {
-        return position;
-    }
-
-    /**
-     * Returns the position of the entities adjusted for drawing, which is the top-left corner of the bounding box.
-     *
-     * @return the draw position as a Vector2D
-     */
-    public Vector2D getDrawPosition() {
-        return new Vector2D(getX() - getWidth() / 2, getY() - getHeight() / 2);
-    }
-
     public boolean overlaps(Entity target) {
         return getX() - getWidth() / 2 < target.getX() + target.getWidth() / 2
                 && getX() + getWidth() / 2 > target.getX() - target.getWidth() / 2
@@ -102,15 +115,9 @@ public abstract class Entity {
                 && getY() + getHeight() / 2 > target.getY() - target.getHeight() / 2;
     }
 
-    /**
-     * Returns a string representation of the entities.
-     *
-     * @return the string representation
-     */
-    @Override
-    public String toString() {
-        return "Entity{ (x,y)=" + getPosition() + ", width=" + width + ", height=" + height + " }";
-    }
+    // ------------------------------------------------
+    // lifecycle
+    // ------------------------------------------------
 
     /**
      * Updates the entities' state based on the time elapsed.
@@ -139,4 +146,18 @@ public abstract class Entity {
      * abstract draw method
      */
     public abstract void draw(double deltaTime);
+
+    // ------------------------------------------------
+    // debug
+    // ------------------------------------------------
+
+    /**
+     * Returns a string representation of the entities.
+     *
+     * @return the string representation
+     */
+    @Override
+    public String toString() {
+        return "Entity{ (x,y)=" + getPosition() + ", width=" + width + ", height=" + height + " }";
+    }
 }

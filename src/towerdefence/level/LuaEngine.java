@@ -1,6 +1,7 @@
 package towerdefence.level;
 
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.lib.jme.JmePlatform;
 import towerdefence.system.config.Config;
@@ -18,39 +19,20 @@ public class LuaEngine {
     private final Config config;
     private Globals globals = JmePlatform.standardGlobals();
 
-    /**
-     * Creates a new LuaEngine with the given configuration.
-     *
-     * @param config the configuration to use for loading levels, including the selected level and spawn margin
-     */
     public LuaEngine(Config config) {
         this.config = config;
     }
 
-    /**
-     * Loads the Lua script for the currently selected level as specified in the configuration.
-     */
-    private void loadSelectedLevel() {
+    private void loadSelectedLevel() throws Exception {
         String levelPath = Constants.Paths.LEVELS + config.getSelectedLevel();
         loadScript(levelPath);
     }
 
-    /**
-     * Loads the level data from the currently selected level's Lua script and returns it as a LevelData object.
-     *
-     * @return a LevelData object containing the level name, initial lives, initial resources, main path, tower spots, and waves of enemies as defined in the Lua script
-     */
-    public LevelData loadLevelData() {
+    public LevelData loadLevelData() throws Exception {
         loadSelectedLevel();
         return loadLevelDataFromLoadedScript();
     }
 
-    /**
-     * Converts a list of Vector2D points from the Lua script's coordinate system to the game's world coordinate system by adding the spawn margin defined in the configuration to each point.
-     *
-     * @param points the list of Vector2D points to convert, where each point is defined in the Lua script's coordinate system (origin at top-left corner of the level)
-     * @return a new list of Vector2D points where each point has been transformed to the game's world coordinate system (origin at top-left corner of the level plus spawn margin)
-     */
     private List<Vector2D> toWorld(List<Vector2D> points) {
         int ts = config.getTileSize();
         int margin = config.getSpawnmargin();
@@ -61,32 +43,21 @@ public class LuaEngine {
         return points;
     }
 
-    // ---------------------------------------------------------------------
-    // Lua access helpers
-    // ---------------------------------------------------------------------
-
-    /**
-     * Retrieves a Lua table from the global environment using the specified name and checks that it is indeed a table, throwing an error if it is not.
-     *
-     * @param name the name of the global variable in the Lua script that is expected to be a table (e.g., "main_path", "tower_spots", "waves")
-     * @return the LuaTable corresponding to the specified name, if it exists and is a table; otherwise, an error is thrown indicating that the expected table was not found or is of the wrong type
-     */
     private LuaTable getTable(String name) {
         return globals.get(name).checktable();
     }
 
-    /**
-     * Loads a Lua script from the specified file path and executes it, allowing the script to define global variables and tables that can be accessed later to construct the level data.
-     *
-     * @param levelPath the file path to the Lua script that defines the level data, which should be located in the levels directory and correspond to the selected level in the configuration
-     */
-    private void loadScript(String levelPath) {
+    private void loadScript(String levelPath) throws Exception {
         try {
             globals = JmePlatform.standardGlobals();
             logger.info("Loading Lua script: " + levelPath);
             globals.loadfile(levelPath).call();
+        } catch (LuaError e) {
+            logger.severe("Lua script kon niet geladen worden: " + levelPath + " — " + e.getMessage());
+            throw new Exception("Kon level niet laden: " + levelPath, e);
         } catch (Exception e) {
-            throw new RuntimeException("Could not load level: " + levelPath, e);
+            logger.severe("Onverwachte fout bij laden van: " + levelPath + " — " + e.getMessage());
+            throw new Exception("Kon level niet laden: " + levelPath, e);
         }
     }
 
@@ -100,11 +71,6 @@ public class LuaEngine {
         return paths;
     }
 
-    /**
-     * After a Lua script has been loaded and executed, this method reads the relevant global variables and tables defined in the script (such as "level_name", "lives", "resources", "main_path", "tower_spots", and "waves") and constructs a LevelData object containing all of this information, which can then be used by the game to set up the level accordingly.
-     *
-     * @return a LevelData object containing the level name, initial lives, initial resources, main path, tower spots, and waves of enemies as defined in the loaded Lua script; if any of the expected variables or tables are missing or of the wrong type, an error is thrown indicating the issue
-     */
     private LevelData loadLevelDataFromLoadedScript() {
         String levelName = globals.get("level_name").checkjstring();
         String levelFile = globals.get("level_file").checkjstring();
@@ -125,29 +91,17 @@ public class LuaEngine {
                 .map(p -> toWorld(new ArrayList<>(p)))
                 .toList();
 
-        List<WaveData> waves = this.readWaveTable();
+        List<WaveData> waves = this.readWaveTable(paths.size(), levelName);
 
         return new LevelData(levelName, levelFile, lives, resources, paths, towerSpots, waves, grid);
     }
 
-    /**
-     * Loads the level data from the specified level's Lua script and returns it as a LevelData object.
-     *
-     * @param levelName the name of the level to load, which corresponds to a Lua script in the levels directory
-     * @return a LevelData object containing the level name, initial lives, initial resources, main path, tower spots, and waves of enemies as defined in the Lua script
-     */
-    public LevelData loadLevelData(String levelName) {
+    public LevelData loadLevelData(String levelName) throws Exception {
         String levelPath = Constants.Paths.LEVELS + levelName;
         loadScript(levelPath);
         return loadLevelDataFromLoadedScript();
     }
 
-    /**
-     * Reads a Lua table from the global environment using the specified name, where the table is expected to be an array of points (each point being a table with "x" and "y" fields), and converts it into a list of Vector2D objects representing those points.
-     *
-     * @param tableName the name of the global variable in the Lua script that is expected to be a table containing an array of points (e.g., "main_path", "tower_spots"), where each point is defined as a table with "x" and "y" fields
-     * @return a list of Vector2D objects corresponding to the points defined in the specified Lua table, where each point's x and y coordinates are extracted from the "x" and "y" fields of the Lua table entries; if the specified table does not exist or is not in the expected format, an error is thrown indicating the issue
-     */
     private List<Vector2D> readVectorTable(String tableName) {
         LuaTable table = getTable(tableName);
         List<Vector2D> result = new ArrayList<>();
@@ -163,11 +117,10 @@ public class LuaEngine {
     }
 
     /**
-     * Reads the "waves" Lua table from the global environment, where the table is expected to be an array of wave definitions (each wave being a table with "count", "interval", "startDelay", and optionally "enemyType" fields), and converts it into a list of WaveData objects representing those waves.
-     *
-     * @return a list of WaveData objects corresponding to the wave definitions in the "waves" Lua table, where each WaveData object contains the count of enemies, interval between spawns, start delay before the wave begins, and enemy type for that wave; if the "waves" table does not exist or is not in the expected format, an error is thrown indicating the issue
+     * @param pathCount aantal beschikbare paden, voor validatie van pathIndex
+     * @param levelName naam van het level, voor duidelijke log-berichten
      */
-    private List<WaveData> readWaveTable() {
+    private List<WaveData> readWaveTable(int pathCount, String levelName) {
         LuaTable table = getTable("waves");
         List<WaveData> waves = new ArrayList<>();
 
@@ -180,7 +133,13 @@ public class LuaEngine {
             String enemyType = wave.get("enemyType").optjstring(Constants.Gameplay.DEFAULT_ENEMY_TYPE);
             int pathIndex = wave.get("pathIndex").checkint();
 
-            waves.add(new WaveData(count, interval, startDelay, enemyType,pathIndex));
+            if (pathIndex < 0 || pathIndex >= pathCount) {
+                logger.warning("waves[" + i + "] in level '" + levelName + "' gebruikt pathIndex=" + pathIndex
+                        + " maar het level heeft maar " + pathCount + " pad(en). Fallback naar pad 0.");
+                pathIndex = 0;
+            }
+
+            waves.add(new WaveData(count, interval, startDelay, enemyType, pathIndex));
         }
         return waves;
     }

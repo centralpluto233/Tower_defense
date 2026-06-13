@@ -60,11 +60,20 @@ public abstract class CannonBall extends Projectile {
         setSplashComponent(new SplashComponent(SPLASHRADIUS));
     }
 
+    /**
+     * Checks if the CannonBall overlaps with an enemy. The CannonBall does not have a hitbox for direct collisions, so this method always returns false. Instead, the damage is applied to enemies within the splash radius when the CannonBall reaches its target position.
+     * @param enemy the enemy to check for overlap with the CannonBall. This parameter is not used in this method, but it is included to match the signature of the overlaps method in the Projectile class.
+     * @return false, since the CannonBall does not have a hitbox for direct collisions and does not overlap with enemies in the traditional sense. Damage is applied to enemies within the splash radius when the CannonBall reaches its target position, rather than through direct overlap.
+     */
     @Override
     public boolean overlaps(Entity enemy) {
         return false;
     }
 
+    /**
+     * Checks if the CannonBall has reached its target position. The CannonBall is considered to have reached the target when its progress towards the target is 100% (1.0).
+     * @return true if the CannonBall has reached its target position, false otherwise
+     */
     @Override
     public boolean hasReachedTarget() {
         return progress >= 1.0;

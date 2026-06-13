@@ -22,8 +22,23 @@ import java.util.List;
  * Subclasses provide visuals
  */
 public abstract class AbstractGameFactory {
+    /**
+     * Factory method to create a GameView instance based on the provided Game and Config objects.
+     * This method is abstract and must be implemented by subclasses to return a concrete GameView implementation.
+     * @param game the Game instance for which the GameView is being created
+     * @param config the Config object containing game configuration settings that may influence the GameView creation (e.g., window size, rendering options)
+     * @return a new GameView instance that is appropriate for the given Game and Config
+     */
     public abstract GameView createGameView(Game game, Config config);
 
+    /**
+     * Factory method to create an InputSource instance based on the provided Game, Config, and GameView objects.
+     * This method is abstract and must be implemented by subclasses to return a concrete InputSource implementation
+     * @param game the Game instance for which the InputSource is being created, allowing the InputSource to interact with the game state and logic
+     * @param config the Config object containing game configuration settings that may influence the InputSource creation (e.g., input mappings, control schemes)
+     * @param gameView the GameView instance that the InputSource may need to interact with for rendering-related input handling (e.g., mouse coordinates, screen dimensions)
+     * @return a new InputSource instance that is appropriate for the given Game, Config, and GameView
+     */
     public abstract InputSource createInputSource(Game game, Config config, GameView gameView);
 
     // Enemies

@@ -83,11 +83,9 @@ public class InputHandler {
      */
     private void handlePlaceTower(int spotIndex, String towerType) {
         var spot = levelData.getTowerSpots().get(spotIndex);
-
-        if (entityManager.isTowerSpotOccupied(spot)) return;
-
         Tower newTower = factory.createTower(towerType, spot);
-        int cost = newTower.get_cost();
+        int cost = newTower.getCost();
+
         if (stats.trySpendResources(cost)) {
             entityManager.addEntity(newTower);
         }

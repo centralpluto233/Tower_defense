@@ -85,6 +85,30 @@ public abstract class Tower extends Entity implements Attacker {
     }
 
     /**
+     * Gets the cost of the Tower. This is the amount of resources required to build this Tower, and is used in the game's resource management system to determine if the player can afford to place this Tower on the game map.
+     *
+     * @return the cost of the Tower
+     */
+    public int getCost() {
+        return cost;
+    }
+
+    /**
+     * Calculates the refund amount when the Tower is sold. The refund is typically a percentage of the original cost, defined by the game's constants.
+     * @return the amount of resources refunded to the player when the Tower is sold, calculated as a percentage of the Tower's original cost.
+     */
+    public int getRefund() {
+        return (int) (getCost() * Constants.TowerConstants.SELLPERCENTAGE);
+    }
+
+    /**
+     * Gets the spawn position of the projectile, this is dependent of the graphics that are used; therefore abstract
+     *
+     * @return the position where the projectile should be spawned when the Tower attacks. This is typically the position of the Tower itself, but may be adjusted based on the Tower's design and graphics to ensure that projectiles appear to originate from the correct location on the Tower.
+     */
+    public abstract Vector2D getSpawnPosition();
+
+    /**
      * Updates the Tower's internal state each game tick. This method is responsible for updating the time since the last attack, which is used to determine if the Tower can attack again based on its cooldown.
      *
      * @param deltaTime the time elapsed since the last update
@@ -135,40 +159,6 @@ public abstract class Tower extends Entity implements Attacker {
                 .filter(enemy -> getPosition().
                         distanceTo(enemy.getPosition()) <= range).findFirst();
     }
-
-    /**
-     * Returns a string representation of the Tower, including its position, size, range, damage, cooldown, and time since last attack.
-     *
-     * @return a string representation of the Tower with its attributes for debugging and logging purposes
-     */
-    @Override
-    public String toString() {
-        return super.toString()
-                + ", range=" + range
-                + ", damage=" + damage
-                + ", cooldown=" + cooldown
-                + ", timeSinceLastAttack=" + timeSinceLastAttack;
-    }
-
-    /**
-     * Gets the cost of the Tower. This is the amount of resources required to build this Tower, and is used in the game's resource management system to determine if the player can afford to place this Tower on the game map.
-     *
-     * @return the cost of the Tower
-     */
-    public int get_cost() {
-        return cost;
-    }
-
-    public int getRefund() {
-        return (int) (get_cost() * Constants.TowerConstants.SELLPERCENTAGE);
-    }
-
-    /**
-     * Gets the spawn position of the projectile, this is dependent of the graphics that are used; therefore abstract
-     *
-     * @return the position where the projectile should be spawned when the Tower attacks. This is typically the position of the Tower itself, but may be adjusted based on the Tower's design and graphics to ensure that projectiles appear to originate from the correct location on the Tower.
-     */
-    public abstract Vector2D getSpawnPosition();
 
     /**
      * Predicts the future position of the target enemy based on its current position, speed, and path.
@@ -224,6 +214,20 @@ public abstract class Tower extends Entity implements Attacker {
         }
 
         return enemy.getPosition();
+    }
+
+    /**
+     * Returns a string representation of the Tower, including its position, size, range, damage, cooldown, and time since last attack.
+     *
+     * @return a string representation of the Tower with its attributes for debugging and logging purposes
+     */
+    @Override
+    public String toString() {
+        return super.toString()
+                + ", range=" + range
+                + ", damage=" + damage
+                + ", cooldown=" + cooldown
+                + ", timeSinceLastAttack=" + timeSinceLastAttack;
     }
 
 }

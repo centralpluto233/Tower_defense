@@ -10,6 +10,11 @@ public class GameGrid {
     private final int rows;
     private final TileType[][] tiles;
 
+    /**
+     * Initializes a new GameGrid with the specified number of rows and columns.
+     * @param rows amount of rows
+     * @param cols amount of columns
+     */
     public GameGrid(int rows, int cols) {
         this.cols = cols;
         this.rows = rows;
@@ -22,6 +27,14 @@ public class GameGrid {
         }
     }
 
+    // ------------------------------------------
+    // path
+    // ------------------------------------------
+
+    /**
+     * Builds the grid based on a list of path coordinates. Each coordinate represents a tile that should be part of the path.
+     * @param path list of coordinates representing the enemy path, where each coordinate is a Vector2D with x as column and y as row
+     */
     public void buildFromPath(List<Vector2D> path) {
         for (int i = 0; i < path.size(); i++) {
             Vector2D cur  = path.get(i);
@@ -39,6 +52,49 @@ public class GameGrid {
         }
     }
 
+    /**
+     * Determines the appropriate tile type for a given path coordinate based on its previous and next coordinates in the path.
+     * @param prev the previous coordinate in the path, if it exists
+     * @param cur the current coordinate for which to determine the tile type
+     * @param next the next coordinate in the path, if it exists
+     * @return the TileType that represents the path segment at the current coordinate, taking into account the direction of the path before and after this point
+     */
+    private TileType determineTileType(Optional<Vector2D> prev, Vector2D cur, Optional<Vector2D> next) {
+        int dxIn  = prev.map(v -> (int) Math.signum(cur.x() - v.x())).orElse(0);
+        int dyIn  = prev.map(v -> (int) Math.signum(cur.y() - v.y())).orElse(0);
+        int dxOut = next.map(v -> (int) Math.signum(v.x() - cur.x())).orElse(0);
+        int dyOut = next.map(v -> (int) Math.signum(v.y() - cur.y())).orElse(0);
+
+        // doorlopend rechtdoor
+        if (dxIn != 0 && dxOut != 0) return TileType.PATH_H;
+        if (dyIn != 0 && dyOut != 0) return TileType.PATH_V;
+
+        // startpunt
+        if (prev.isEmpty()) return dxOut != 0 ? TileType.PATH_H : TileType.PATH_V;
+
+        // eindpunt: geef alleen de inkomende richting terug als bitmask-fragment
+        // de merge in buildFromPath combineert dit met wat er al ligt
+        if (next.isEmpty()) return dxIn != 0 ? TileType.PATH_H : TileType.PATH_V;
+
+        // bochten
+        if (dxIn > 0 && dyOut > 0) return TileType.CORNER_SW;
+        if (dxIn > 0 && dyOut < 0) return TileType.CORNER_NW;
+        if (dxIn < 0 && dyOut > 0) return TileType.CORNER_SE;
+        if (dxIn < 0 && dyOut < 0) return TileType.CORNER_NE;
+        if (dyIn > 0 && dxOut > 0) return TileType.CORNER_NE;
+        if (dyIn > 0 && dxOut < 0) return TileType.CORNER_NW;
+        if (dyIn < 0 && dxOut > 0) return TileType.CORNER_SE;
+        if (dyIn < 0 && dxOut < 0) return TileType.CORNER_SW;
+
+        return TileType.PATH_H;
+    }
+
+    /**
+     * Fills the grid segment between two coordinates with the appropriate path tiles.
+     * This method is used to ensure that all tiles along the path are correctly marked, even if the path includes diagonal segments.
+     * @param from the starting coordinate of the segment
+     * @param to the ending coordinate of the segment
+     */
     private void fillSegment(Vector2D from, Vector2D to) {
         int x0 = (int) from.x(), y0 = (int) from.y();
         int x1 = (int) to.x(),   y1 = (int) to.y();
@@ -54,6 +110,17 @@ public class GameGrid {
         }
     }
 
+    // ------------------------------------------
+    // bitmask helpers
+    // ------------------------------------------
+
+    /**
+     * Merges an existing tile type with an incoming tile type based on their directional connections.
+     * This method uses bitmasking to combine the connections of both tile types and determine the resulting tile type that represents the combined path segments.
+     * @param existing the existing TileType at a grid position, which may already have certain directional connections
+     * @param incoming the incoming TileType that represents a new path segment to be merged with the existing tile
+     * @return the resulting TileType that represents the combined connections of both the existing and incoming tile types, ensuring that the path is correctly represented in the grid
+     */
     private TileType mergeTile(TileType existing, TileType incoming) {
         int mask = toBitmask(existing) | toBitmask(incoming);
         return fromBitmask(mask);
@@ -93,35 +160,9 @@ public class GameGrid {
         };
     }
 
-    private TileType determineTileType(Optional<Vector2D> prev, Vector2D cur, Optional<Vector2D> next) {
-        int dxIn  = prev.map(v -> (int) Math.signum(cur.x() - v.x())).orElse(0);
-        int dyIn  = prev.map(v -> (int) Math.signum(cur.y() - v.y())).orElse(0);
-        int dxOut = next.map(v -> (int) Math.signum(v.x() - cur.x())).orElse(0);
-        int dyOut = next.map(v -> (int) Math.signum(v.y() - cur.y())).orElse(0);
-
-        // doorlopend rechtdoor
-        if (dxIn != 0 && dxOut != 0) return TileType.PATH_H;
-        if (dyIn != 0 && dyOut != 0) return TileType.PATH_V;
-
-        // startpunt
-        if (prev.isEmpty()) return dxOut != 0 ? TileType.PATH_H : TileType.PATH_V;
-
-        // eindpunt: geef alleen de inkomende richting terug als bitmask-fragment
-        // de merge in buildFromPath combineert dit met wat er al ligt
-        if (next.isEmpty()) return dxIn != 0 ? TileType.PATH_H : TileType.PATH_V;
-
-        // bochten
-        if (dxIn > 0 && dyOut > 0) return TileType.CORNER_SW;
-        if (dxIn > 0 && dyOut < 0) return TileType.CORNER_NW;
-        if (dxIn < 0 && dyOut > 0) return TileType.CORNER_SE;
-        if (dxIn < 0 && dyOut < 0) return TileType.CORNER_NE;
-        if (dyIn > 0 && dxOut > 0) return TileType.CORNER_NE;
-        if (dyIn > 0 && dxOut < 0) return TileType.CORNER_NW;
-        if (dyIn < 0 && dxOut > 0) return TileType.CORNER_SE;
-        if (dyIn < 0 && dxOut < 0) return TileType.CORNER_SW;
-
-        return TileType.PATH_H;
-    }
+    // ----------------------------------------
+    // getters
+    // ----------------------------------------
 
     public int getRows() {
         return rows;
@@ -159,13 +200,5 @@ public class GameGrid {
             sb.append("\n");
         }
         return sb.toString();
-    }
-
-    public void reset() {
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                tiles[row][col] = TileType.GRASS;
-            }
-        }
     }
 }

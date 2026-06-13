@@ -8,7 +8,8 @@ public interface InputSource {
     List<InputCommand> pollCommands();
 
     /**
-     * Installs necessary event handlers for the input source. This is called after the game view is created, allowing the input source to attach listeners to the view's components if needed.
+     * Installs necessary event handlers for the input source.
+     * This is called after the game view is created, allowing the input source to attach listeners to the view's components if needed.
      */
     default void installHandlers() {
     }

@@ -56,6 +56,10 @@ public abstract class ArcherArrow extends Projectile {
         this.duration = start.distanceTo(targetPosition) / SPEED;
     }
 
+    /**
+     * Checks if the ArcherArrow has reached its target position. The ArcherArrow is considered to have reached the target when its progress towards the target is 100% (1.0).
+     * @return true if the ArcherArrow has reached its target position, false otherwise
+     */
     @Override
     public boolean hasReachedTarget() {
         return progress >= 1.0;

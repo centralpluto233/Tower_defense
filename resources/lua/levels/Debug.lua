@@ -18,5 +18,5 @@ tower_spots = {
 
 waves = {
     { count = 2, interval = 1.5, startDelay = 0,  enemyType = "bat", pathIndex = 0 },
-    { count = 2, interval = 1.5, startDelay = 0.5,  enemyType = "bat", pathIndex = 1 },
+    { count = 2, interval = 1.5, startDelay = 0.5,  enemyType = "bat", pathIndex = 0 },
 }

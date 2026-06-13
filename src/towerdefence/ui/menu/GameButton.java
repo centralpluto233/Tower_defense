@@ -15,7 +15,7 @@ public class GameButton extends JButton {
     private final Color borderColor = new Color(255, 255, 255, 60);
     private final Color textColor = Color.WHITE;
 
-    private BufferedImage image; // ← nieuw
+    private BufferedImage image;
     private Shape shape;
 
     public GameButton(String text, Color baseColor) {
@@ -42,10 +42,6 @@ public class GameButton extends JButton {
                 (int) (image.getHeight() * scale)
         ));
         return btn;
-    }
-
-    public static GameButton icon(BufferedImage image) {
-        return icon(image, 1.0);
     }
 
     public static GameButton primary(String text) { return new GameButton(text, new Color(52, 120, 246)); }
@@ -77,7 +73,6 @@ public class GameButton extends JButton {
             int w = getWidth() - padding * 2;
             int h = getHeight() - padding * 2;
 
-            // Schaal naar knopgrootte
             BufferedImage scaled = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             Graphics2D tmp = scaled.createGraphics();
             tmp.drawImage(image, 0, 0, w, h, null);

@@ -52,18 +52,34 @@ public abstract class Projectile extends MovingEntity {
         enemy.takeDamage(damage);
     }
 
+    /**
+     * Sets the SplashComponent for this Projectile, which defines the area of effect for splash damage when the Projectile impacts.
+     * @param splashComponentOptional the SplashComponent to set for this Projectile
+     */
     public void setSplashComponent(SplashComponent splashComponentOptional) {
         this.splashComponentOptional = Optional.of(splashComponentOptional);
     }
 
+    /**
+     * Gets the SplashComponent for this Projectile, if it has one. The SplashComponent defines the area of effect for splash damage when the Projectile impacts.
+     * @return an Optional containing the SplashComponent if this Projectile has one, or an empty Optional if it does not
+     */
     public Optional<SplashComponent> getSplashComponent() {
         return splashComponentOptional;
     }
 
+    /**
+     * Gets the damage value of this Projectile, which is the amount of damage it will deal to an enemy upon impact.
+     * @return the damage value of this Projectile
+     */
     public int getDamage() {
         return damage;
     }
 
+    /**
+     * Checks if the Projectile has reached or passed its target position. The Projectile is considered to have reached the target if the dot product of the direction vector (velocity) and the vector from the Projectile's current position to the target position is negative, indicating that the Projectile has passed beyond the target.
+     * @return true if the Projectile has reached or passed its target position, false otherwise
+     */
     public boolean hasReachedTarget() {
         Vector2D toTarget = targetPos.subtract(getPosition());
         Vector2D dir = new Vector2D(getVelocity().x(), getVelocity().y());

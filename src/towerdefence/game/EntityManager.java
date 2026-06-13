@@ -37,18 +37,42 @@ public class EntityManager {
         this.stats = stats;
     }
 
+    // --------------------------------------------------------------------
+    // Callbacks
+    // --------------------------------------------------------------------
+
+    /**
+     * Sets a callback function to be called whenever an enemy is killed.
+     * used by view to trigger kill animations and sound effects
+     * @param callback receives killed {@link EnemyEntity}
+     */
     public void setOnEnemyKilledCallback(Consumer<EnemyEntity> callback) {
         this.onEnemyKilledCallback = Optional.of(callback);
     }
 
+    /**
+     * Sets a callback function to be called whenever a tower is placed.
+     * used by view to trigger build animations and sound effects
+     * @param callback receives placed {@link Tower}
+     */
     public void setOnTowerPlacedCallback(Consumer<Tower> callback) {
         this.onTowerPlacedCallback = Optional.of(callback);
     }
 
+    /**
+     * Sets a callback function to be called whenever a tower is sold.
+     * used by view to trigger sell animations and sound effects
+     * @param callback receives sold {@link Tower}
+     */
     public void setOnTowerSoldCallback(Consumer<Tower> callback) {
         this.onTowerSoldCallback = Optional.of(callback);
     }
 
+    /**
+     * Sets a callback function to be called whenever an enemy is killed.
+     * used by view to trigger escape animations and sound effects
+     * @param callback receives escaped {@link EnemyEntity}
+     */
     public void setOnEnemyEscapedCallback(Consumer<EnemyEntity> callback) {
         this.onEnemyEscapedCallback = Optional.of(callback);
     }
@@ -75,12 +99,20 @@ public class EntityManager {
         }
     }
 
+    /**
+     * Clears all entities from the game, used when resetting the game to prepare for a new run
+     */
     public void clear() {
         enemies.clear();
         towers.clear();
         projectiles.clear();
     }
 
+    /**
+     * Sells the tower at the given index, marking it for removal and returning the amount of money refunded to the player.
+     * @param towerIndex the index of the tower to sell in the towers list
+     * @return the amount of money refunded to the player for selling the tower
+     */
     public int sellTower(int towerIndex) {
         Tower tower= towers.get(towerIndex);
         int refund = tower.getRefund();
@@ -155,7 +187,8 @@ public class EntityManager {
     }
 
     /**
-     * Removes all entities that are marked for removal from the game
+     * Removes entities that are marked for removal from the game.
+     * @return true if the player is defeated (e.g. health <= 0) after processing escaped enemies, false otherwise
      */
     private boolean removeMarkedEntities() {
         boolean isDefeated = false;

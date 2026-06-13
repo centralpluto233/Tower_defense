@@ -217,6 +217,10 @@ public class Config {
         return getBoolean("debugmode.enabled");
     }
 
+    /**
+     * Sets whether debug mode is enabled in the config.
+     * @param state true to enable debug mode, false to disable it
+     */
     public void setDebug(boolean state) {
         this.set("debugmode.enabled", Boolean.toString(state));
     }
@@ -248,14 +252,26 @@ public class Config {
         return getInt("game.spawnmargin");
     }
 
+    /**
+     * Gets the tile size for the game from the config, which is used to determine the size of each tile in the game world.
+     * @return the tile size for the game
+     */
     public int getTileSize() {
         return getInt("game.tileSize");
     }
 
+    /**
+     * Gets the map theme from the config, which is used to determine the visual style of the game map.
+     * @return the map theme for the game
+     */
     public String getMapTheme() {
         return get("map.theme");
     }
 
+    /**
+     * Sets the map theme in the config, which is used to determine the visual style of the game map.
+     * @param mapTheme the map theme to set in the config
+     */
     public void setMapTheme(String mapTheme) {
         this.set("map.theme", mapTheme);
     }

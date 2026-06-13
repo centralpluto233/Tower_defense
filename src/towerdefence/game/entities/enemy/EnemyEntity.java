@@ -57,6 +57,10 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
                 .toList();
     }
 
+    /**
+     * Computes a random offset for the enemy's position to prevent them from overlapping perfectly when they spawn at the same point. The offset is a random vector with a length between 0 and MAX_OFFSET, in a random direction.
+     * @return an array of two doubles representing the x and y components of the offset
+     */
     private static double[] computeOffset() {
         Random rand = new Random();
         double angle =  rand.nextDouble() * 2 * Math.PI;
@@ -65,6 +69,11 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         double y = Math.sin(angle) * offset;
         return new double[]{x,y};
     }
+
+    // --------------------------------------------
+    // update
+    // --------------------------------------------
+
 
     /**
      * updates the enemy each game tick
@@ -149,6 +158,10 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         return path != null && currentWaypointIndex >= path.size();
     }
 
+    // -------------------------------------------------
+    // health & damage
+    // -------------------------------------------------
+
     /**
      * applies damage to the enemy
      *
@@ -196,6 +209,10 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         return maxHealth;
     }
 
+    // ------------------------------------------------------
+    // getters
+    // ------------------------------------------------------
+
     /**
      * returns the score value awarded to the player when this enemy is killed
      *
@@ -241,6 +258,10 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     public boolean isHitFlashing() {
         return hitFlashTimer > 0.0;
     }
+
+    // ---------------------------------------
+    // debug
+    // ---------------------------------------
 
     /**
      * gives string representation of enemy
