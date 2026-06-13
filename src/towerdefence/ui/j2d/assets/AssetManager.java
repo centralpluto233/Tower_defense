@@ -83,6 +83,7 @@ public class AssetManager {
             load("sprites/map/" + theme + "/tree2.png");
             load("sprites/map/" + theme + "/path.png");
             load("sprites/map/" + theme + "/towerspot.png");
+            load("sprites/map/" + theme + "/background.png");
         }
 
         for (String path : spritePaths) {

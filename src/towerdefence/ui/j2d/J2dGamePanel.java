@@ -28,6 +28,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final Config             config;
     private final J2dGraphicsContext graphicsContext;
     private final BuildMenuPanel     buildMenuPanel;
+    private final MenuOverlayPanel   menuOverlayPanel;
+    private final AssetManager       assets;
 
     private final J2dMapRenderer mapRenderer;
     private final J2dHudRenderer hudRenderer;
@@ -54,6 +56,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.config          = config;
         this.graphicsContext = graphicsContext;
         this.currentTheme    = MapTheme.valueOf(config.getMapTheme().toUpperCase());
+        this.assets          = assets;
 
         setPreferredSize(new Dimension(config.getGameWidth(), config.getGameHeight()));
         setBackground(Color.BLACK);
@@ -70,11 +73,11 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
         setLayout(new OverlayLayout(this));
 
-        MenuOverlayPanel overlay = new MenuOverlayPanel(game, config, hoverCursor, this::setTheme, assets);
-        overlay.setAlignmentX(0.0f);
-        overlay.setAlignmentY(0.0f);
-        add(overlay);
-        game.addGameListener(overlay);
+        this.menuOverlayPanel = new MenuOverlayPanel(game, config, hoverCursor, this::setTheme, assets);
+        menuOverlayPanel.setAlignmentX(0.0f);
+        menuOverlayPanel.setAlignmentY(0.0f);
+        add(menuOverlayPanel);
+        game.addGameListener(menuOverlayPanel);
 
         BuildMenuPanel buildMenu = new BuildMenuPanel(game, this, assets, hoverCursor, noMoney);
         buildMenu.setAlignmentX(0.0f);
@@ -202,6 +205,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     public void setTheme(MapTheme theme) {
         this.currentTheme = theme;
         mapRenderer.rebuild(theme);
+        menuOverlayPanel.updateThemeBackground(theme,assets);
     }
 
     // -------------------------------------------------------------------------

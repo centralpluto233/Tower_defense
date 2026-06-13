@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
 public class MenuOverlayPanel extends JPanel implements GameListener {
@@ -37,6 +38,8 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     private final Cursor hoverCursor;
 
+    private BufferedImage background;
+
     public MenuOverlayPanel(Game game, Config config, Cursor hover, Consumer<MapTheme> onThemeChanged, AssetManager assetManager) {
         this.game = game;
         this.hoverCursor = hover;
@@ -44,6 +47,8 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         this.onThemeChanged = onThemeChanged;
 
         this.pauseButton = GameButton.icon(assetManager.getSprite("sprites/hud/pause.png"),5);
+
+        updateThemeBackground(MapTheme.valueOf(config.getMapTheme().toUpperCase()),assetManager);
 
         setOpaque(false);
         setLayout(new BorderLayout());
@@ -252,6 +257,10 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         return panel;
     }
 
+    public void updateThemeBackground(MapTheme theme, AssetManager assets) {
+        this.background = assets.getSprite("sprites/map/" + theme.folder() + "/background.png");
+    }
+
     // helpers
 
     private JPanel column(String title, GameButton... buttons) {
@@ -321,13 +330,28 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         GameState state = game.getGameState();
-        if (state == GameState.MENU || state == GameState.PAUSE
-                || state == GameState.GAME_OVER || state == GameState.LEVEL_WON) {
-            Graphics2D g2 = (Graphics2D) g.create();
+
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        if (state == GameState.MENU
+                || state == GameState.GAME_OVER
+                || state == GameState.LEVEL_WON) {
+
+            if (background != null) {
+                g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+            }
+            g2.setColor(new Color(0, 0, 0, 140));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+
+        } else if (state == GameState.PAUSE) {
+
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, getWidth(), getHeight());
-            g2.dispose();
         }
+
+        g2.dispose();
     }
 
     @Override
