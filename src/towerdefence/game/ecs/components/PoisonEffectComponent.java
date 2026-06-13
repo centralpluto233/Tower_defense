@@ -1,7 +1,5 @@
 package towerdefence.game.ecs.components;
 
-import towerdefence.game.entities.enemy.EnemyEntity;
-
 public class PoisonEffectComponent {
     private final double duration;
     private final double tickInterval;
@@ -12,12 +10,13 @@ public class PoisonEffectComponent {
 
     /**
      * Component to apply a poison effect to an enemy.
-     * @param duration the total duration of the poison effect, in seconds
-     * @param tickInterval the interval at which the poison effect should deal damage, in seconds.
+     *
+     * @param duration      the total duration of the poison effect, in seconds
+     * @param tickInterval  the interval at which the poison effect should deal damage, in seconds.
      * @param damagePerTick the amount of damage that should be dealt to the enemy each time the poison effect ticks
      */
     public PoisonEffectComponent(double duration, double tickInterval, int damagePerTick) {
-        this.duration     = duration;
+        this.duration = duration;
         this.tickInterval = tickInterval;
         this.damagePerTick = damagePerTick;
         this.timeRemaining = duration;
@@ -26,6 +25,7 @@ public class PoisonEffectComponent {
 
     /**
      * Ticks the poison effect down by the given amount of seconds. This should be called every frame by the poison system.
+     *
      * @param deltaTime the amount of seconds to tick down the poison effect
      * @return true if the poison effect should deal damage to the enemy this tick, false otherwise.
      */
@@ -41,6 +41,7 @@ public class PoisonEffectComponent {
 
     /**
      * Checks if the poison effect has expired and should be removed from the enemy.
+     *
      * @return true if the poison effect has expired, false otherwise.
      */
     public boolean isExpired() {
@@ -49,6 +50,7 @@ public class PoisonEffectComponent {
 
     /**
      * Gets the amount of damage that should be dealt to the enemy each time the poison effect ticks.
+     *
      * @return the amount of damage that should be dealt to the enemy each time the poison effect ticks.
      */
     public int getDamagePerTick() {

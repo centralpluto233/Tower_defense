@@ -105,6 +105,7 @@ public abstract class Entity {
 
     /**
      * checks if bounding boxes collide
+     *
      * @param target the target entity to check for collision with
      * @return true if the entities' bounding boxes overlap, false otherwise
      */

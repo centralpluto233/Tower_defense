@@ -6,10 +6,10 @@ import java.util.logging.Logger;
 
 public class RunStats {
     private static final Logger logger = GameLogger.getLogger();
+    private final int maxLives;
     private int kills;
     private int escaped;
     private int lives;
-    private final int maxLives;
     private int resources;
 
     /**
@@ -79,10 +79,11 @@ public class RunStats {
 
     /**
      * Adds the given amount of resources to the player's total resources.
+     *
      * @param amount the amount of resources to add, which will be added to the total resources
      */
     public void addResources(int amount) {
-        this.resources+= amount;
+        this.resources += amount;
     }
 
     // ----------------------------------------------------------
@@ -91,6 +92,7 @@ public class RunStats {
 
     /**
      * Checks if the player has been defeated
+     *
      * @return true if the player has been defeated (lives are 0), false otherwise
      */
     public boolean isDefeated() {
@@ -117,6 +119,7 @@ public class RunStats {
 
     /**
      * Returns the max amount of lives the player started with at the beginning of the run
+     *
      * @return the initial number of lives the player had at the start of the run
      */
     public int getMaxLives() {

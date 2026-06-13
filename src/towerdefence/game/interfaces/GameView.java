@@ -15,31 +15,35 @@ public interface GameView {
 
     /**
      * Updates the game view when enemy is killed
+     *
      * @param reward the amount of money rewarded for killing the enemy
-     * @param x the x coordinate of the enemy that was killed
-     * @param y the y coordinate of the enemy that was killed
+     * @param x      the x coordinate of the enemy that was killed
+     * @param y      the y coordinate of the enemy that was killed
      */
-    void enemyKilled(int reward,int x, int y);
+    void enemyKilled(int reward, int x, int y);
 
     /**
      * Updates the game view when enemy has reached base
+     *
      * @param damage the amount of damage dealt to the base by the enemy that reached it
      */
     void enemyReachedBase(int damage);
 
     /**
      * Updates the game view when a tower is placed
+     *
      * @param price the amount of money spent on placing the tower
-     * @param x the x coordinate of the tower that was placed
-     * @param y the y coordinate of the tower that was placed
+     * @param x     the x coordinate of the tower that was placed
+     * @param y     the y coordinate of the tower that was placed
      */
     void towerPlaced(int price, int x, int y);
 
     /**
      * Updates the game view when a tower is sold
+     *
      * @param refund the amount of money refunded for selling the tower
-     * @param x the x coordinate of the tower that was sold
-     * @param y the y coordinate of the tower that was sold
+     * @param x      the x coordinate of the tower that was sold
+     * @param y      the y coordinate of the tower that was sold
      */
     void towerSold(int refund, int x, int y);
 }

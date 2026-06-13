@@ -20,10 +20,10 @@ public abstract class Tower extends Entity implements Attacker {
     private final double range;
     private final int damage;
     private final double cooldown;
-    private double timeSinceLastAttack;
     private final int cost;
     private final ProjectileFactory projectileFactory;
     private final double projectileSpeed;
+    private double timeSinceLastAttack;
 
     /**
      * Creates a new Tower with the given parameters.
@@ -95,6 +95,7 @@ public abstract class Tower extends Entity implements Attacker {
 
     /**
      * Calculates the refund amount when the Tower is sold. The refund is typically a percentage of the original cost, defined by the game's constants.
+     *
      * @return the amount of resources refunded to the player when the Tower is sold, calculated as a percentage of the Tower's original cost.
      */
     public int getRefund() {

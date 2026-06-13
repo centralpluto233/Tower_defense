@@ -4,9 +4,7 @@ import towerdefence.util.Vector2D;
 
 import java.util.List;
 
-public class SpawnPathComponent {
-    private final List<Vector2D> path;
-
+public record SpawnPathComponent(List<Vector2D> path) {
     /**
      * Keeps a list of points that enemies should follow when they spawn.
      *
@@ -21,7 +19,8 @@ public class SpawnPathComponent {
      *
      * @return the list of 2D coords that the enemies should follow
      */
-    public List<Vector2D> getPath() {
+    @Override
+    public List<Vector2D> path() {
         return path;
     }
 }

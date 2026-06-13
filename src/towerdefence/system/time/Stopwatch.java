@@ -6,9 +6,9 @@ import towerdefence.system.logging.GameLogger;
 import java.util.logging.Logger;
 
 public class Stopwatch {
-    private long lastTick;
-    private final double maxDeltaTime;
     private static final Logger logger = GameLogger.getLogger();
+    private final double maxDeltaTime;
+    private long lastTick;
 
     /**
      * Constructs a Stopwatch with a target FPS.

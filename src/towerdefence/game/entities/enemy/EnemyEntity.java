@@ -19,16 +19,13 @@ import java.util.logging.Logger;
  */
 public abstract class EnemyEntity extends MovingEntity implements Damageable {
     private static final Logger logger = GameLogger.getLogger();
-
-    private int health;
     private final int maxHealth;
     private final int scoreValue;
     private final int damage;
     private final double[] offset;
-
     protected List<Vector2D> path;
     protected int currentWaypointIndex = 0;
-
+    private int health;
     private double hitFlashTimer = 0.0;
     private Optional<PoisonEffectComponent> poisonComponent = Optional.empty();
 
@@ -53,24 +50,25 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         this.damage = damage;
         this.offset = computeOffset();
 
-        setX(x+offset[0]);
-        setY(y+offset[1]);
+        setX(x + offset[0]);
+        setY(y + offset[1]);
         this.path = path.stream()
-                .map(wp -> new Vector2D(wp.x()+offset[0],wp.y()+offset[1]))
+                .map(wp -> new Vector2D(wp.x() + offset[0], wp.y() + offset[1]))
                 .toList();
     }
 
     /**
      * Computes a random offset for the enemy's position to prevent them from overlapping perfectly when they spawn at the same point. The offset is a random vector with a length between 0 and MAX_OFFSET, in a random direction.
+     *
      * @return an array of two doubles representing the x and y components of the offset
      */
     private static double[] computeOffset() {
         Random rand = new Random();
-        double angle =  rand.nextDouble() * 2 * Math.PI;
+        double angle = rand.nextDouble() * 2 * Math.PI;
         double offset = rand.nextDouble() * 2 * Constants.EnemyConstants.MAX_OFFSET;
         double x = Math.cos(angle) * offset;
         double y = Math.sin(angle) * offset;
-        return new double[]{x,y};
+        return new double[]{x, y};
     }
 
     // --------------------------------------------
@@ -164,6 +162,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * applies poison damage over time if the enemy is currently poisoned, and removes the poison effect if it has expired
+     *
      * @param deltaTime the amount of time that has passed since the last update, in seconds
      */
     private void poisonTick(double deltaTime) {
@@ -231,6 +230,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * applies a poison effect to the enemy. If the enemy is already poisoned, the poison effect will be refreshed (duration reset).
+     *
      * @param poison the poison effect to apply to the enemy, gets scaled to with the enemy resistance
      */
     public void applyPoisonEffect(PoisonEffectComponent poison) {
@@ -298,6 +298,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * returns whether the enemy is currently poisoned
+     *
      * @return true if the enemy is currently poisoned, false otherwise
      */
     public boolean isPoisoned() {
@@ -307,6 +308,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     /**
      * returns resistance to poison damage as a value between 0.0 and 1.0, where 0.0 means no resistance (full poison damage) and 1.0 means full resistance (no poison damage).
      * This can be overridden by subclasses to give certain enemy types resistance to poison.
+     *
      * @return the poison resistance of the enemy, between 0.0 and 1.0
      */
     public double getPoisonResistance() {

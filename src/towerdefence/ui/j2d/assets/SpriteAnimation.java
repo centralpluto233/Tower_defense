@@ -47,12 +47,4 @@ public class SpriteAnimation {
     public BufferedImage getCurrentFrame() {
         return frames[currentFrame];
     }
-
-    /**
-     * Controleert of de animatie klaar is (alle frames zijn doorlopen).
-     * @return true als de animatie klaar is, anders false
-     */
-    public boolean isFinished() {
-        return currentFrame == frames.length - 1;
-    }
 }

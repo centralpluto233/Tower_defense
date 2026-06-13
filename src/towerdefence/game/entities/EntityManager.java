@@ -16,13 +16,11 @@ public class EntityManager {
     private final List<Tower> towers = new ArrayList<>();
     private final List<EnemyEntity> enemies = new ArrayList<>();
     private final List<Projectile> projectiles = new ArrayList<>();
-
-    private Optional<Consumer<EnemyEntity>> onEnemyKilledCallback= Optional.empty();
-    private Optional<Consumer<EnemyEntity>> onEnemyEscapedCallback= Optional.empty();
-    private Optional<Consumer<Tower>> onTowerPlacedCallback= Optional.empty();
-    private Optional<Consumer<Tower>> onTowerSoldCallback= Optional.empty();
-
     private final RunStats stats;
+    private Optional<Consumer<EnemyEntity>> onEnemyKilledCallback = Optional.empty();
+    private Optional<Consumer<EnemyEntity>> onEnemyEscapedCallback = Optional.empty();
+    private Optional<Consumer<Tower>> onTowerPlacedCallback = Optional.empty();
+    private Optional<Consumer<Tower>> onTowerSoldCallback = Optional.empty();
 
     // ---------------------------------------------------------------------
     // Construction
@@ -44,6 +42,7 @@ public class EntityManager {
     /**
      * Sets a callback function to be called whenever an enemy is killed.
      * used by view to trigger kill animations and sound effects
+     *
      * @param callback receives killed {@link EnemyEntity}
      */
     public void setOnEnemyKilledCallback(Consumer<EnemyEntity> callback) {
@@ -53,6 +52,7 @@ public class EntityManager {
     /**
      * Sets a callback function to be called whenever a tower is placed.
      * used by view to trigger build animations and sound effects
+     *
      * @param callback receives placed {@link Tower}
      */
     public void setOnTowerPlacedCallback(Consumer<Tower> callback) {
@@ -62,6 +62,7 @@ public class EntityManager {
     /**
      * Sets a callback function to be called whenever a tower is sold.
      * used by view to trigger sell animations and sound effects
+     *
      * @param callback receives sold {@link Tower}
      */
     public void setOnTowerSoldCallback(Consumer<Tower> callback) {
@@ -71,6 +72,7 @@ public class EntityManager {
     /**
      * Sets a callback function to be called whenever an enemy is killed.
      * used by view to trigger escape animations and sound effects
+     *
      * @param callback receives escaped {@link EnemyEntity}
      */
     public void setOnEnemyEscapedCallback(Consumer<EnemyEntity> callback) {
@@ -110,11 +112,12 @@ public class EntityManager {
 
     /**
      * Sells the tower at the given index, marking it for removal and returning the amount of money refunded to the player.
+     *
      * @param towerIndex the index of the tower to sell in the towers list
      * @return the amount of money refunded to the player for selling the tower
      */
     public int sellTower(int towerIndex) {
-        Tower tower= towers.get(towerIndex);
+        Tower tower = towers.get(towerIndex);
         int refund = tower.getRefund();
         tower.markForRemoval();
         onTowerSoldCallback.ifPresent(callback -> callback.accept(tower));
@@ -188,6 +191,7 @@ public class EntityManager {
 
     /**
      * Removes entities that are marked for removal from the game.
+     *
      * @return true if the player is defeated (e.g. health <= 0) after processing escaped enemies, false otherwise
      */
     private boolean removeMarkedEntities() {

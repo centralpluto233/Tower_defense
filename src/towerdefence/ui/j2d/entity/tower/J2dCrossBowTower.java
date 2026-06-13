@@ -7,7 +7,6 @@ import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.entity.J2dEntityHelper;
 import towerdefence.util.Vector2D;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class J2dCrossBowTower extends CrossBowTower {

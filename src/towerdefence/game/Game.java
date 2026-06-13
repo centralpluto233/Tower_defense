@@ -29,8 +29,9 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class Game {
-    private static Game instance;
     private static final Logger logger = GameLogger.getLogger();
+    private static Game instance;
+    private final List<GameListener> gameListeners = new ArrayList<>();
     private Config config;
     private GameView view;
     private AbstractGameFactory factory;
@@ -43,7 +44,6 @@ public class Game {
     private EntityManager entityManager;
     private InputHandler inputHandler;
     private Stopwatch renderStopwatch;
-    private final List<GameListener> gameListeners = new ArrayList<>();
     private LuaEngine luaEngine;
 
     // ---------------------------------------------------------------------
@@ -108,7 +108,7 @@ public class Game {
      * reset the runtime state for the current level
      */
     private void resetGameState() {
-        stats = new RunStats(currentLevel.getLives(), currentLevel.getResources());
+        stats = new RunStats(currentLevel.lives(), currentLevel.resources());
         entityManager = new EntityManager(stats);
         inputHandler = new InputHandler(factory, stats, entityManager, currentLevel);
         setCallbacks();
@@ -121,21 +121,21 @@ public class Game {
         if (view != null) {
             entityManager.setOnEnemyKilledCallback(enemy -> {
                 int reward = enemy.getScoreValue();
-                view.enemyKilled(reward,(int) enemy.getX(),(int) enemy.getY());
+                view.enemyKilled(reward, (int) enemy.getX(), (int) enemy.getY());
             });
 
             entityManager.setOnTowerPlacedCallback(tower -> {
                 int price = tower.getCost();
-                view.towerPlaced(price,(int) tower.getX(),(int) tower.getY());
+                view.towerPlaced(price, (int) tower.getX(), (int) tower.getY());
             });
 
             entityManager.setOnTowerSoldCallback(tower -> {
-                int refund= tower.getRefund();
-                view.towerSold(refund,(int) tower.getX(),(int) tower.getY());
+                int refund = tower.getRefund();
+                view.towerSold(refund, (int) tower.getX(), (int) tower.getY());
             });
 
             entityManager.setOnEnemyEscapedCallback(enemy -> {
-                int damage= enemy.getDamage();
+                int damage = enemy.getDamage();
                 view.enemyReachedBase(damage);
             });
         }
@@ -143,13 +143,14 @@ public class Game {
 
     /**
      * Load a new level by name, resetting the game state and notifying the view and wave spawn system of the new level data.
+     *
      * @param levelName the name of the level to load, which should correspond to a Lua level script file that can be loaded by the LuaEngine
      */
     public void loadLevel(String levelName) {
         if (gameState != GameState.MENU) stop();
         try {
             LevelData newLevel = luaEngine.loadLevelData(levelName);
-            if (!newLevel.getLevelName().equals(currentLevel.getLevelName())) {
+            if (!newLevel.levelName().equals(currentLevel.levelName())) {
                 currentLevel = newLevel;
                 view.reset();
                 waveSpawnSystem.reset();
@@ -161,11 +162,12 @@ public class Game {
 
     /**
      * Get the name of the next level in the sequence after the current level, if it exists.
+     *
      * @return an Optional containing the name of the next level if it exists, or an empty Optional if the current level is the last one in the sequence or if the current level's name cannot be found in the list of levels
      */
     public Optional<String> getNextLevel() {
         List<String> levels = Constants.LevelConstants.LEVEL_NAMES;
-        int currentIndex = levels.indexOf(currentLevel.getLevelFile()); // exacte match
+        int currentIndex = levels.indexOf(currentLevel.levelFile()); // exacte match
         if (currentIndex >= 0 && currentIndex < levels.size() - 1) {
             return Optional.of(levels.get(currentIndex + 1));
         }
@@ -250,6 +252,7 @@ public class Game {
 
     /**
      * renders current frame if stopwatch tells it's time
+     *
      * @param deltaTime time between frames, used for animations and smooth rendering
      */
     private void render(double deltaTime) {
@@ -338,11 +341,11 @@ public class Game {
     }
 
     public List<List<Vector2D>> getPaths() {
-        return currentLevel.getPaths();
+        return currentLevel.paths();
     }
 
     public List<Vector2D> getTowerSpots() {
-        return currentLevel.getTowerSpots();
+        return currentLevel.towerSpots();
     }
 
     public boolean towerSpotOccupied(Vector2D spot) {
@@ -386,7 +389,7 @@ public class Game {
     }
 
     public GameGrid getGrid() {
-        return currentLevel.getGrid();
+        return currentLevel.grid();
     }
 
     // ---------------------------------------------------------------------

@@ -1,8 +1,6 @@
 package towerdefence.level;
 
-import static towerdefence.system.config.Constants.Gameplay.MIN_WAVE_COUNT;
-import static towerdefence.system.config.Constants.Gameplay.MIN_WAVE_INTERVAL_SECONDS;
-import static towerdefence.system.config.Constants.Gameplay.MIN_WAVE_START_DELAY_SECONDS;
+import static towerdefence.system.config.Constants.Gameplay.*;
 
 public record WaveData(int count, double intervalSeconds, double startDelaySeconds, String enemyType, int pathIndex) {
     /**

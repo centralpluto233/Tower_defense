@@ -19,18 +19,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class BuildMenuPanel extends JPanel implements GameListener {
-    private Consumer<InputCommand> commandSink = _ -> {
-    };
-    private Optional<Integer> selectedSpotIndex = Optional.empty();
-    private final InputMapping inputMapping;
-
-    private final JPanel towerOptionPanel = new JPanel();
-
-    private final Cursor hoverCursor;
-    private final Cursor noMoneyCursor;
-
-    private final Game game;
-
     private static final List<TowerOption> towerOptions = List.of(
             new TowerOption("Archer", Constants.TowerConstants.Archer.COST,
                     "sprites/entities/towers/archer_icon.png",
@@ -49,6 +37,14 @@ public class BuildMenuPanel extends JPanel implements GameListener {
                     Constants.TowerConstants.Wizard.WIDTH,
                     Constants.TowerConstants.Wizard.HEIGHT)
     );
+    private final InputMapping inputMapping;
+    private final JPanel towerOptionPanel = new JPanel();
+    private final Cursor hoverCursor;
+    private final Cursor noMoneyCursor;
+    private final Game game;
+    private Consumer<InputCommand> commandSink = _ -> {
+    };
+    private Optional<Integer> selectedSpotIndex = Optional.empty();
 
     public BuildMenuPanel(Game game, InputMapping inputMapping, AssetManager assetManager, Cursor hoverCursor, Cursor noMoneyCursor) {
         this.inputMapping = inputMapping;
@@ -123,7 +119,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
                     g2.setColor(new Color(255, 120, 120));
                 }
                 g2.setFont(new Font("Arial", Font.PLAIN, 12));
-                g2.drawString(""+option.cost(), 56, 40);
+                g2.drawString("" + option.cost(), 56, 40);
 
                 g2.dispose();
             }

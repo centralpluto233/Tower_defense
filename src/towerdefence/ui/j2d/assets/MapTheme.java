@@ -8,13 +8,13 @@ public enum MapTheme {
     AUTUMN,  // herfst
     CHERRY;
 
-    public String folder() {
-        return name().toLowerCase();
-    }
-
     public static String[] getTypes() {
         return Arrays.stream(values())
                 .map(MapTheme::folder)
                 .toArray(String[]::new);
+    }
+
+    public String folder() {
+        return name().toLowerCase();
     }
 }

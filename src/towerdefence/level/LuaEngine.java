@@ -81,7 +81,7 @@ public class LuaEngine {
         List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
 
         GameGrid grid = new GameGrid(config.getViewHeight() / config.getTileSize(),
-                config.getViewWidth()  / config.getTileSize());
+                config.getViewWidth() / config.getTileSize());
         paths.forEach(grid::buildFromPath);
         if (config.getDebug()) {
             System.out.println(grid);

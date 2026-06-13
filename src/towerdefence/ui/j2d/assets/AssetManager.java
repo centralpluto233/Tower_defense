@@ -30,50 +30,50 @@ public class AssetManager {
      */
     public void loadAll() {
         List<String> spritePaths = List.of(
-        // Enemies
-        "sprites/entities/enemies/bat.png",
-        "sprites/entities/enemies/goblin.png",
-        "sprites/entities/enemies/big_slime.png",
+                // Enemies
+                "sprites/entities/enemies/bat.png",
+                "sprites/entities/enemies/goblin.png",
+                "sprites/entities/enemies/big_slime.png",
 
-        // Projectiles
-        "sprites/entities/projectiles/arrow_archer.png",
-        "sprites/entities/projectiles/arrow_crossbow.png",
-        "sprites/entities/projectiles/cannonball.png",
-        "sprites/entities/projectiles/poison.png",
+                // Projectiles
+                "sprites/entities/projectiles/arrow_archer.png",
+                "sprites/entities/projectiles/arrow_crossbow.png",
+                "sprites/entities/projectiles/cannonball.png",
+                "sprites/entities/projectiles/poison.png",
 
-        // Towers
-        "sprites/entities/towers/archer.png",
-        "sprites/entities/towers/crossbow.png",
-        "sprites/entities/towers/cannon.png",
-        "sprites/entities/towers/wizard.png",
+                // Towers
+                "sprites/entities/towers/archer.png",
+                "sprites/entities/towers/crossbow.png",
+                "sprites/entities/towers/cannon.png",
+                "sprites/entities/towers/wizard.png",
 
-        // Effects
-        "sprites/entities/enemies/effects/poison.png",
+                // Effects
+                "sprites/entities/enemies/effects/poison.png",
 
-        // Map
-        "sprites/map/decoration/mushroom.png",
-        "sprites/map/decoration/rock_1.png",
-        "sprites/map/decoration/rock_2.png",
-        "sprites/map/decoration/rock_3.png",
-        "sprites/map/castle.png",
-
-
-        // HUD
-        "sprites/entities/towers/archer_icon.png",
-        "sprites/hud/heart_full.png",
-        "sprites/hud/heart_half.png",
-        "sprites/hud/heart_empty.png",
-        "sprites/hud/Coin-Sheet.png",
-        "sprites/hud/pause.png",
+                // Map
+                "sprites/map/decoration/mushroom.png",
+                "sprites/map/decoration/rock_1.png",
+                "sprites/map/decoration/rock_2.png",
+                "sprites/map/decoration/rock_3.png",
+                "sprites/map/castle.png",
 
 
-        // Cursors
-        "sprites/hud/Cursor_1.png",
-        "sprites/hud/Cursor_2.png",
-        "sprites/hud/BuildCursor.png",
-        "sprites/hud/Cursor_3.png",
-        "sprites/hud/sellcursor.png",
-        "sprites/hud/box.png"
+                // HUD
+                "sprites/entities/towers/archer_icon.png",
+                "sprites/hud/heart_full.png",
+                "sprites/hud/heart_half.png",
+                "sprites/hud/heart_empty.png",
+                "sprites/hud/Coin-Sheet.png",
+                "sprites/hud/pause.png",
+
+
+                // Cursors
+                "sprites/hud/Cursor_1.png",
+                "sprites/hud/Cursor_2.png",
+                "sprites/hud/BuildCursor.png",
+                "sprites/hud/Cursor_3.png",
+                "sprites/hud/sellcursor.png",
+                "sprites/hud/box.png"
         );
 
         // Themes

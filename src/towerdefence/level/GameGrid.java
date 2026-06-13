@@ -12,6 +12,7 @@ public class GameGrid {
 
     /**
      * Initializes a new GameGrid with the specified number of rows and columns.
+     *
      * @param rows amount of rows
      * @param cols amount of columns
      */
@@ -20,9 +21,9 @@ public class GameGrid {
         this.rows = rows;
         this.tiles = new TileType[rows][cols];
 
-        for (int r=0; r<rows; r++) {
-            for (int c=0; c<cols; c++) {
-                tiles[r][c]= TileType.GRASS;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                tiles[r][c] = TileType.GRASS;
             }
         }
     }
@@ -33,13 +34,14 @@ public class GameGrid {
 
     /**
      * Builds the grid based on a list of path coordinates. Each coordinate represents a tile that should be part of the path.
+     *
      * @param path list of coordinates representing the enemy path, where each coordinate is a Vector2D with x as column and y as row
      */
     public void buildFromPath(List<Vector2D> path) {
         for (int i = 0; i < path.size(); i++) {
-            Vector2D cur  = path.get(i);
-            Optional<Vector2D> prev = i > 0             ? Optional.of(path.get(i-1)) : Optional.empty();
-            Optional<Vector2D> next = i < path.size()-1 ? Optional.of(path.get(i+1)) : Optional.empty();
+            Vector2D cur = path.get(i);
+            Optional<Vector2D> prev = i > 0 ? Optional.of(path.get(i - 1)) : Optional.empty();
+            Optional<Vector2D> next = i < path.size() - 1 ? Optional.of(path.get(i + 1)) : Optional.empty();
 
             prev.ifPresent(vector2D -> fillSegment(vector2D, cur));
 
@@ -54,14 +56,15 @@ public class GameGrid {
 
     /**
      * Determines the appropriate tile type for a given path coordinate based on its previous and next coordinates in the path.
+     *
      * @param prev the previous coordinate in the path, if it exists
-     * @param cur the current coordinate for which to determine the tile type
+     * @param cur  the current coordinate for which to determine the tile type
      * @param next the next coordinate in the path, if it exists
      * @return the TileType that represents the path segment at the current coordinate, taking into account the direction of the path before and after this point
      */
     private TileType determineTileType(Optional<Vector2D> prev, Vector2D cur, Optional<Vector2D> next) {
-        int dxIn  = prev.map(v -> (int) Math.signum(cur.x() - v.x())).orElse(0);
-        int dyIn  = prev.map(v -> (int) Math.signum(cur.y() - v.y())).orElse(0);
+        int dxIn = prev.map(v -> (int) Math.signum(cur.x() - v.x())).orElse(0);
+        int dyIn = prev.map(v -> (int) Math.signum(cur.y() - v.y())).orElse(0);
         int dxOut = next.map(v -> (int) Math.signum(v.x() - cur.x())).orElse(0);
         int dyOut = next.map(v -> (int) Math.signum(v.y() - cur.y())).orElse(0);
 
@@ -92,12 +95,13 @@ public class GameGrid {
     /**
      * Fills the grid segment between two coordinates with the appropriate path tiles.
      * This method is used to ensure that all tiles along the path are correctly marked, even if the path includes diagonal segments.
+     *
      * @param from the starting coordinate of the segment
-     * @param to the ending coordinate of the segment
+     * @param to   the ending coordinate of the segment
      */
     private void fillSegment(Vector2D from, Vector2D to) {
         int x0 = (int) from.x(), y0 = (int) from.y();
-        int x1 = (int) to.x(),   y1 = (int) to.y();
+        int x1 = (int) to.x(), y1 = (int) to.y();
         int dx = (int) Math.signum(x1 - x0);
         int dy = (int) Math.signum(y1 - y0);
         TileType straight = dx != 0 ? TileType.PATH_H : TileType.PATH_V;
@@ -106,7 +110,8 @@ public class GameGrid {
         while (x != x1 || y != y1) {
             if (x >= 0 && x < cols && y >= 0 && y < rows)
                 tiles[y][x] = mergeTile(tiles[y][x], straight);
-            x += dx; y += dy;
+            x += dx;
+            y += dy;
         }
     }
 
@@ -117,6 +122,7 @@ public class GameGrid {
     /**
      * Merges an existing tile type with an incoming tile type based on their directional connections.
      * This method uses bitmasking to combine the connections of both tile types and determine the resulting tile type that represents the combined path segments.
+     *
      * @param existing the existing TileType at a grid position, which may already have certain directional connections
      * @param incoming the incoming TileType that represents a new path segment to be merged with the existing tile
      * @return the resulting TileType that represents the combined connections of both the existing and incoming tile types, ensuring that the path is correctly represented in the grid
@@ -128,18 +134,18 @@ public class GameGrid {
 
     private int toBitmask(TileType t) {
         return switch (t) {
-            case PATH_H    -> 0b1010; // W+E
-            case PATH_V    -> 0b0101; // N+S
+            case PATH_H -> 0b1010; // W+E
+            case PATH_V -> 0b0101; // N+S
             case CORNER_NW -> 0b1001; // W+N
             case CORNER_SW -> 0b1100; // W+S  (let op: S=bit2, W=bit3)
             case CORNER_NE -> 0b0011; // E+N
             case CORNER_SE -> 0b0110; // E+S
-            case T_WNS     -> 0b1101; // W+N+S
-            case T_WNE     -> 0b1011; // W+N+E
-            case T_WES     -> 0b1110; // W+E+S
-            case T_NES     -> 0b0111; // N+E+S
-            case CROSS     -> 0b1111;
-            default        -> 0b0000;
+            case T_WNS -> 0b1101; // W+N+S
+            case T_WNE -> 0b1011; // W+N+E
+            case T_WES -> 0b1110; // W+E+S
+            case T_NES -> 0b0111; // N+E+S
+            case CROSS -> 0b1111;
+            default -> 0b0000;
         };
     }
 
@@ -156,7 +162,7 @@ public class GameGrid {
             case 0b1110 -> TileType.T_WES;
             case 0b0111 -> TileType.T_NES;
             case 0b1111 -> TileType.CROSS;
-            default     -> TileType.GRASS;
+            default -> TileType.GRASS;
         };
     }
 
@@ -167,9 +173,11 @@ public class GameGrid {
     public int getRows() {
         return rows;
     }
+
     public int getCols() {
         return cols;
     }
+
     public TileType getTile(int row, int col) {
         if (col < 0 || col >= cols || row < 0 || row >= rows) return TileType.GRASS;
         return tiles[row][col];
@@ -182,19 +190,19 @@ public class GameGrid {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 sb.append(switch (tiles[row][col]) {
-                    case PATH_H    -> " H ";
-                    case PATH_V    -> " V ";
+                    case PATH_H -> " H ";
+                    case PATH_V -> " V ";
                     case CORNER_SE -> "SE ";
                     case CORNER_SW -> "SW ";
                     case CORNER_NE -> "NE ";
                     case CORNER_NW -> "NW ";
-                    case T_NES     -> "TNES ";
-                    case T_WES     -> "TWES ";
-                    case T_WNE     -> "TWNE ";
-                    case T_WNS     -> "TWNS ";
-                    case CROSS     -> " X ";
+                    case T_NES -> "TNES ";
+                    case T_WES -> "TWES ";
+                    case T_WNE -> "TWNE ";
+                    case T_WNS -> "TWNS ";
+                    case CROSS -> " X ";
                     case TOWER_SPOT -> "[] ";
-                    case GRASS     -> " . ";
+                    case GRASS -> " . ";
                 });
             }
             sb.append("\n");

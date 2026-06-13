@@ -121,7 +121,7 @@ public class J2dFactory extends AbstractGameFactory {
     }
 
     @Override
-    protected PoisonProjectile createPoisonProjectile(double x, double y,int damage, Vector2D targetPosition) {
+    protected PoisonProjectile createPoisonProjectile(double x, double y, int damage, Vector2D targetPosition) {
         return new J2dPoisonProjectile(x, y, damage, targetPosition, graphicsContext, assetManager);
     }
 }

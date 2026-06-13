@@ -44,10 +44,21 @@ public class GameButton extends JButton {
         return btn;
     }
 
-    public static GameButton primary(String text) { return new GameButton(text, new Color(52, 120, 246)); }
-    public static GameButton success(String text)  { return new GameButton(text, new Color(50, 160, 80)); }
-    public static GameButton danger(String text)   { return new GameButton(text, new Color(190, 60, 60)); }
-    public static GameButton muted(String text)    { return new GameButton(text, new Color(80, 85, 100)); }
+    public static GameButton primary(String text) {
+        return new GameButton(text, new Color(52, 120, 246));
+    }
+
+    public static GameButton success(String text) {
+        return new GameButton(text, new Color(50, 160, 80));
+    }
+
+    public static GameButton danger(String text) {
+        return new GameButton(text, new Color(190, 60, 60));
+    }
+
+    public static GameButton muted(String text) {
+        return new GameButton(text, new Color(80, 85, 100));
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -58,8 +69,8 @@ public class GameButton extends JButton {
 
         if (normalColor.getAlpha() > 0) {
             Color fill = normalColor;
-            if (!model.isEnabled())      fill = new Color(90, 90, 90);
-            else if (model.isPressed())  fill = pressedColor;
+            if (!model.isEnabled()) fill = new Color(90, 90, 90);
+            else if (model.isPressed()) fill = pressedColor;
             else if (model.isRollover()) fill = hoverColor;
 
             g2d.setColor(fill);
@@ -105,7 +116,8 @@ public class GameButton extends JButton {
     }
 
     @Override
-    protected void paintBorder(Graphics g) {}
+    protected void paintBorder(Graphics g) {
+    }
 
     @Override
     public boolean contains(int x, int y) {

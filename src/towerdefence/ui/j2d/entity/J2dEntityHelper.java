@@ -17,6 +17,7 @@ public class J2dEntityHelper {
 
     /**
      * Initializes the poison overlay animation. Should be called once during game setup.
+     *
      * @param assetManager The AssetManager to load the poison sprite sheet from.
      */
     public static void initPoisonOverlayAnimation(AssetManager assetManager) {
@@ -54,10 +55,10 @@ public class J2dEntityHelper {
             y = entity.getPosition().y();
             int frameSize = 64;
             g2d.drawImage(poisonFrame,
-                    (int) x-frameSize/2,
-                    (int) y-frameSize/2,
-                     frameSize,
-                     frameSize,
+                    (int) x - frameSize / 2,
+                    (int) y - frameSize / 2,
+                    frameSize,
+                    frameSize,
                     null);
         }
 

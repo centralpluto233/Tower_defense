@@ -20,6 +20,7 @@ public abstract class PoisonProjectile extends Projectile {
 
     /**
      * Deals damage to the given EnemyEntity and applies a poison effect that damages the enemy over time.
+     *
      * @param enemy the EnemyEntity to deal damage to
      */
     @Override

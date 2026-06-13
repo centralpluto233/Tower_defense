@@ -6,7 +6,7 @@ import java.awt.geom.RoundRectangle2D;
 
 public class ToggleButton extends JToggleButton {
     private static final int ARC = 18;
-    private final Color onColor  = new Color(50, 160, 80);
+    private final Color onColor = new Color(50, 160, 80);
     private final Color offColor = new Color(80, 85, 100);
     private final Color borderColor = new Color(255, 255, 255, 60);
 
@@ -75,7 +75,8 @@ public class ToggleButton extends JToggleButton {
     }
 
     @Override
-    protected void paintBorder(Graphics g) {}
+    protected void paintBorder(Graphics g) {
+    }
 
     @Override
     public boolean contains(int x, int y) {

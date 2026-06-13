@@ -13,6 +13,22 @@ public abstract class CannonBall extends Projectile {
     private double progress = 0;
 
     /**
+     * Creates a new CannonBall with the given position, damage, and target position.
+     * The CannonBall will travel in a curved arc towards the target position.
+     *
+     * @param x              x part of the position to spawn the CannonBall
+     * @param y              y part of the position to spawn the CannonBall
+     * @param damage         the damage this CannonBall will deal to an enemy upon impact
+     * @param targetPosition the position that the CannonBall will travel towards
+     */
+    public CannonBall(double x, double y, int damage, Vector2D targetPosition) {
+        super(x, y, WIDTH, HEIGHT, SPEED, damage, targetPosition);
+        this.start = new Vector2D(x, y);
+        this.duration = start.distanceTo(targetPosition) / SPEED;
+        setSplashComponent(new SplashComponent(SPLASHRADIUS));
+    }
+
+    /**
      * Updates the position of the CannonBall along a curved arc towards the target position.
      *
      * @param deltaTime the time elapsed since the last update
@@ -45,23 +61,8 @@ public abstract class CannonBall extends Projectile {
     }
 
     /**
-     * Creates a new CannonBall with the given position, damage, and target position.
-     * The CannonBall will travel in a curved arc towards the target position.
-     *
-     * @param x              x part of the position to spawn the CannonBall
-     * @param y              y part of the position to spawn the CannonBall
-     * @param damage         the damage this CannonBall will deal to an enemy upon impact
-     * @param targetPosition the position that the CannonBall will travel towards
-     */
-    public CannonBall(double x, double y, int damage, Vector2D targetPosition) {
-        super(x, y, WIDTH, HEIGHT, SPEED, damage, targetPosition);
-        this.start = new Vector2D(x, y);
-        this.duration = start.distanceTo(targetPosition) / SPEED;
-        setSplashComponent(new SplashComponent(SPLASHRADIUS));
-    }
-
-    /**
      * Checks if the CannonBall overlaps with an enemy. The CannonBall does not have a hitbox for direct collisions, so this method always returns false. Instead, the damage is applied to enemies within the splash radius when the CannonBall reaches its target position.
+     *
      * @param enemy the enemy to check for overlap with the CannonBall. This parameter is not used in this method, but it is included to match the signature of the overlaps method in the Projectile class.
      * @return false, since the CannonBall does not have a hitbox for direct collisions and does not overlap with enemies in the traditional sense. Damage is applied to enemies within the splash radius when the CannonBall reaches its target position, rather than through direct overlap.
      */
@@ -72,6 +73,7 @@ public abstract class CannonBall extends Projectile {
 
     /**
      * Checks if the CannonBall has reached its target position. The CannonBall is considered to have reached the target when its progress towards the target is 100% (1.0).
+     *
      * @return true if the CannonBall has reached its target position, false otherwise
      */
     @Override

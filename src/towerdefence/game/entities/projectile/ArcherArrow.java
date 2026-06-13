@@ -10,6 +10,21 @@ public abstract class ArcherArrow extends Projectile {
     private double progress = 0;
 
     /**
+     * Creates a new ArcherArrow with the given position, damage, and target position.
+     * The ArcherArrow will travel in a curved arc towards the target position.
+     *
+     * @param x              x part of the position to spawn the ArcherArrow
+     * @param y              y part of the position to spawn the ArcherArrow
+     * @param damage         the damage this ArcherArrow will deal to an enemy upon impact
+     * @param targetPosition the position that the ArcherArrow will travel towards
+     */
+    public ArcherArrow(double x, double y, int damage, Vector2D targetPosition) {
+        super(x, y, WIDTH, HEIGHT, SPEED, damage, targetPosition);
+        this.start = new Vector2D(x, y);
+        this.duration = start.distanceTo(targetPosition) / SPEED;
+    }
+
+    /**
      * Updates the position of the ArcherArrow along a curved arc towards the target position.
      *
      * @param deltaTime the time elapsed since the last update
@@ -42,22 +57,8 @@ public abstract class ArcherArrow extends Projectile {
     }
 
     /**
-     * Creates a new ArcherArrow with the given position, damage, and target position.
-     * The ArcherArrow will travel in a curved arc towards the target position.
-     *
-     * @param x              x part of the position to spawn the ArcherArrow
-     * @param y              y part of the position to spawn the ArcherArrow
-     * @param damage         the damage this ArcherArrow will deal to an enemy upon impact
-     * @param targetPosition the position that the ArcherArrow will travel towards
-     */
-    public ArcherArrow(double x, double y, int damage, Vector2D targetPosition) {
-        super(x, y, WIDTH, HEIGHT, SPEED, damage, targetPosition);
-        this.start = new Vector2D(x, y);
-        this.duration = start.distanceTo(targetPosition) / SPEED;
-    }
-
-    /**
      * Checks if the ArcherArrow has reached its target position. The ArcherArrow is considered to have reached the target when its progress towards the target is 100% (1.0).
+     *
      * @return true if the ArcherArrow has reached its target position, false otherwise
      */
     @Override

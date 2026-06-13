@@ -20,6 +20,6 @@ public class J2dArcherArrow extends ArcherArrow {
 
     @Override
     public void draw(double deltaTime) {
-        J2dEntityHelper.drawProjectile(graphicsContext, this,sprite);
+        J2dEntityHelper.drawProjectile(graphicsContext, this, sprite);
     }
 }

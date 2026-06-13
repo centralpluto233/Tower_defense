@@ -4,16 +4,8 @@ import towerdefence.util.Vector2D;
 
 import java.util.List;
 
-public class LevelData {
-    private final String levelName;
-    private final String levelFile;
-    private final int lives;
-    private final int resources;
-    private final List<Vector2D> towerSpots;
-    private final List<WaveData> waves;
-    private final List<List<Vector2D>> paths;
-    private final GameGrid grid;
-
+public record LevelData(String levelName, String levelFile, int lives, int resources, List<List<Vector2D>> paths,
+                        List<Vector2D> towerSpots, List<WaveData> waves, GameGrid grid) {
     /**
      * Constructs a new LevelData object with the specified parameters.
      *
@@ -40,7 +32,8 @@ public class LevelData {
      *
      * @return the level name
      */
-    public String getLevelName() {
+    @Override
+    public String levelName() {
         return levelName;
     }
 
@@ -49,7 +42,8 @@ public class LevelData {
      *
      * @return the level file path
      */
-    public String getLevelFile() {
+    @Override
+    public String levelFile() {
         return levelFile;
     }
 
@@ -58,7 +52,8 @@ public class LevelData {
      *
      * @return the number of lives
      */
-    public int getLives() {
+    @Override
+    public int lives() {
         return lives;
     }
 
@@ -67,12 +62,14 @@ public class LevelData {
      *
      * @return the amount of resources
      */
-    public int getResources() {
+    @Override
+    public int resources() {
         return resources;
     }
 
     /**
      * Returns the paths that enemies will follow in this level, represented as a list of lists of Vector2D.
+     *
      * @param index the index of the path to retrieve, since there can be multiple paths in a level
      * @return the path at the specified index
      */
@@ -82,9 +79,11 @@ public class LevelData {
 
     /**
      * Returns the paths that enemies will follow in this level, represented as a list of lists of Vector2D.
+     *
      * @return the list of paths
      */
-    public List<List<Vector2D>> getPaths() {
+    @Override
+    public List<List<Vector2D>> paths() {
         return paths;
     }
 
@@ -93,7 +92,8 @@ public class LevelData {
      *
      * @return the tower spots
      */
-    public List<Vector2D> getTowerSpots() {
+    @Override
+    public List<Vector2D> towerSpots() {
         return towerSpots;
     }
 
@@ -102,15 +102,18 @@ public class LevelData {
      *
      * @return the waves of enemies
      */
-    public List<WaveData> getWaves() {
+    @Override
+    public List<WaveData> waves() {
         return waves;
     }
 
     /**
      * Returns the GameGrid object representing the grid layout of the level, which can be used for pathfinding and other grid-based calculations.
+     *
      * @return the GameGrid for this level
      */
-    public GameGrid getGrid() {
+    @Override
+    public GameGrid grid() {
         return grid;
     }
 

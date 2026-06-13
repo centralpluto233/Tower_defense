@@ -1,8 +1,8 @@
 package towerdefence.game.input;
 
 import towerdefence.game.AbstractGameFactory;
-import towerdefence.game.entities.EntityManager;
 import towerdefence.game.Game;
+import towerdefence.game.entities.EntityManager;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.stats.RunStats;
 import towerdefence.level.LevelData;
@@ -47,7 +47,7 @@ public class InputHandler {
                 int spotIndex = command.spotIndex()
                         .orElseThrow(() -> new IllegalArgumentException("Missing spot index"));
 
-                Vector2D spot = levelData.getTowerSpots().get(spotIndex);
+                Vector2D spot = levelData.towerSpots().get(spotIndex);
 
                 if (entityManager.isTowerSpotOccupied(spot)) return;
 
@@ -79,7 +79,7 @@ public class InputHandler {
      * @param towerType the type of tower the player wants to place (e.g., "Crossbow", "Archer"), which is used to determine which specific tower entity to create using the factory
      */
     private void handlePlaceTower(int spotIndex, String towerType) throws Exception {
-        var spot = levelData.getTowerSpots().get(spotIndex);
+        var spot = levelData.towerSpots().get(spotIndex);
         Tower newTower = factory.createTower(towerType, spot);
         int cost = newTower.getCost();
 
