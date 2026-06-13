@@ -145,14 +145,21 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     private void loadPathTiles() {
         pathTiles.clear();
-        BufferedImage pathSheet = assetManager.getSprite("sprites/map/" + currentTheme.folder() + "/path.png");
-        int s = 16;
-        pathTiles.put(TileType.CORNER_RD, pathSheet.getSubimage(0,   0, s, s));
-        pathTiles.put(TileType.PATH_H,    pathSheet.getSubimage(s,   0, s, s));
-        pathTiles.put(TileType.CORNER_LD, pathSheet.getSubimage(2*s, 0, s, s));
-        pathTiles.put(TileType.PATH_V,    pathSheet.getSubimage(0,   s, s, s));
-        pathTiles.put(TileType.CORNER_RU, pathSheet.getSubimage(0, 2*s, s, s));
-        pathTiles.put(TileType.CORNER_LU, pathSheet.getSubimage(2*s, 2*s, s, s));
+        BufferedImage s = assetManager.getSprite("sprites/map/" + currentTheme.folder() + "/path.png");
+        int t = 16;
+        // bestaande 6 tiles
+        pathTiles.put(TileType.CORNER_SE, s.getSubimage(0,     0, t, t));
+        pathTiles.put(TileType.PATH_H,    s.getSubimage(t,     0, t, t));
+        pathTiles.put(TileType.CORNER_SW, s.getSubimage(2*t,   0, t, t));
+        pathTiles.put(TileType.PATH_V,    s.getSubimage(0,     t, t, t));
+        pathTiles.put(TileType.CORNER_NE, s.getSubimage(0,   2*t, t, t));
+        pathTiles.put(TileType.CORNER_NW, s.getSubimage(2*t, 2*t, t, t));
+        // nieuwe 5 tiles — rij 3 en 4 in je spritesheet
+        pathTiles.put(TileType.T_NES,     s.getSubimage(0,   4*t, t, t));
+        pathTiles.put(TileType.T_WES,     s.getSubimage(t,   3*t, t, t));
+        pathTiles.put(TileType.T_WNE,     s.getSubimage(0, 3*t, t, t));
+        pathTiles.put(TileType.T_WNS,     s.getSubimage(2*t, 3*t, t, t));
+        pathTiles.put(TileType.CROSS,     s.getSubimage(t,   4*t, t, t));
     }
 
     private void generateTrees() {
@@ -223,7 +230,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         drawTowerSpots(g2d);
         drawEntities(this.deltaTime);
         drawFloatingTexts(g2d, this.deltaTime);
-        this.drawCastle(g2d, game.getPath().getLast());
+        this.drawCastle(g2d, game.getPaths().getFirst().getLast());
         drawStats(g2d);
         if (config.getDebug()) {
             drawFps(g2d);
@@ -385,29 +392,37 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
                 if (type == TileType.GRASS) continue;
 
                 int x = margin + col * ts;
-                int y = margin+ row * ts;
+                int y = margin + row * ts;
 
-                // gekleurde achtergrond per type
                 g2d.setColor(switch (type) {
                     case PATH_H    -> new Color(200, 100,   0, 180);
                     case PATH_V    -> new Color(  0, 100, 200, 180);
-                    case CORNER_RD -> new Color(200,   0,   0, 180);
-                    case CORNER_LD -> new Color(  0, 200,   0, 180);
-                    case CORNER_RU -> new Color(200, 200,   0, 180);
-                    case CORNER_LU -> new Color(200,   0, 200, 180);
+                    case CORNER_SE -> new Color(200,   0,   0, 180);
+                    case CORNER_SW -> new Color(  0, 200,   0, 180);
+                    case CORNER_NE -> new Color(200, 200,   0, 180);
+                    case CORNER_NW -> new Color(200,   0, 200, 180);
+                    case T_NES     -> new Color(255, 128,   0, 180);
+                    case T_WES     -> new Color(  0, 255, 128, 180);
+                    case T_WNE     -> new Color(128,   0, 255, 180);
+                    case T_WNS     -> new Color(  0, 128, 255, 180);
+                    case CROSS     -> new Color(255, 255, 255, 180);
                     default        -> new Color(128, 128, 128, 180);
                 });
                 g2d.fillRect(x, y, ts, ts);
 
-                // naam
                 g2d.setColor(Color.WHITE);
                 String name = switch (type) {
                     case PATH_H    -> "H";
                     case PATH_V    -> "V";
-                    case CORNER_RD -> "RD";
-                    case CORNER_LD -> "LD";
-                    case CORNER_RU -> "RU";
-                    case CORNER_LU -> "LU";
+                    case CORNER_SE -> "SE";
+                    case CORNER_SW -> "SW";
+                    case CORNER_NE -> "NE";
+                    case CORNER_NW -> "NW";
+                    case T_NES     -> "TNES";
+                    case T_WES     -> "TWES";
+                    case T_WNE     -> "TWNE";
+                    case T_WNS     -> "TWNS";
+                    case CROSS     -> "X";
                     default        -> "?";
                 };
                 g2d.drawString(name, x + 2, y + ts - 2);
@@ -481,13 +496,15 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     }
 
     private boolean isTooCloseToPath(int cx, int cy, int minDist) {
-        List<Vector2D> path = game.getPath();
-        for (int i = 0; i < path.size() - 1; i++) {
-            Vector2D a = path.get(i);
-            Vector2D b = path.get(i + 1);
+        List<List<Vector2D>> paths = game.getPaths();
+        for (List<Vector2D> path : paths) {
+            for (int i = 0; i < path.size() - 1; i++) {
+                Vector2D a = path.get(i);
+                Vector2D b = path.get(i + 1);
 
-            double dist = distanceToSegment(cx, cy, a.x(), a.y(), b.x(), b.y());
-            if (dist < minDist) return true;
+                double dist = distanceToSegment(cx, cy, a.x(), a.y(), b.x(), b.y());
+                if (dist < minDist) return true;
+            }
         }
         return false;
     }

@@ -295,8 +295,8 @@ public class Game {
         return entityManager.getProjectiles();
     }
 
-    public List<Vector2D> getPath() {
-        return currentLevel.getPath(0);
+    public List<List<Vector2D>> getPaths() {
+        return currentLevel.getPaths();
     }
 
     public List<Vector2D> getTowerSpots() {

@@ -115,11 +115,10 @@ public class LuaEngine {
 
         GameGrid grid = new GameGrid(config.getViewHeight() / config.getTileSize(),
                 config.getViewWidth()  / config.getTileSize());
-        grid.buildFromPath(paths.getFirst());
+        paths.forEach(grid::buildFromPath);
         if (config.getDebug()) {
             System.out.println(grid);
         }
-        paths.forEach(grid::buildFromPath);
 
         paths = paths.stream()
                 .map(p -> toWorld(new ArrayList<>(p)))
