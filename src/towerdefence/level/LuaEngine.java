@@ -16,7 +16,7 @@ public class LuaEngine {
     private static final Logger logger = GameLogger.getLogger();
 
     private final Config config;
-    private final Globals globals = JmePlatform.standardGlobals();
+    private Globals globals = JmePlatform.standardGlobals();
 
     /**
      * Creates a new LuaEngine with the given configuration.
@@ -82,6 +82,7 @@ public class LuaEngine {
      */
     private void loadScript(String levelPath) {
         try {
+            globals = JmePlatform.standardGlobals();
             logger.info("Loading Lua script: " + levelPath);
             globals.loadfile(levelPath).call();
         } catch (Exception e) {

@@ -126,7 +126,8 @@ public class Constants {
     public static class LevelConstants {
         public static final List<String> LEVEL_NAMES = List.of(
                 "Level1.lua",
-                "Level2.lua"
+                "Level2.lua",
+                "Level3.lua"
         );
     }
 }
