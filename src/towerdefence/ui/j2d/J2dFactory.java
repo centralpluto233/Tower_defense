@@ -8,9 +8,11 @@ import towerdefence.game.entities.enemy.GoblinEnemy;
 import towerdefence.game.entities.projectile.ArcherArrow;
 import towerdefence.game.entities.projectile.CannonBall;
 import towerdefence.game.entities.projectile.CrossBowArrow;
+import towerdefence.game.entities.projectile.PoisonProjectile;
 import towerdefence.game.entities.tower.ArcherTower;
 import towerdefence.game.entities.tower.CannonTower;
 import towerdefence.game.entities.tower.CrossBowTower;
+import towerdefence.game.entities.tower.WizardTower;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.system.config.Config;
@@ -22,9 +24,11 @@ import towerdefence.ui.j2d.entity.enemy.J2dGoblinEnemy;
 import towerdefence.ui.j2d.entity.projectile.J2dArcherArrow;
 import towerdefence.ui.j2d.entity.projectile.J2dCannonBall;
 import towerdefence.ui.j2d.entity.projectile.J2dCrossBowArrow;
+import towerdefence.ui.j2d.entity.projectile.J2dPoisonProjectile;
 import towerdefence.ui.j2d.entity.tower.J2dArcherTower;
 import towerdefence.ui.j2d.entity.tower.J2dCannonTower;
 import towerdefence.ui.j2d.entity.tower.J2dCrossBowTower;
+import towerdefence.ui.j2d.entity.tower.J2dWizardTower;
 import towerdefence.util.Vector2D;
 
 import java.util.List;
@@ -93,6 +97,13 @@ public class J2dFactory extends AbstractGameFactory {
                 getGraphics(), assetManager);
     }
 
+    @Override
+    public WizardTower createWizardTower(double x, double y) {
+        return new J2dWizardTower(x, y,
+                (pos, dmg, target) -> createPoisonProjectile(pos.x(), pos.y(), dmg, target),
+                getGraphics(), assetManager);
+    }
+
     // projectiles
     @Override
     protected CrossBowArrow createCrossBowArrow(double x, double y, int damage, Vector2D targetPosition) {
@@ -107,5 +118,10 @@ public class J2dFactory extends AbstractGameFactory {
     @Override
     protected CannonBall createCannonBall(double x, double y, int damage, Vector2D targetPosition) {
         return new J2dCannonBall(x, y, damage, targetPosition, graphicsContext, assetManager);
+    }
+
+    @Override
+    protected PoisonProjectile createPoisonProjectile(double x, double y,int damage, Vector2D targetPosition) {
+        return new J2dPoisonProjectile(x, y, damage, targetPosition, graphicsContext, assetManager);
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 public class Constants {
 
     public static class Paths {
-        public static final String LEVELS = "/lua/levels/";
+        public static final String LEVELS = "/levels/";
         public static final String CONFIG = "/config.properties";
         public static final String LOG_FILE = "logs/game.log";
     }
@@ -32,8 +32,8 @@ public class Constants {
         public static final double SELLPERCENTAGE = 0.25;
 
         public static final class Archer {
-            public static final int COST = 10;
-            public static final double RANGE = 120.0;
+            public static final int COST = 15;
+            public static final double RANGE = 110.0;
             public static final int DAMAGE = 5;
             public static final double COOLDOWN = 1;
             // visual
@@ -42,9 +42,9 @@ public class Constants {
         }
 
         public static final class Cannon {
-            public static final int COST = 30;
-            public static final double RANGE = 135.0;
-            public static final int DAMAGE = 18;
+            public static final int COST = 40;
+            public static final double RANGE = 130.0;
+            public static final int DAMAGE = 22;
             public static final double SPLASHRADIUS = 35;
             public static final double COOLDOWN = 2.2;
             // visual
@@ -52,11 +52,21 @@ public class Constants {
             public static final double HEIGHT = 30.0 * 2;
         }
 
+        public static final class Wizard {
+            public static final int COST = 60;
+            public static final double RANGE = 140.0;
+            public static final int DAMAGE = 3;
+            public static final double COOLDOWN = 2.3;
+            // visual
+            public static final double WIDTH = 16.0 * 2;
+            public static final double HEIGHT = 24.0 * 2;
+        }
+
         public static final class CrossBow {
-            public static final int COST = 20;
-            public static final double RANGE = 150.0;
-            public static final int DAMAGE = 10;
-            public static final double COOLDOWN = 0.5;
+            public static final int COST = 35;
+            public static final double RANGE = 125.0;
+            public static final int DAMAGE = 7;
+            public static final double COOLDOWN = 0.8;
             // visual
             public static final double WIDTH = 18.0 * 2;
             public static final double HEIGHT = 33.0 * 2;
@@ -82,6 +92,16 @@ public class Constants {
         public static final class CannonBall {
             public static final double SPEED = 70.0;
             public static final double ARC_HEIGHT = 60.0;
+            // visual
+            public static final double HEIGHT = 8.0;
+            public static final double WIDTH = 8.0;
+        }
+
+        public static final class Poison {
+            public static final double SPEED = 120.0;
+            public static final double POISON_DURATION = 5.0;
+            public static final double POISON_INTERVAL = 1.0;
+            public static final int POISON_DAMAGE = 8;
             // visual
             public static final double HEIGHT = 8.0;
             public static final double WIDTH = 8.0;

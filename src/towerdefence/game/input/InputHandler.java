@@ -41,7 +41,7 @@ public class InputHandler {
      * @param command the InputCommand to handle, which contains information about the action to perform and any relevant parameters (like tower type or spot index)
      * @param game    the Game instance, which is passed to this method so that it can call methods on the game to perform actions like starting the game, toggling pause, or notifying the game of build menu interactions
      */
-    public void handleCommand(InputCommand command, Game game) {
+    public void handleCommand(InputCommand command, Game game) throws Exception {
         switch (command.action()) {
             case PLACE_TOWER_AT_INDEX -> {
                 int spotIndex = command.spotIndex()
@@ -78,7 +78,7 @@ public class InputHandler {
      * @param spotIndex the index of the tower spot where the player wants to place the tower, which is used to look up the actual position of the spot from the level data
      * @param towerType the type of tower the player wants to place (e.g., "Crossbow", "Archer"), which is used to determine which specific tower entity to create using the factory
      */
-    private void handlePlaceTower(int spotIndex, String towerType) {
+    private void handlePlaceTower(int spotIndex, String towerType) throws Exception {
         var spot = levelData.getTowerSpots().get(spotIndex);
         Tower newTower = factory.createTower(towerType, spot);
         int cost = newTower.getCost();

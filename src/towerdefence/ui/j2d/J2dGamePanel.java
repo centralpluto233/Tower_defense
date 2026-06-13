@@ -10,6 +10,7 @@ import towerdefence.system.config.Config;
 import towerdefence.ui.input.InputMapping;
 import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.MapTheme;
+import towerdefence.ui.j2d.entity.J2dEntityHelper;
 import towerdefence.ui.menu.BuildMenuPanel;
 import towerdefence.ui.menu.MenuOverlayPanel;
 import towerdefence.util.Vector2D;
@@ -81,6 +82,8 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         add(buildMenu);
         this.buildMenuPanel = buildMenu;
         game.addGameListener(buildMenu);
+
+        J2dEntityHelper.initPoisonOverlayAnimation(assets);
     }
 
     // -------------------------------------------------------------------------

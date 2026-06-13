@@ -43,7 +43,11 @@ public class BuildMenuPanel extends JPanel implements GameListener {
             new TowerOption("Cannon", Constants.TowerConstants.Cannon.COST,
                     "sprites/entities/towers/cannon.png",
                     Constants.TowerConstants.Cannon.WIDTH,
-                    Constants.TowerConstants.Cannon.HEIGHT)
+                    Constants.TowerConstants.Cannon.HEIGHT),
+            new TowerOption("Wizard", Constants.TowerConstants.Wizard.COST,
+                    "sprites/entities/towers/wizard.png",
+                    Constants.TowerConstants.Wizard.WIDTH,
+                    Constants.TowerConstants.Wizard.HEIGHT)
     );
 
     public BuildMenuPanel(Game game, InputMapping inputMapping, AssetManager assetManager, Cursor hoverCursor, Cursor noMoneyCursor) {

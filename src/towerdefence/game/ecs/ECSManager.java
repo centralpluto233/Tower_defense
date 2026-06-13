@@ -1,9 +1,9 @@
 package towerdefence.game.ecs;
 
-import towerdefence.game.ecs.components.SpawnCountComponent;
-import towerdefence.game.ecs.components.SpawnPathComponent;
-import towerdefence.game.ecs.components.SpawnScheduleComponent;
-import towerdefence.game.ecs.components.SpawnTypeComponent;
+import towerdefence.game.ecs.components.spawn.SpawnCountComponent;
+import towerdefence.game.ecs.components.spawn.SpawnPathComponent;
+import towerdefence.game.ecs.components.spawn.SpawnScheduleComponent;
+import towerdefence.game.ecs.components.spawn.SpawnTypeComponent;
 
 import java.util.HashMap;
 import java.util.HashSet;

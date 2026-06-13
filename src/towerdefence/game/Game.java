@@ -307,8 +307,13 @@ public class Game {
             return; // queue al leeggetrokken, commands gewoon weggooien, inputs apart behandeld door JButtons en listeners, geen game input
         }
 
-        for (InputCommand command : commands) {
-            inputHandler.handleCommand(command, this);
+        try {
+            for (InputCommand command : commands) {
+                inputHandler.handleCommand(command, this);
+            }
+        } catch (Exception e) {
+            logger.warning("Error processing input command: " + e.getMessage());
+            this.exit();
         }
     }
 

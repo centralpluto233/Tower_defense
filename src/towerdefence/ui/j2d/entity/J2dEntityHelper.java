@@ -5,6 +5,7 @@ import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.ui.j2d.J2dGamePanel;
 import towerdefence.ui.j2d.J2dGraphicsContext;
+import towerdefence.ui.j2d.assets.AssetManager;
 import towerdefence.ui.j2d.assets.SpriteAnimation;
 
 import java.awt.*;
@@ -12,6 +13,17 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 
 public class J2dEntityHelper {
+    private static SpriteAnimation poisonOverlayAnimation;
+
+    /**
+     * Initializes the poison overlay animation. Should be called once during game setup.
+     * @param assetManager The AssetManager to load the poison sprite sheet from.
+     */
+    public static void initPoisonOverlayAnimation(AssetManager assetManager) {
+        BufferedImage sheet = assetManager.getSprite("sprites/entities/enemies/effects/poison.png");
+        poisonOverlayAnimation = new SpriteAnimation(sheet, 6, 20);
+    }
+
     public static void drawEnemy(double deltaTime, SpriteAnimation animation, J2dGraphicsContext graphicsContext, EnemyEntity entity) {
         animation.update(deltaTime);
         BufferedImage frame = animation.getCurrentFrame();
@@ -33,6 +45,20 @@ public class J2dEntityHelper {
             g2d.drawImage(scaled, redTint, (int) x, (int) y);
         } else {
             g2d.drawImage(frame, (int) x, (int) y, (int) entity.getWidth(), (int) entity.getHeight(), null);
+        }
+
+        if (entity.isPoisoned() && poisonOverlayAnimation != null) {
+            poisonOverlayAnimation.update(deltaTime);
+            BufferedImage poisonFrame = poisonOverlayAnimation.getCurrentFrame();
+            x = entity.getPosition().x();
+            y = entity.getPosition().y();
+            int frameSize = 64;
+            g2d.drawImage(poisonFrame,
+                    (int) x-frameSize/2,
+                    (int) y-frameSize/2,
+                     frameSize,
+                     frameSize,
+                    null);
         }
 
         J2dGamePanel.drawEntityHealthBar(g2d, entity.getX(), entity.getY(), entity.getWidth(), entity.getHealth(), entity.getMaxHealth());

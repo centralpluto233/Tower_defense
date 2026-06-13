@@ -1,5 +1,6 @@
 package towerdefence.game.entities.enemy;
 
+import towerdefence.game.ecs.components.PoisonEffectComponent;
 import towerdefence.game.entities.MovingEntity;
 import towerdefence.game.interfaces.Damageable;
 import towerdefence.system.config.Constants;
@@ -8,6 +9,7 @@ import towerdefence.util.Vector2D;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -28,6 +30,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     protected int currentWaypointIndex = 0;
 
     private double hitFlashTimer = 0.0;
+    private Optional<PoisonEffectComponent> poisonComponent = Optional.empty();
 
     /**
      * Creates a new EnemyEntity with the given parameters.
@@ -82,6 +85,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
      */
     @Override
     public void update(double dt) {
+        poisonTick(dt);
         if (hitFlashTimer > 0.0) {
             hitFlashTimer -= dt;
         }
@@ -158,6 +162,22 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         return path != null && currentWaypointIndex >= path.size();
     }
 
+    /**
+     * applies poison damage over time if the enemy is currently poisoned, and removes the poison effect if it has expired
+     * @param deltaTime the amount of time that has passed since the last update, in seconds
+     */
+    private void poisonTick(double deltaTime) {
+        if (poisonComponent.isPresent()) {
+            PoisonEffectComponent pc = poisonComponent.get();
+            if (pc.update(deltaTime)) {
+                takeDamage(pc.getDamagePerTick());
+            }
+            if (pc.isExpired()) {
+                poisonComponent = Optional.empty();
+            }
+        }
+    }
+
     // -------------------------------------------------
     // health & damage
     // -------------------------------------------------
@@ -209,6 +229,18 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         return maxHealth;
     }
 
+    /**
+     * applies a poison effect to the enemy. If the enemy is already poisoned, the poison effect will be refreshed (duration reset).
+     * @param poison the poison effect to apply to the enemy
+     */
+    public void applyPoisonEffect(PoisonEffectComponent poison) {
+        if (poisonComponent.isPresent()) {
+            poisonComponent.get().refresh();
+        } else {
+            poisonComponent = Optional.of(poison);
+        }
+    }
+
     // ------------------------------------------------------
     // getters
     // ------------------------------------------------------
@@ -257,6 +289,14 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
      */
     public boolean isHitFlashing() {
         return hitFlashTimer > 0.0;
+    }
+
+    /**
+     * returns whether the enemy is currently poisoned
+     * @return true if the enemy is currently poisoned, false otherwise
+     */
+    public boolean isPoisoned() {
+        return poisonComponent.isPresent();
     }
 
     // ---------------------------------------

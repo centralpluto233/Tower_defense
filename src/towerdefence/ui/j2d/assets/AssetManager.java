@@ -39,11 +39,16 @@ public class AssetManager {
         "sprites/entities/projectiles/arrow_archer.png",
         "sprites/entities/projectiles/arrow_crossbow.png",
         "sprites/entities/projectiles/cannonball.png",
+        "sprites/entities/projectiles/poison.png",
 
         // Towers
         "sprites/entities/towers/archer.png",
         "sprites/entities/towers/crossbow.png",
         "sprites/entities/towers/cannon.png",
+        "sprites/entities/towers/wizard.png",
+
+        // Effects
+        "sprites/entities/enemies/effects/poison.png",
 
         // Map
         "sprites/map/decoration/mushroom.png",

@@ -1,4 +1,4 @@
-package towerdefence.game.ecs.components;
+package towerdefence.game.ecs.components.spawn;
 
 import towerdefence.util.Vector2D;
 

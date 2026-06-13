@@ -6,10 +6,8 @@ import towerdefence.game.entities.enemy.GoblinEnemy;
 import towerdefence.game.entities.projectile.ArcherArrow;
 import towerdefence.game.entities.projectile.CannonBall;
 import towerdefence.game.entities.projectile.CrossBowArrow;
-import towerdefence.game.entities.tower.ArcherTower;
-import towerdefence.game.entities.tower.CannonTower;
-import towerdefence.game.entities.tower.CrossBowTower;
-import towerdefence.game.entities.tower.Tower;
+import towerdefence.game.entities.projectile.PoisonProjectile;
+import towerdefence.game.entities.tower.*;
 import towerdefence.game.interfaces.GameView;
 import towerdefence.game.interfaces.InputSource;
 import towerdefence.system.config.Config;
@@ -51,6 +49,8 @@ public abstract class AbstractGameFactory {
 
     public abstract CannonTower createCannonTower(double x, double y);
 
+    public abstract WizardTower createWizardTower(double x, double y);
+
     /**
      * Factory method to create a tower based on the given type and position.
      * This method abstracts away the specific tower creation logic and allows for easy extension by simply adding new cases to the switch statement for additional tower types.
@@ -59,12 +59,13 @@ public abstract class AbstractGameFactory {
      * @param spot the position where the tower should be created, represented as a Vector2D object containing x and y coordinates
      * @return a new Tower instance of the specified type at the given position
      */
-    public Tower createTower(String type, Vector2D spot) {
+    public Tower createTower(String type, Vector2D spot) throws Exception {
         return switch (type) {
             case "Crossbow" -> createCrossBowTower(spot.x(), spot.y());
             case "Archer" -> createArcherTower(spot.x(), spot.y());
             case "Cannon" -> createCannonTower(spot.x(), spot.y());
-            default -> throw new IllegalArgumentException("Unknown tower type: " + type);
+            case "Wizard" -> createWizardTower(spot.x(), spot.y());
+            default -> throw new Exception("Unknown tower type: " + type);
         };
     }
 
@@ -74,4 +75,6 @@ public abstract class AbstractGameFactory {
     protected abstract ArcherArrow createArcherArrow(double x, double y, int damage, Vector2D targetPosition);
 
     protected abstract CannonBall createCannonBall(double x, double y, int damage, Vector2D targetPosition);
+
+    protected abstract PoisonProjectile createPoisonProjectile(double x, double y, int damage, Vector2D targetPosition);
 }
