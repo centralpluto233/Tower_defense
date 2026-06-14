@@ -61,12 +61,14 @@ public class ToggleButton extends JToggleButton {
             g2.setColor(new Color(100, 255, 120));
             g2.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
+            // checkmark shape: a simple "V" shape that fits within the box
             g2.drawLine(boxX + 3, boxY + 7, boxX + 6, boxY + 11);
             g2.drawLine(boxX + 6, boxY + 11, boxX + 12, boxY + 3);
         } else {
             g2.setColor(new Color(255, 100, 100));
             g2.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
+            // "X" shape for off state
             g2.drawLine(boxX + 3, boxY + 3, boxX + 11, boxY + 11);
             g2.drawLine(boxX + 11, boxY + 3, boxX + 3, boxY + 11);
         }
@@ -74,6 +76,7 @@ public class ToggleButton extends JToggleButton {
         g2.dispose();
     }
 
+    // Override paintBorder to do nothing, since we handle the border in paintComponent
     @Override
     protected void paintBorder(Graphics g) {
     }

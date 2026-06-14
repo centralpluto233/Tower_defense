@@ -204,6 +204,19 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         panel.add(styledLabel("Map Theme", 16));
         panel.add(Box.createVerticalStrut(8));
 
+        DropdownMenu<String> themeBox = getDropdownMenu();
+        panel.add(themeBox);
+        panel.add(Box.createVerticalStrut(16));
+
+        GameButton backButton = GameButton.muted("  Back  ");
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        backButton.addActionListener(_ -> refresh());
+        panel.add(backButton);
+
+        return panel;
+    }
+
+    private DropdownMenu<String> getDropdownMenu() {
         DropdownMenu<String> themeBox = new DropdownMenu<>(MapTheme.getTypes());
         themeBox.setCursor(hoverCursor);
         themeBox.setSelectedItem(config.getMapTheme());
@@ -217,15 +230,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
                 onThemeChanged.accept(MapTheme.valueOf(selected.toUpperCase()));
             }
         });
-        panel.add(themeBox);
-        panel.add(Box.createVerticalStrut(16));
-
-        GameButton backButton = GameButton.muted("  Back  ");
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        backButton.addActionListener(_ -> refresh());
-        panel.add(backButton);
-
-        return panel;
+        return themeBox;
     }
 
     private JPanel buildLevelPickerCard() {
