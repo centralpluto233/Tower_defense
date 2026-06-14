@@ -66,6 +66,7 @@ public class AssetManager {
                 "sprites/hud/heart_empty.png",
                 "sprites/hud/Coin-Sheet.png",
                 "sprites/hud/pause.png",
+                "sprites/hud/box.png",
 
 
                 // Cursors
@@ -74,7 +75,7 @@ public class AssetManager {
                 "sprites/hud/BuildCursor.png",
                 "sprites/hud/Cursor_3.png",
                 "sprites/hud/sellcursor.png",
-                "sprites/hud/box.png"
+                "sprites/hud/configure.png"
         );
 
         // Themes

@@ -411,4 +411,8 @@ public class Game {
     public void notifyBuildMenuClose() {
         notifyListeners(GameListener::onBuildMenuClosed);
     }
+
+    public void notifyTowerSelected(Tower tower, int index) {
+        notifyListeners(l -> l.onTowerSelected(tower, index));
+    }
 }

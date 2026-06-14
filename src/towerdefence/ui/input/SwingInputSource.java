@@ -29,7 +29,7 @@ public class SwingInputSource implements InputSource {
 
     private final Cursor buildCursor;
     private final Cursor normalCursor;
-    private final Cursor sellCursor;
+    private final Cursor selectCursor;
 
     /**
      * Creates a new SwingInputSource with the given game, config, input mapping, and component. The input source will listen for mouse clicks on the component and translate them into game commands based on the input mapping and game state.
@@ -39,14 +39,14 @@ public class SwingInputSource implements InputSource {
      * @param inputMapping the InputMapping instance responsible for translating screen coordinates to world coordinates, allowing the input source to determine which game entities (e.g., tower spots) are being interacted with based on mouse clicks
      * @param component    the JComponent to which this input source will attach mouse listeners for detecting user input; typically this would be the main game view component where the user interacts with the game
      */
-    public SwingInputSource(Game game, Config config, InputMapping inputMapping, JComponent component, Cursor buildCursor, Cursor normalCursor, Cursor sellCursor) {
+    public SwingInputSource(Game game, Config config, InputMapping inputMapping, JComponent component, Cursor buildCursor, Cursor normalCursor, Cursor selectCursor) {
         this.game = game;
         this.config = config;
         this.inputMapping = inputMapping;
         this.component = component;
         this.buildCursor = buildCursor;
         this.normalCursor = normalCursor;
-        this.sellCursor = sellCursor;
+        this.selectCursor = selectCursor;
     }
 
     /**
@@ -122,8 +122,9 @@ public class SwingInputSource implements InputSource {
 
                 Optional<Tower> towerOpt = overTower(e.getPoint());
                 if (towerOpt.isPresent()) {
-                    int towerIndex = game.getTowers().indexOf(towerOpt.get());
-                    inputQueue.add(InputCommand.sellTower(towerIndex));
+                    Tower tower = towerOpt.get();
+                    int towerIndex = game.getTowers().indexOf(tower);
+                    game.notifyTowerSelected(tower, towerIndex);
                     return;
                 }
 
@@ -142,7 +143,7 @@ public class SwingInputSource implements InputSource {
                 if (spot.isPresent() && overTower(e.getPoint()).isEmpty()) {
                     component.setCursor(buildCursor);
                 } else if (overTower(e.getPoint()).isPresent()) {
-                    component.setCursor(sellCursor);
+                    component.setCursor(selectCursor);
                 } else {
                     component.setCursor(normalCursor);
                 }

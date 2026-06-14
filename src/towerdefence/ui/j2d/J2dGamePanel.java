@@ -14,6 +14,7 @@ import towerdefence.ui.j2d.assets.MapTheme;
 import towerdefence.ui.j2d.entity.J2dEntityHelper;
 import towerdefence.ui.menu.BuildMenuPanel;
 import towerdefence.ui.menu.MenuOverlayPanel;
+import towerdefence.ui.menu.TowerInfoPanel;
 import towerdefence.util.Vector2D;
 
 import javax.swing.*;
@@ -31,6 +32,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     private final J2dGraphicsContext graphicsContext;
     private final BuildMenuPanel     buildMenuPanel;
     private final MenuOverlayPanel   menuOverlayPanel;
+    private final TowerInfoPanel towerInfoPanel;
     private final AssetManager       assets;
     private static final Logger logger = GameLogger.getLogger();
 
@@ -46,7 +48,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
 
     private final Cursor normalCursor;
     private final Cursor buildCursor;
-    private final Cursor sellCursor;
+    private final Cursor configureCursor;
 
     private JFrame frame;
 
@@ -68,13 +70,21 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
         this.normalCursor = makeCursor(assets, "sprites/hud/Cursor_1.png",     "normalCursor");
         Cursor hoverCursor = makeCursor(assets, "sprites/hud/Cursor_2.png",    "hoverCursor");
         this.buildCursor  = makeCursor(assets, "sprites/hud/BuildCursor.png",  "buildCursor");
-        this.sellCursor   = makeCursor(assets, "sprites/hud/sellcursor.png",   "sellCursor");
+        this.configureCursor   = makeCursor(assets, "sprites/hud/configure.png",   "configureCursor");
         Cursor noMoney    = makeCursor(assets, "sprites/hud/Cursor_3.png",     "noMoneyCursor");
+        Cursor sellCursor = makeCursor(assets, "sprites/hud/sellcursor.png",    "sellCursor");
 
         this.mapRenderer = new J2dMapRenderer(game, config, assets, currentTheme);
         this.hudRenderer = new J2dHudRenderer(game, config, assets);
 
         setLayout(new OverlayLayout(this));
+
+        TowerInfoPanel towerInfo = new TowerInfoPanel(this, sellCursor, hoverCursor);
+        towerInfo.setAlignmentX(0.0f);
+        towerInfo.setAlignmentY(0.0f);
+        add(towerInfo);
+        game.addGameListener(towerInfo);
+        this.towerInfoPanel = towerInfo;
 
         this.menuOverlayPanel = new MenuOverlayPanel(game, config, hoverCursor, this::setTheme, assets);
         menuOverlayPanel.setAlignmentX(0.0f);
@@ -200,10 +210,13 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     // Cursor / thema
     // -------------------------------------------------------------------------
 
-    public void setCommandSink(Consumer<InputCommand> sink) { buildMenuPanel.setCommandSink(sink); }
+    public void setCommandSink(Consumer<InputCommand> sink) {
+        buildMenuPanel.setCommandSink(sink);
+        towerInfoPanel.setCommandSink(sink);
+    }
     public Cursor getBuildCursor()  { return buildCursor;  }
     public Cursor getNormalCursor() { return normalCursor; }
-    public Cursor getSellCursor()   { return sellCursor;   }
+    public Cursor getConfigureCursor()   { return configureCursor;   }
 
     public void setTheme(MapTheme theme) {
         this.currentTheme = theme;

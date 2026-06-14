@@ -60,13 +60,13 @@ public class ToggleButton extends JToggleButton {
         if (on) {
             g2.setColor(new Color(100, 255, 120));
             g2.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            // vinkje als twee lijnen
+
             g2.drawLine(boxX + 3, boxY + 7, boxX + 6, boxY + 11);
             g2.drawLine(boxX + 6, boxY + 11, boxX + 12, boxY + 3);
         } else {
             g2.setColor(new Color(255, 100, 100));
             g2.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            // kruisje als twee diagonalen
+
             g2.drawLine(boxX + 3, boxY + 3, boxX + 11, boxY + 11);
             g2.drawLine(boxX + 11, boxY + 3, boxX + 3, boxY + 11);
         }

@@ -10,6 +10,7 @@ import towerdefence.system.config.Constants;
 import towerdefence.system.logging.GameLogger;
 import towerdefence.util.Vector2D;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ public abstract class Tower extends Entity implements Attacker {
     private static final Logger logger = GameLogger.getLogger();
 
     private final double range;
+    private TargetingStrategy targetingStrategy = TargetingStrategy.FIRST;
     private final int damage;
     private final double cooldown;
     private final int cost;
@@ -102,6 +104,14 @@ public abstract class Tower extends Entity implements Attacker {
         return (int) (getCost() * Constants.TowerConstants.SELLPERCENTAGE);
     }
 
+    public TargetingStrategy getTargetingStrategy() {
+        return targetingStrategy;
+    }
+
+    public void setTargetingStrategy(TargetingStrategy targetingStrategy) {
+        this.targetingStrategy = targetingStrategy;
+    }
+
     /**
      * Gets the spawn position of the projectile, this is dependent of the graphics that are used; therefore abstract
      *
@@ -156,9 +166,18 @@ public abstract class Tower extends Entity implements Attacker {
      * @return an Optional containing the first EnemyEntity found within range, or an empty Optional if no enemies are within range.
      */
     private Optional<EnemyEntity> findTargetInRange(List<EnemyEntity> enemies) {
-        return enemies.stream()
+        List<EnemyEntity> inRange = enemies.stream()
                 .filter(enemy -> getPosition().
-                        distanceTo(enemy.getPosition()) <= range).findFirst();
+                        distanceTo(enemy.getPosition()) <= range)
+                .toList();
+
+        if (inRange.isEmpty()) return Optional.empty();
+
+        return switch (targetingStrategy) {
+            case FIRST -> inRange.stream().max(Comparator.comparingDouble(EnemyEntity::getPathProgress));
+            case STRONGEST -> inRange.stream().max(Comparator.comparingInt(EnemyEntity::getMaxHealth));
+            case FASTEST -> inRange.stream().max(Comparator.comparingDouble(EnemyEntity::getSpeed));
+        };
     }
 
     /**

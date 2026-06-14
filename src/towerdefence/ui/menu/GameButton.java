@@ -18,10 +18,27 @@ public class GameButton extends JButton {
     private BufferedImage image;
     private Shape shape;
 
+    /**
+     * creates a button with the specified text and base color. The button will have a hover effect and a pressed effect based on the base color.
+     * @param text the text that the button should display
+     * @param baseColor the base color of the button, used to calculate hover and pressed colors
+     */
     public GameButton(String text, Color baseColor) {
+        this(text, baseColor, 180, 40, 20);
+    }
+
+    /**
+     * creates a button with the specified text, base color, width, height and font size. The button will have a hover effect and a pressed effect based on the base color.
+     * @param text the text that the button should display
+     * @param baseColor the base color of the button, used to calculate hover and pressed colors
+     * @param width the width of the button
+     * @param height the height of the button
+     * @param fontSize the font size of the button text
+     */
+    public GameButton(String text, Color baseColor, int width, int height, int fontSize) {
         super(text);
-        this.normalColor = baseColor;
-        this.hoverColor = baseColor.brighter();
+        this.normalColor  = baseColor;
+        this.hoverColor   = baseColor.brighter();
         this.pressedColor = baseColor.darker();
 
         setFocusPainted(false);
@@ -30,10 +47,17 @@ public class GameButton extends JButton {
         setOpaque(false);
         setForeground(textColor);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
-        setFont(new Font("Consolas", Font.BOLD, 20));
-        setPreferredSize(new Dimension(220, 48));
+        setFont(new Font("Consolas", Font.BOLD, fontSize));
+        setPreferredSize(new Dimension(width, height));
+        setMaximumSize(new Dimension(width, height));
     }
 
+    /**
+     * creates a button that displays the given image, scaled by the given factor. The button will have a hover effect and a pressed effect that tint the image.
+     * @param image the image to display on the button
+     * @param scale the factor by which to scale the image, e.g. 1.0 for original size, 0.5 for half size, etc.
+     * @return a GameButton that displays the given image with hover and pressed effects
+     */
     public static GameButton icon(BufferedImage image, double scale) {
         GameButton btn = new GameButton("", new Color(0, 0, 0, 0));
         btn.image = image;
@@ -58,6 +82,22 @@ public class GameButton extends JButton {
 
     public static GameButton muted(String text) {
         return new GameButton(text, new Color(80, 85, 100));
+    }
+
+    public static GameButton primary(String text, int width, int height, int fontSize) {
+        return new GameButton(text, new Color(52, 120, 246), width, height, fontSize);
+    }
+
+    public static GameButton success(String text, int width, int height, int fontSize) {
+        return new GameButton(text, new Color(50, 160, 80), width, height, fontSize);
+    }
+
+    public static GameButton danger(String text, int width, int height, int fontSize) {
+        return new GameButton(text, new Color(190, 60, 60), width, height, fontSize);
+    }
+
+    public static GameButton muted(String text, int width, int height, int fontSize) {
+        return new GameButton(text, new Color(80, 85, 100), width, height, fontSize);
     }
 
     @Override

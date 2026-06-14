@@ -3,6 +3,7 @@ package towerdefence.ui.menu;
 import towerdefence.game.Game;
 import towerdefence.game.GameListener;
 import towerdefence.game.GameState;
+import towerdefence.game.entities.tower.Tower;
 import towerdefence.system.config.Config;
 import towerdefence.system.config.Constants;
 import towerdefence.ui.j2d.assets.AssetManager;
@@ -203,7 +204,19 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         panel.add(styledLabel("Map Theme", 16));
         panel.add(Box.createVerticalStrut(8));
 
-        JComboBox<String> themeBox = getStringJComboBox();
+        DropdownMenu<String> themeBox = new DropdownMenu<>(MapTheme.getTypes());
+        themeBox.setCursor(hoverCursor);
+        themeBox.setSelectedItem(config.getMapTheme());
+        themeBox.setMaximumSize(new Dimension(220, 40));
+        themeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        themeBox.addActionListener(_ -> {
+            String selected = (String) themeBox.getSelectedItem();
+            if (selected != null) {
+                config.setMapTheme(selected);
+                config.save();
+                onThemeChanged.accept(MapTheme.valueOf(selected.toUpperCase()));
+            }
+        });
         panel.add(themeBox);
         panel.add(Box.createVerticalStrut(16));
 
@@ -213,21 +226,6 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         panel.add(backButton);
 
         return panel;
-    }
-
-    private JComboBox<String> getStringJComboBox() {
-        JComboBox<String> themeBox = new JComboBox<>(MapTheme.getTypes());
-        themeBox.setSelectedItem(config.getMapTheme());
-        themeBox.setMaximumSize(new Dimension(200, 40));
-        themeBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        themeBox.addActionListener(_ -> {
-            String selected = (String) themeBox.getSelectedItem();
-            config.setMapTheme(selected);
-            config.save();
-            assert selected != null;
-            onThemeChanged.accept(MapTheme.valueOf(selected.toUpperCase()));
-        });
-        return themeBox;
     }
 
     private JPanel buildLevelPickerCard() {
@@ -406,4 +404,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     @Override
     public void onBuildMenuClosed() {
     }
+
+    @Override
+    public void onTowerSelected(Tower tower, int index) {}
 }

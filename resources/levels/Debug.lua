@@ -17,6 +17,6 @@ tower_spots = {
 }
 
 waves = {
-    { count = 2, interval = 1.5, startDelay = 0,  enemyType = "skeleton", pathIndex = 0 },
-    { count = 2, interval = 1.5, startDelay = 0.5,  enemyType = "goblin", pathIndex = 0 },
+    { count = 2, interval = 1.5, startDelay = 0,  enemyType = "bigslime", pathIndex = 0 },
+    { count = 2, interval = 1.5, startDelay = 0.5,  enemyType = "bigslime", pathIndex = 0 },
 }

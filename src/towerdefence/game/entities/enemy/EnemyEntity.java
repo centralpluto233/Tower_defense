@@ -315,6 +315,13 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         return 0.0;
     }
 
+    public double getPathProgress() {
+        return getCurrentWaypointIndex() -
+                getPosition().distanceTo(getPath().get(
+                        Math.min(getCurrentWaypointIndex(), getPath().size() - 1)
+                ));
+    }
+
     // ---------------------------------------
     // debug
     // ---------------------------------------

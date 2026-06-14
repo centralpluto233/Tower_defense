@@ -2,6 +2,7 @@ package towerdefence.ui.menu;
 
 import towerdefence.game.Game;
 import towerdefence.game.GameListener;
+import towerdefence.game.entities.tower.Tower;
 import towerdefence.game.entities.tower.TowerOption;
 import towerdefence.game.input.InputCommand;
 import towerdefence.system.config.Constants;
@@ -222,4 +223,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     public void onBuildMenuClosed() {
         closeBuildMenu();
     }
+
+    @Override
+    public void onTowerSelected(Tower tower, int index) {closeBuildMenu();}
 }

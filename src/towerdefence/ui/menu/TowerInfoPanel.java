@@ -1,0 +1,181 @@
+package towerdefence.ui.menu;
+
+import towerdefence.game.GameListener;
+import towerdefence.game.entities.tower.Tower;
+import towerdefence.game.entities.tower.TargetingStrategy;
+import towerdefence.game.input.InputCommand;
+import towerdefence.ui.input.InputMapping;
+import towerdefence.util.Vector2D;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+public class TowerInfoPanel extends JPanel implements GameListener {
+
+    private static final int ARC = 12;
+
+    private final JPanel   towerOptionPanel = new JPanel();
+    private final JLabel   nameLabel        = new JLabel();
+    private final DropdownMenu<TargetingStrategy> targetingDropdown = new DropdownMenu<>(TargetingStrategy.values(),100,25,12);
+    private final GameButton sellButton = GameButton.danger("Sell",100,25,12);
+
+    private final InputMapping inputMapping;
+
+    private Consumer<InputCommand> commandSink        = _ -> {};
+    private Optional<Tower>        selectedTower      = Optional.empty();
+    private Optional<Integer>      selectedTowerIndex = Optional.empty();
+
+    // -------------------------------------------------------------------------
+    // Construction
+    // -------------------------------------------------------------------------
+
+    /**
+     * creates a towerInfoPanel where you can select targeting mode and sell the tower
+     * @param inputMapping the input mapping used to convert world coords to screen coords
+     */
+    public TowerInfoPanel(InputMapping inputMapping, Cursor sellCursor, Cursor hoverCursor) {
+        this.inputMapping = inputMapping;
+
+        setOpaque(false);
+        setLayout(null);
+
+        towerOptionPanel.setLayout(new BoxLayout(towerOptionPanel, BoxLayout.Y_AXIS));
+        towerOptionPanel.setOpaque(false);
+        towerOptionPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
+        nameLabel.setForeground(Color.WHITE);
+        nameLabel.setFont(new Font("Consolas", Font.BOLD, 12));
+        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        towerOptionPanel.add(nameLabel);
+        towerOptionPanel.add(Box.createVerticalStrut(8));
+
+        JLabel targetLabel = new JLabel("Target:");
+        targetLabel.setForeground(new Color(180, 180, 180));
+        targetLabel.setFont(new Font("Consolas", Font.PLAIN, 11));
+        targetLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        towerOptionPanel.add(targetLabel);
+        towerOptionPanel.add(Box.createVerticalStrut(3));
+
+        targetingDropdown.setMaximumSize(new Dimension(160, 32));
+        targetingDropdown.setAlignmentX(Component.CENTER_ALIGNMENT);
+        targetingDropdown.addActionListener(_ -> selectedTower.ifPresent(t ->
+                t.setTargetingStrategy((TargetingStrategy) targetingDropdown.getSelectedItem())
+        ));
+        towerOptionPanel.add(targetingDropdown);
+        towerOptionPanel.add(Box.createVerticalStrut(6));
+
+        sellButton.setMaximumSize(new Dimension(160, 40));
+        sellButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sellButton.addActionListener(_ -> {
+            selectedTowerIndex.ifPresent(i -> commandSink.accept(InputCommand.sellTower(i)));
+            close();
+        });
+        towerOptionPanel.add(sellButton);
+
+        sellButton.setCursor(sellCursor);
+        targetingDropdown.setCursor(hoverCursor);
+
+        add(towerOptionPanel);
+        setVisible(false);
+    }
+
+    // -------------------------------------------------------------------------
+    // Public API
+    // -------------------------------------------------------------------------
+
+    /**
+     * shows the tower info panel for the given tower, positioned near the tower on screen
+     * @param tower the tower to show info for
+     * @param towerIndex the index of the tower in the game's tower list, used for sending commands
+     */
+    public void showForTower(Tower tower, int towerIndex) {
+        this.selectedTower      = Optional.of(tower);
+        this.selectedTowerIndex = Optional.of(towerIndex);
+
+        nameLabel.setText(tower.getClass().getSimpleName().replace("Tower", "") + " Tower");
+        targetingDropdown.setSelectedItem(tower.getTargetingStrategy());
+        sellButton.setText("Sell: +" + tower.getRefund() + "g");
+
+        towerOptionPanel.setSize(towerOptionPanel.getPreferredSize());
+        Point screenPos = inputMapping.worldToScreen(tower.getPosition());
+        int px = Math.min(screenPos.x, getWidth()  - towerOptionPanel.getWidth()  - 8);
+        int py = Math.min(screenPos.y, getHeight() - towerOptionPanel.getHeight() - 8);
+        towerOptionPanel.setLocation(px, py);
+
+        setVisible(true);
+        repaint();
+    }
+
+    /**
+     * closes the tower info panel and clears the selected tower
+     */
+    public void close() {
+        setVisible(false);
+        selectedTower      = Optional.empty();
+        selectedTowerIndex = Optional.empty();
+    }
+
+    /**
+     * sets the command sink that will receive input commands generated by this panel (e.g. when the user clicks the sell button)
+     * @param sink the Consumer<InputCommand> that will receive input commands generated by this panel
+     */
+    public void setCommandSink(Consumer<InputCommand> sink) {
+        this.commandSink = sink;
+    }
+
+    // -------------------------------------------------------------------------
+    // Hit testing
+    // -------------------------------------------------------------------------
+
+    /**
+     * overrides the contains method to check if the given point is within the towerOptionPanel, allowing for proper hit testing of mouse events when the panel is visible
+     * @param x   the <i>x</i> coordinate of the point
+     * @param y   the <i>y</i> coordinate of the point
+     * @return true if the point (x, y) is within the bounds of the towerOptionPanel and the panel is visible; false otherwise
+     */
+    @Override
+    public boolean contains(int x, int y) {
+        if (!isVisible()) return false;
+        Point p = SwingUtilities.convertPoint(this, x, y, towerOptionPanel);
+        return towerOptionPanel.contains(p);
+    }
+
+    // -------------------------------------------------------------------------
+    // paintChildren — afgeronde achtergrond
+    // -------------------------------------------------------------------------
+
+    /**
+     * overrides the paintChildren method to draw a semi-transparent rounded rectangle as the background of the tower info panel before painting the child components, giving it a distinct appearance that stands out against the game view
+     * @param g  the <code>Graphics</code> context in which to paint
+     */
+    @Override
+    protected void paintChildren(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        Rectangle b = towerOptionPanel.getBounds();
+        g2.setColor(new Color(30, 30, 30, 220));
+        g2.fillRoundRect(b.x, b.y, b.width, b.height, ARC, ARC);
+        g2.setColor(Color.GRAY);
+        g2.drawRoundRect(b.x, b.y, b.width - 1, b.height - 1, ARC, ARC);
+        g2.dispose();
+
+        super.paintChildren(g);
+    }
+
+    // -------------------------------------------------------------------------
+    // GameListener
+    // -------------------------------------------------------------------------
+
+    @Override public void onTowerSelected(Tower tower, int towerIndex) { showForTower(tower, towerIndex); }
+    @Override public void onGameStarted()                              {}
+    @Override public void onGamePaused()                               { close(); }
+    @Override public void onGameResumed()                              {}
+    @Override public void onGameStopped()                              { close(); }
+    @Override public void onGameOver()                                 { close(); }
+    @Override public void onLevelWon()                                 { close(); }
+    @Override public void onBuildMenuRequested(int i, Vector2D v)      { close(); }
+    @Override public void onBuildMenuClosed()                          { close(); }
+}
