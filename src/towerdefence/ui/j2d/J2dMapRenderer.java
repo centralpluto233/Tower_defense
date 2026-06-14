@@ -15,33 +15,36 @@ import java.util.List;
 
 public class J2dMapRenderer {
 
-    private record Decoration(BufferedImage sprite, int x, int y) {}
-    private record Tree(int x, int y, int type, double scale) {}
+    private record Decoration(BufferedImage sprite, int x, int y) {
+    }
 
-    private static final int    TREE_COUNT = 25;
-    private static final int    TREE_SEED  = 18;
+    private record Tree(int x, int y, int type, double scale) {
+    }
+
+    private static final int TREE_COUNT = 25;
+    private static final int TREE_SEED = 18;
     private static final double TREE_SCALE_BASE = 1.5;
     private static final double CASTLE_W = 52 * 2.5;
     private static final double CASTLE_H = 38 * 2.5;
 
-    private final Game         game;
-    private final Config       config;
+    private final Game game;
+    private final Config config;
     private final AssetManager assets;
 
-    private final List<Decoration>            decorations = new ArrayList<>();
-    private final List<Tree>                  trees       = new ArrayList<>();
-    private final List<BufferedImage>         decSprites;
-    private final Map<TileType, BufferedImage> pathTiles  = new EnumMap<>(TileType.class);
-    private final SpriteAnimation             castle;
+    private final List<Decoration> decorations = new ArrayList<>();
+    private final List<Tree> trees = new ArrayList<>();
+    private final List<BufferedImage> decSprites;
+    private final Map<TileType, BufferedImage> pathTiles = new EnumMap<>(TileType.class);
+    private final SpriteAnimation castle;
 
     private BufferedImage backgroundCache;
-    private MapTheme      currentTheme;
-    private final int     pathClearance;
+    private MapTheme currentTheme;
+    private final int pathClearance;
 
     public J2dMapRenderer(Game game, Config config, AssetManager assets, MapTheme initialTheme) {
-        this.game         = game;
-        this.config       = config;
-        this.assets       = assets;
+        this.game = game;
+        this.config = config;
+        this.assets = assets;
         this.currentTheme = initialTheme;
         this.pathClearance = config.getTileSize();
 
@@ -60,6 +63,7 @@ public class J2dMapRenderer {
 
     /**
      * Rebuilds background cache and decorations when the theme changes.
+     *
      * @param theme the new map theme to apply
      */
     public void rebuild(MapTheme theme) {
@@ -69,6 +73,7 @@ public class J2dMapRenderer {
 
     /**
      * draws background (decorations, path)
+     *
      * @param g2d the Graphics2D context to draw on
      */
     public void drawBackground(Graphics2D g2d) {
@@ -101,11 +106,12 @@ public class J2dMapRenderer {
 
     /**
      * Draws semi-transparent colored overlays on path tiles for debugging purposes.
+     *
      * @param g2d the Graphics2D context to draw on
      */
     public void drawPathDebug(Graphics2D g2d) {
         if (game.getGrid() == null) return;
-        int ts     = config.getTileSize();
+        int ts = config.getTileSize();
         int margin = config.getSpawnmargin();
         g2d.setFont(new Font("Consolas", Font.BOLD, 8));
 
@@ -145,17 +151,17 @@ public class J2dMapRenderer {
         pathTiles.clear();
         BufferedImage s = assets.getSprite("sprites/map/" + currentTheme.folder() + "/path.png");
         int t = 16;
-        pathTiles.put(TileType.CORNER_SE, s.getSubimage(0,     0, t, t));
-        pathTiles.put(TileType.PATH_H,    s.getSubimage(t,     0, t, t));
-        pathTiles.put(TileType.CORNER_SW, s.getSubimage(2*t,   0, t, t));
-        pathTiles.put(TileType.PATH_V,    s.getSubimage(0,     t, t, t));
-        pathTiles.put(TileType.CORNER_NE, s.getSubimage(0,   2*t, t, t));
-        pathTiles.put(TileType.CORNER_NW, s.getSubimage(2*t, 2*t, t, t));
-        pathTiles.put(TileType.T_NES,     s.getSubimage(0,   4*t, t, t));
-        pathTiles.put(TileType.T_WES,     s.getSubimage(t,   3*t, t, t));
-        pathTiles.put(TileType.T_WNE,     s.getSubimage(0,   3*t, t, t));
-        pathTiles.put(TileType.T_WNS,     s.getSubimage(2*t, 3*t, t, t));
-        pathTiles.put(TileType.CROSS,     s.getSubimage(t,   4*t, t, t));
+        pathTiles.put(TileType.CORNER_SE, s.getSubimage(0, 0, t, t));
+        pathTiles.put(TileType.PATH_H, s.getSubimage(t, 0, t, t));
+        pathTiles.put(TileType.CORNER_SW, s.getSubimage(2 * t, 0, t, t));
+        pathTiles.put(TileType.PATH_V, s.getSubimage(0, t, t, t));
+        pathTiles.put(TileType.CORNER_NE, s.getSubimage(0, 2 * t, t, t));
+        pathTiles.put(TileType.CORNER_NW, s.getSubimage(2 * t, 2 * t, t, t));
+        pathTiles.put(TileType.T_NES, s.getSubimage(0, 4 * t, t, t));
+        pathTiles.put(TileType.T_WES, s.getSubimage(t, 3 * t, t, t));
+        pathTiles.put(TileType.T_WNE, s.getSubimage(0, 3 * t, t, t));
+        pathTiles.put(TileType.T_WNS, s.getSubimage(2 * t, 3 * t, t, t));
+        pathTiles.put(TileType.CROSS, s.getSubimage(t, 4 * t, t, t));
     }
 
     /**
@@ -175,12 +181,13 @@ public class J2dMapRenderer {
 
     /**
      * Tiles the given grass image across the entire background cache to create a seamless grassy background.
-     * @param g the Graphics2D context of the background cache to draw on
+     *
+     * @param g    the Graphics2D context of the background cache to draw on
      * @param tile the grass tile image to be repeated across the background
      */
     private void tileGrass(Graphics2D g, BufferedImage tile) {
-        int ts   = config.getTileSize();
-        int cols = (int) Math.ceil((double) config.getGameWidth()  / ts);
+        int ts = config.getTileSize();
+        int cols = (int) Math.ceil((double) config.getGameWidth() / ts);
         int rows = (int) Math.ceil((double) config.getGameHeight() / ts);
         for (int r = 0; r < rows; r++)
             for (int c = 0; c < cols; c++)
@@ -189,7 +196,7 @@ public class J2dMapRenderer {
 
     private void drawPath(Graphics2D g) {
         if (game.getGrid() == null) return;
-        int ts     = config.getTileSize();
+        int ts = config.getTileSize();
         int margin = config.getSpawnmargin();
         for (int row = 0; row < game.getGrid().getRows(); row++) {
             for (int col = 0; col < game.getGrid().getCols(); col++) {
@@ -212,6 +219,7 @@ public class J2dMapRenderer {
     /**
      * Draws trees on the background cache based on their type and scale.
      * Trees are randomly generated but will not be placed too close to the path to avoid visual clutter.
+     *
      * @param g the Graphics2D context of the background cache to draw on
      */
     private void drawTrees(Graphics2D g) {
@@ -222,7 +230,7 @@ public class J2dMapRenderer {
         };
         for (Tree t : trees) {
             BufferedImage sp = sprites[t.type()];
-            int w = (int) (sp.getWidth()  * t.scale());
+            int w = (int) (sp.getWidth() * t.scale());
             int h = (int) (sp.getHeight() * t.scale());
             g.drawImage(sp, t.x() - w / 2, t.y() - h / 2, w, h, null);
         }
@@ -259,6 +267,7 @@ public class J2dMapRenderer {
 
     /**
      * Checks if the given coordinates (cx, cy) are within a certain distance (pathClearance) from any segment of the path.
+     *
      * @param cx the x-coordinate to check
      * @param cy the y-coordinate to check
      * @return true if the point is too close to the path, false otherwise
@@ -275,10 +284,11 @@ public class J2dMapRenderer {
 
     /**
      * Calculates the shortest distance from a point (px, py) to a line segment defined by points a and b.
+     *
      * @param px point x
      * @param py point y
-     * @param a segment start point
-     * @param b segment end point
+     * @param a  segment start point
+     * @param b  segment end point
      * @return the shortest distance from (px, py) to the line segment ab
      */
     // AI
@@ -294,45 +304,47 @@ public class J2dMapRenderer {
 
     /**
      * Returns a semi-transparent color corresponding to the given TileType for debugging purposes.
+     *
      * @param type the TileType to get the debug color for
      * @return a Color object representing the debug color for the given TileType
      */
     private static Color debugColor(TileType type) {
         return switch (type) {
-            case PATH_H    -> new Color(200, 100,   0, 180);
-            case PATH_V    -> new Color(  0, 100, 200, 180);
-            case CORNER_SE -> new Color(200,   0,   0, 180);
-            case CORNER_SW -> new Color(  0, 200,   0, 180);
-            case CORNER_NE -> new Color(200, 200,   0, 180);
-            case CORNER_NW -> new Color(200,   0, 200, 180);
-            case T_NES     -> new Color(255, 128,   0, 180);
-            case T_WES     -> new Color(  0, 255, 128, 180);
-            case T_WNE     -> new Color(128,   0, 255, 180);
-            case T_WNS     -> new Color(  0, 128, 255, 180);
-            case CROSS     -> new Color(255, 255, 255, 180);
-            default        -> new Color(128, 128, 128, 180);
+            case PATH_H -> new Color(200, 100, 0, 180);
+            case PATH_V -> new Color(0, 100, 200, 180);
+            case CORNER_SE -> new Color(200, 0, 0, 180);
+            case CORNER_SW -> new Color(0, 200, 0, 180);
+            case CORNER_NE -> new Color(200, 200, 0, 180);
+            case CORNER_NW -> new Color(200, 0, 200, 180);
+            case T_NES -> new Color(255, 128, 0, 180);
+            case T_WES -> new Color(0, 255, 128, 180);
+            case T_WNE -> new Color(128, 0, 255, 180);
+            case T_WNS -> new Color(0, 128, 255, 180);
+            case CROSS -> new Color(255, 255, 255, 180);
+            default -> new Color(128, 128, 128, 180);
         };
     }
 
     /**
      * Returns a short label for the given TileType for debugging purposes.
+     *
      * @param type the TileType to get the debug label for
      * @return a String representing the debug label for the given TileType
      */
     private static String debugLabel(TileType type) {
         return switch (type) {
-            case PATH_H    -> "H";
-            case PATH_V    -> "V";
+            case PATH_H -> "H";
+            case PATH_V -> "V";
             case CORNER_SE -> "SE";
             case CORNER_SW -> "SW";
             case CORNER_NE -> "NE";
             case CORNER_NW -> "NW";
-            case T_NES     -> "TNES";
-            case T_WES     -> "TWES";
-            case T_WNE     -> "TWNE";
-            case T_WNS     -> "TWNS";
-            case CROSS     -> "X";
-            default        -> "?";
+            case T_NES -> "TNES";
+            case T_WES -> "TWES";
+            case T_WNE -> "TWNE";
+            case T_WNS -> "TWNS";
+            case CROSS -> "X";
+            default -> "?";
         };
     }
 }

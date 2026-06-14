@@ -20,7 +20,8 @@ public class GameButton extends JButton {
 
     /**
      * creates a button with the specified text and base color. The button will have a hover effect and a pressed effect based on the base color.
-     * @param text the text that the button should display
+     *
+     * @param text      the text that the button should display
      * @param baseColor the base color of the button, used to calculate hover and pressed colors
      */
     public GameButton(String text, Color baseColor) {
@@ -29,16 +30,17 @@ public class GameButton extends JButton {
 
     /**
      * creates a button with the specified text, base color, width, height and font size. The button will have a hover effect and a pressed effect based on the base color.
-     * @param text the text that the button should display
+     *
+     * @param text      the text that the button should display
      * @param baseColor the base color of the button, used to calculate hover and pressed colors
-     * @param width the width of the button
-     * @param height the height of the button
-     * @param fontSize the font size of the button text
+     * @param width     the width of the button
+     * @param height    the height of the button
+     * @param fontSize  the font size of the button text
      */
     public GameButton(String text, Color baseColor, int width, int height, int fontSize) {
         super(text);
-        this.normalColor  = baseColor;
-        this.hoverColor   = baseColor.brighter();
+        this.normalColor = baseColor;
+        this.hoverColor = baseColor.brighter();
         this.pressedColor = baseColor.darker();
 
         setFocusPainted(false);
@@ -54,6 +56,7 @@ public class GameButton extends JButton {
 
     /**
      * creates a button that displays the given image, scaled by the given factor. The button will have a hover effect and a pressed effect that tint the image.
+     *
      * @param image the image to display on the button
      * @param scale the factor by which to scale the image, e.g. 1.0 for original size, 0.5 for half size, etc.
      * @return a GameButton that displays the given image with hover and pressed effects

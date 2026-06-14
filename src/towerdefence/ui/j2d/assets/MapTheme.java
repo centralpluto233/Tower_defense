@@ -11,6 +11,7 @@ public enum MapTheme {
 
     /**
      * Gets an array of the folder names corresponding to each MapTheme, which can be used to load the appropriate assets for each theme.
+     *
      * @return an array of folder names for each MapTheme, in the same order as the enum values
      */
     public static String[] getTypes() {
@@ -21,6 +22,7 @@ public enum MapTheme {
 
     /**
      * Converts the name of the MapTheme enum value to lowercase to get the corresponding folder name for asset loading.
+     *
      * @return the folder name corresponding to this MapTheme, which is the lowercase version of the enum name
      */
     public String folder() {

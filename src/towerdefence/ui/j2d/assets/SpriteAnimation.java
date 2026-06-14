@@ -11,9 +11,10 @@ public class SpriteAnimation {
 
     /**
      * creates a sprite-animation from a sprite sheet
-     * @param sheet the sprite sheet containing the animation frames, arranged horizontally. The width of the sheet should be divisible by the number of frames.
+     *
+     * @param sheet      the sprite sheet containing the animation frames, arranged horizontally. The width of the sheet should be divisible by the number of frames.
      * @param frameCount the number of frames in the animation, which determines how the sprite sheet is divided into individual frames. The frames are extracted from the sheet in order, starting from the leftmost frame.
-     * @param fps the frames per second for the animation, higher fps -> faster animation
+     * @param fps        the frames per second for the animation, higher fps -> faster animation
      */
     public SpriteAnimation(BufferedImage sheet, int frameCount, double fps) {
         this.frameDuration = 1.0 / fps;
@@ -31,6 +32,7 @@ public class SpriteAnimation {
 
     /**
      * updates the animation based on the elapsed time since last update
+     *
      * @param deltaTime the time elapsed since the last update, in seconds
      */
     public void update(double deltaTime) {
@@ -43,6 +45,7 @@ public class SpriteAnimation {
 
     /**
      * gets the current frame of the animation as a BufferedImage. This method should be called after update() to get the correct frame based on the elapsed time.
+     *
      * @return the current frame of the animation as a BufferedImage
      */
     public BufferedImage getCurrentFrame() {

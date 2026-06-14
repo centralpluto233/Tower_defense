@@ -26,6 +26,7 @@ public record InputCommand(InputAction action, Optional<Integer> spotIndex, Opti
 
     /**
      * Creates an InputCommand to sell a tower at the specified index.
+     *
      * @param towerIndex the index of the tower to sell
      * @return an InputCommand to sell the tower at the specified index
      */

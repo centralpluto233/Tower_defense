@@ -8,7 +8,6 @@ import towerdefence.ui.j2d.assets.SpriteAnimation;
 import towerdefence.ui.j2d.entity.J2dEntityHelper;
 import towerdefence.util.Vector2D;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class J2dArcherTower extends ArcherTower {
@@ -27,6 +26,7 @@ public class J2dArcherTower extends ArcherTower {
 
     /**
      * ArcherTower's projectiles should spawn slightly above the tower's center to create a more natural shooting effect.
+     *
      * @return The spawn position for projectiles, adjusted to be slightly above the tower's center.
      */
     @Override

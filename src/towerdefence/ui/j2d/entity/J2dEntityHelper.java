@@ -27,10 +27,11 @@ public class J2dEntityHelper {
 
     /**
      * Draws an enemy entity with its animation, health bar, and status effects.
-     * @param deltaTime Time elapsed since the last frame, used to update animations smoothly.
-     * @param animation The SpriteAnimation instance for the enemy's main animation.
+     *
+     * @param deltaTime       Time elapsed since the last frame, used to update animations smoothly.
+     * @param animation       The SpriteAnimation instance for the enemy's main animation.
      * @param graphicsContext The J2dGraphicsContext to draw on.
-     * @param entity The EnemyEntity to be drawn, which contains its position, health, and status effects.
+     * @param entity          The EnemyEntity to be drawn, which contains its position, health, and status effects.
      */
     public static void drawEnemy(double deltaTime, SpriteAnimation animation, J2dGraphicsContext graphicsContext, EnemyEntity entity) {
         animation.update(deltaTime);
@@ -76,9 +77,10 @@ public class J2dEntityHelper {
 
     /**
      * Draws a projectile entity with its sprite, rotated according to its velocity direction.
+     *
      * @param graphicsContext The J2dGraphicsContext to draw on.
-     * @param projectile The Projectile entity to be drawn, which contains its position, size, and velocity.
-     * @param sprite The BufferedImage representing the projectile's sprite.
+     * @param projectile      The Projectile entity to be drawn, which contains its position, size, and velocity.
+     * @param sprite          The BufferedImage representing the projectile's sprite.
      */
     public static void drawProjectile(J2dGraphicsContext graphicsContext, Projectile projectile, BufferedImage sprite) {
         Graphics2D g2d = graphicsContext.getGraphics2D();
@@ -101,6 +103,7 @@ public class J2dEntityHelper {
 
     /**
      * Creates a BufferedImage representing the attack range of a tower. The image is a transparent circle with a yellow outline.
+     *
      * @param range The radius of the circle, which corresponds to the tower's attack range.
      * @return A BufferedImage that can be drawn to represent the tower's attack range. The image is sized to fit the circle with a small margin.
      */
@@ -120,10 +123,11 @@ public class J2dEntityHelper {
 
     /**
      * Draws a tower entity with its cannon sprite and range indicator. The range indicator is drawn first, followed by the cannon sprite on top.
+     *
      * @param graphicsContext The J2dGraphicsContext to draw on.
-     * @param tower The Tower entity to be drawn, which contains its position, size, and attack range.
-     * @param cannonImage The BufferedImage representing the tower's cannon sprite.
-     * @param rangeImage The BufferedImage representing the tower's attack range, which should be pre-generated using the buildRangeImage method with the tower's range.
+     * @param tower           The Tower entity to be drawn, which contains its position, size, and attack range.
+     * @param cannonImage     The BufferedImage representing the tower's cannon sprite.
+     * @param rangeImage      The BufferedImage representing the tower's attack range, which should be pre-generated using the buildRangeImage method with the tower's range.
      */
     public static void drawTower(J2dGraphicsContext graphicsContext, Tower tower, BufferedImage cannonImage, BufferedImage rangeImage) {
         Graphics2D g2d = graphicsContext.getGraphics2D();

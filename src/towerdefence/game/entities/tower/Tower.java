@@ -160,6 +160,7 @@ public abstract class Tower extends Entity implements Attacker {
     /**
      * Finds a target enemy within the Tower's attack range based on the current targeting strategy.
      * The method filters the list of enemies to those that are within range and then selects one based on the targeting strategy (e.g., first, strongest, fastest).
+     *
      * @param enemies the list of enemy entities currently in the game. The Tower will search through this list to find a target within its attack range.
      * @return an Optional containing the selected target enemy if one is found within range, or an empty Optional if no enemies are within range.
      */

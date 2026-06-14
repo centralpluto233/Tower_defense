@@ -15,6 +15,6 @@ public abstract class CrossBowTower extends Tower {
      * @param projectileFactory the factory used to create projectiles when the CrossBowTower attacks. This allows for flexibility in defining different types of projectiles that the CrossBowTower can use, such as standard crossbow bolts or special bolts with unique effects.
      */
     public CrossBowTower(double x, double y, ProjectileFactory projectileFactory) {
-        super(x, y, WIDTH, HEIGHT, RANGE, DAMAGE,COOLDOWN, COST, Crossbow.SPEED, projectileFactory);
+        super(x, y, WIDTH, HEIGHT, RANGE, DAMAGE, COOLDOWN, COST, Crossbow.SPEED, projectileFactory);
     }
 }

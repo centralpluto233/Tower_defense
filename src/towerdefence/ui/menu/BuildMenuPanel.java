@@ -49,10 +49,11 @@ public class BuildMenuPanel extends JPanel implements GameListener {
 
     /**
      * Constructs the build menu panel.
-     * @param game The game instance to query for resources and listen to game events.
-     * @param inputMapping The input mapping to convert world coordinates to screen coordinates for menu positioning.
-     * @param assetManager The asset manager to load tower icons for the menu.
-     * @param hoverCursor The cursor to show when hovering over an affordable tower option.
+     *
+     * @param game          The game instance to query for resources and listen to game events.
+     * @param inputMapping  The input mapping to convert world coordinates to screen coordinates for menu positioning.
+     * @param assetManager  The asset manager to load tower icons for the menu.
+     * @param hoverCursor   The cursor to show when hovering over an affordable tower option.
      * @param noMoneyCursor The cursor to show when hovering over an unaffordable tower option.
      */
     public BuildMenuPanel(Game game, InputMapping inputMapping, AssetManager assetManager, Cursor hoverCursor, Cursor noMoneyCursor) {
@@ -85,6 +86,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
 
     /**
      * Creates a JButton representing a tower option in the build menu, with custom rendering to show the tower icon, name, and cost, as well as visual feedback for affordability and hover state.
+     *
      * @param option The tower option to create a button for.
      * @param assets The asset manager to load the tower icon sprite.
      * @return A JButton configured to represent the tower option in the build menu.
@@ -164,8 +166,9 @@ public class BuildMenuPanel extends JPanel implements GameListener {
 
     /**
      * Scales the given source image to fit within a specified box size for display in the build menu, maintaining the aspect ratio based on the tower's game height.
-     * @param src the source to scale
-     * @param option the tower option to scale for
+     *
+     * @param src     the source to scale
+     * @param option  the tower option to scale for
      * @param boxSize the size of the box to fit the image into
      * @return a scaled Image instance that fits within the specified box size while maintaining the aspect ratio
      */
@@ -181,6 +184,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
 
     /**
      * Shows the build menu at the specified screen position, adjusting its location to ensure it remains fully visible within the parent panel's bounds.
+     *
      * @param screenPos the screen position where the build menu should be displayed, typically corresponding to the location of a tower spot in the game world
      */
     public void showAt(Point screenPos) {
@@ -252,5 +256,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     }
 
     @Override
-    public void onTowerSelected(Tower tower, int index) {closeBuildMenu();}
+    public void onTowerSelected(Tower tower, int index) {
+        closeBuildMenu();
+    }
 }

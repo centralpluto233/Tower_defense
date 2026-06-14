@@ -321,6 +321,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
 
     /**
      * returns the progress of the enemy along its path as a value between 0.0 and the number of waypoints in the path.
+     *
      * @return the progress of the enemy along its path
      */
     public double getPathProgress() {

@@ -14,39 +14,41 @@ import java.util.List;
 public class J2dHudRenderer {
 
     private record FloatingText(String text, Color color, double x, double y,
-                                double startLifetime, double lifetime) {}
+                                double startLifetime, double lifetime) {
+    }
 
-    private static final double SHAKE_DURATION  = 0.4;
-    private static final int    SHAKE_INTENSITY = 4;
-    private static final int    HEART_W         = 10 * 2;
-    private static final int    HEART_H         = 9  * 2;
-    private static final int    HEART_GAP       = 4;
-    private static final double COIN_SIZE       = 8 * 2.5;
-    private static final double FLOATING_RISE   = 30.0;
-    private static final double FLOATING_FADE   = 0.3;
+    private static final double SHAKE_DURATION = 0.4;
+    private static final int SHAKE_INTENSITY = 4;
+    private static final int HEART_W = 10 * 2;
+    private static final int HEART_H = 9 * 2;
+    private static final int HEART_GAP = 4;
+    private static final double COIN_SIZE = 8 * 2.5;
+    private static final double FLOATING_RISE = 30.0;
+    private static final double FLOATING_FADE = 0.3;
 
-    private final Game            game;
-    private final Config          config;
+    private final Game game;
+    private final Config config;
     private final SpriteAnimation coin;
-    private final BufferedImage   full, half, empty, box;
+    private final BufferedImage full, half, empty, box;
 
     private final List<FloatingText> floatingTexts = new ArrayList<>();
     private double shakeTimer = 0.0;
 
     /**
      * initializes the HUD renderer with necessary assets and references
-     * @param game reference to the main game object to access game state (lives, resources, waves)
+     *
+     * @param game   reference to the main game object to access game state (lives, resources, waves)
      * @param config reference to the configuration for layout settings (like spawn margin)
      * @param assets asset manager to load necessary sprites for the HUD (hearts, coin, box)
      */
     public J2dHudRenderer(Game game, Config config, AssetManager assets) {
-        this.game   = game;
+        this.game = game;
         this.config = config;
-        this.full   = assets.getSprite("sprites/hud/heart_full.png");
-        this.half   = assets.getSprite("sprites/hud/heart_half.png");
-        this.empty  = assets.getSprite("sprites/hud/heart_empty.png");
-        this.box    = assets.getSprite("sprites/hud/box.png");
-        this.coin   = new SpriteAnimation(assets.getSprite("sprites/hud/Coin-Sheet.png"), 4, 30);
+        this.full = assets.getSprite("sprites/hud/heart_full.png");
+        this.half = assets.getSprite("sprites/hud/heart_half.png");
+        this.empty = assets.getSprite("sprites/hud/heart_empty.png");
+        this.box = assets.getSprite("sprites/hud/box.png");
+        this.coin = new SpriteAnimation(assets.getSprite("sprites/hud/Coin-Sheet.png"), 4, 30);
     }
 
     /**
@@ -58,10 +60,11 @@ public class J2dHudRenderer {
 
     /**
      * spawns floating text
-     * @param text text to show
+     *
+     * @param text  text to show
      * @param color color of the text
-     * @param x x-coordinate in pixels (relative to the top-left corner of the HUD)
-     * @param y y-coordinate in pixels (relative to the top-left corner of the HUD)
+     * @param x     x-coordinate in pixels (relative to the top-left corner of the HUD)
+     * @param y     y-coordinate in pixels (relative to the top-left corner of the HUD)
      */
     public void spawnFloatingText(String text, Color color, double x, double y) {
         floatingTexts.add(new FloatingText(text, color, x, y, FLOATING_FADE, FLOATING_FADE));
@@ -69,7 +72,8 @@ public class J2dHudRenderer {
 
     /**
      * draws hud
-     * @param g2d graphics context to draw on
+     *
+     * @param g2d       graphics context to draw on
      * @param deltaTime time since last frame in seconds (used for animations and timers)
      */
     public void draw(Graphics2D g2d, double deltaTime) {
@@ -82,6 +86,7 @@ public class J2dHudRenderer {
 
     /**
      * draws fps counter (for debugging)
+     *
      * @param g2d graphics context to draw on
      * @param fps current frames per second to display
      */
@@ -97,6 +102,7 @@ public class J2dHudRenderer {
 
     /**
      * draws the background box of the HUD
+     *
      * @param g2d graphics context to draw on
      */
     private void drawHudBox(Graphics2D g2d) {
@@ -111,11 +117,11 @@ public class J2dHudRenderer {
             shakeTimer = Math.max(0, shakeTimer - deltaTime);
         }
 
-        int lives      = game.getLives();
-        int maxLives   = game.getMaxLives();
+        int lives = game.getLives();
+        int maxLives = game.getMaxLives();
         int fullHearts = lives / 2;
         boolean hasHalf = (lives % 2) != 0;
-        int total      = maxLives / 2;
+        int total = maxLives / 2;
 
         for (int i = 0; i < total; i++) {
             BufferedImage sprite = (i < fullHearts) ? full
@@ -141,16 +147,16 @@ public class J2dHudRenderer {
     private void drawWaveInfo(Graphics2D g2d) {
         if (game.isGameNotRunning()) return;
 
-        int    currentWave = game.getCurrentWave();
-        int    totalWaves  = game.getTotalWaves();
-        double countdown   = game.getNextWaveCountdown();
-        int    rightEdge   = config.getSpawnmargin() + (game.getMaxLives() / 2) * (HEART_W + HEART_GAP);
-        int    y           = 40 + config.getSpawnmargin();
+        int currentWave = game.getCurrentWave();
+        int totalWaves = game.getTotalWaves();
+        double countdown = game.getNextWaveCountdown();
+        int rightEdge = config.getSpawnmargin() + (game.getMaxLives() / 2) * (HEART_W + HEART_GAP);
+        int y = 40 + config.getSpawnmargin();
 
         g2d.setFont(new Font("Consolas", Font.BOLD, 17));
         g2d.setColor(Color.WHITE);
         String waveText = "Wave " + currentWave + " / " + totalWaves;
-        FontMetrics fm  = g2d.getFontMetrics();
+        FontMetrics fm = g2d.getFontMetrics();
         g2d.drawString(waveText, rightEdge - fm.stringWidth(waveText), y + 17);
 
         if (countdown > 0) {
@@ -171,9 +177,9 @@ public class J2dHudRenderer {
             if (remaining <= 0) continue;
 
             double progress = 1.0 - (ft.lifetime() / ft.startLifetime());
-            int    offsetY  = (int) (progress * FLOATING_RISE);
-            int    alpha    = (int) (255 * Math.min(1.0, ft.lifetime() / FLOATING_FADE));
-            Color  c        = ft.color();
+            int offsetY = (int) (progress * FLOATING_RISE);
+            int alpha = (int) (255 * Math.min(1.0, ft.lifetime() / FLOATING_FADE));
+            Color c = ft.color();
 
             g2d.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), Math.max(0, alpha)));
             g2d.drawString(ft.text(), (int) ft.x(), (int) ft.y() - offsetY);

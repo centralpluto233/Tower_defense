@@ -43,21 +43,22 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     /**
      * Constructor for the menu overlay panel, which displays the main menu, pause menu, game over screen, and level won screen.
-     * @param game the game, used to control game state and listen for game events
-     * @param config the config, used to read and write settings
-     * @param hover the cursor to use when hovering over buttons
+     *
+     * @param game           the game, used to control game state and listen for game events
+     * @param config         the config, used to read and write settings
+     * @param hover          the cursor to use when hovering over buttons
      * @param onThemeChanged callback for when the map theme is changed in the settings, used to update the background image
-     * @param assetManager the asset manager, used to load sprites for the background and buttons
+     * @param assetManager   the asset manager, used to load sprites for the background and buttons
      */
     public MenuOverlayPanel(Game game, Config config, Cursor hover, Consumer<MapTheme> onThemeChanged, AssetManager assetManager) {
         this.game = game;
         this.hoverCursor = hover;
-        this.config=config;
+        this.config = config;
         this.onThemeChanged = onThemeChanged;
 
-        this.pauseButton = GameButton.icon(assetManager.getSprite("sprites/hud/pause.png"),5);
+        this.pauseButton = GameButton.icon(assetManager.getSprite("sprites/hud/pause.png"), 5);
 
-        updateThemeBackground(MapTheme.valueOf(config.getMapTheme().toUpperCase()),assetManager);
+        updateThemeBackground(MapTheme.valueOf(config.getMapTheme().toUpperCase()), assetManager);
 
         setOpaque(false);
         setLayout(new BorderLayout());
@@ -263,13 +264,14 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     // --------------------------------------------
 
     private void applyCustomCursors(Container container) {
-        for (Component c: container.getComponents()) {
+        for (Component c : container.getComponents()) {
             if (c instanceof AbstractButton btn) {
                 btn.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseEntered(MouseEvent e) {
                         btn.setCursor(hoverCursor);
                     }
+
                     @Override
                     public void mouseExited(MouseEvent e) {
                         btn.setCursor(null);
@@ -320,7 +322,6 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     }
 
 
-
     // refresh
 
     /**
@@ -360,15 +361,30 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         if (state == GameState.MENU) {
-
-            if (background != null) {
-                g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
-            }
-            g2.setColor(new Color(0, 0, 0, 140));
+            g2.setColor(Color.BLACK);
             g2.fillRect(0, 0, getWidth(), getHeight());
 
-        } else if (state == GameState.PAUSE) {
+            if (background != null) {
+                int imgW = background.getWidth();
+                int imgH = background.getHeight();
 
+                double scale = Math.min(
+                        (double) getWidth() / imgW,
+                        (double) getHeight() / imgH
+                );
+
+                int drawW = (int) Math.round(imgW * scale);
+                int drawH = (int) Math.round(imgH * scale);
+
+                int x = (getWidth() - drawW) / 2;
+                int y = (getHeight() - drawH) / 2;
+
+                g2.drawImage(background, x, y, drawW, drawH, null);
+            }
+
+            g2.setColor(new Color(0, 0, 0, 140));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+        } else if (state == GameState.PAUSE) {
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, getWidth(), getHeight());
         }
@@ -379,9 +395,10 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     /**
      * Overrides the contains method to block input to the game when the menu overlay is visible, while still allowing interaction with the menu components. It checks if the current game state is one where the menu should be active, and if so, it returns true to indicate that the overlay should consume mouse events.
      * If the game is running, it checks if any child components of the overlay contain the point, allowing interaction with buttons and other UI elements.
-     * @param x   the <i>x</i> coordinate of the point
-     * @param y   the <i>y</i> coordinate of the point
-     * @return
+     *
+     * @param x the <i>x</i> coordinate of the point
+     * @param y the <i>y</i> coordinate of the point
+     * @return true if the point is within the overlay or its child components, false otherwise
      */
     @Override
     public boolean contains(int x, int y) {
@@ -441,5 +458,6 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
     }
 
     @Override
-    public void onTowerSelected(Tower tower, int index) {}
+    public void onTowerSelected(Tower tower, int index) {
+    }
 }

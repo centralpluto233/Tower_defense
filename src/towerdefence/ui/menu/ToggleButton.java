@@ -14,7 +14,8 @@ public class ToggleButton extends JToggleButton {
 
     /**
      * Creates a toggle button with the specified label and initial state.
-     * @param label the text to display on the button
+     *
+     * @param label        the text to display on the button
      * @param initialState the initial selected state of the button (true for on, false for off)
      */
     public ToggleButton(String label, boolean initialState) {

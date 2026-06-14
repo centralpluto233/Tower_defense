@@ -25,9 +25,10 @@ public class WaveSpawnSystem {
 
     /**
      * updates the wavespawnsystem with all of its components
-     * @param dt time passed since last update
-     * @param ecs the ECSManager to access spawn jobs and their components, allowing the system to manage enemy spawning based on the defined waves
-     * @param game the game to add new entities
+     *
+     * @param dt      time passed since last update
+     * @param ecs     the ECSManager to access spawn jobs and their components, allowing the system to manage enemy spawning based on the defined waves
+     * @param game    the game to add new entities
      * @param factory the factory to create new entities
      * @throws Exception if an unknown spawn type is encountered in the SpawnTypeComponent, indicating a configuration error in the lua levels
      */

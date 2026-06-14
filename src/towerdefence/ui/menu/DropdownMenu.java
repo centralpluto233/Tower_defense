@@ -10,30 +10,32 @@ import java.awt.geom.RoundRectangle2D;
 // create a dropdownmenu of parameter T
 public class DropdownMenu<T> extends JComboBox<T> {
 
-    private static final int    ARC         = 18;
-    private static final Color  BG          = new Color(50,  50,  50);
-    private static final Color  BG_HOVER    = new Color(70,  70,  70);
-    private static final Color  BORDER      = new Color(255, 255, 255, 60);
-    private static final Color  POPUP_BG    = new Color(40,  40,  40);
-    private static final Color  SELECT_BG   = new Color(52, 120, 246);
-    private static final Color  ARROW_BG    = new Color(60,  60,  60);
+    private static final int ARC = 18;
+    private static final Color BG = new Color(50, 50, 50);
+    private static final Color BG_HOVER = new Color(70, 70, 70);
+    private static final Color BORDER = new Color(255, 255, 255, 60);
+    private static final Color POPUP_BG = new Color(40, 40, 40);
+    private static final Color SELECT_BG = new Color(52, 120, 246);
+    private static final Color ARROW_BG = new Color(60, 60, 60);
 
     private Shape shape;
     private JList<?> popupList;
 
     /**
      * creates a dropdown menu with the given items and default styling
+     *
      * @param items the items to display in the dropdown menu, can have different types
      */
     public DropdownMenu(T[] items) {
-        this(items, 220, 40,14);
+        this(items, 220, 40, 14);
     }
 
     /**
      * creates a dropdown menu with the given items and custom styling
-     * @param items the items to display in the dropdown menu, can have different types
-     * @param width the width of the dropdown
-     * @param height the height of the dropdown
+     *
+     * @param items    the items to display in the dropdown menu, can have different types
+     * @param width    the width of the dropdown
+     * @param height   the height of the dropdown
      * @param fontSize the font size of the dropdown items
      */
     public DropdownMenu(T[] items, int width, int height, int fontSize) {
@@ -82,7 +84,8 @@ public class DropdownMenu<T> extends JComboBox<T> {
 
     // not needed cause is drawn in paintcomponent
     @Override
-    protected void paintBorder(Graphics g) {}
+    protected void paintBorder(Graphics g) {
+    }
 
     @Override
     public boolean contains(int x, int y) {
@@ -95,6 +98,7 @@ public class DropdownMenu<T> extends JComboBox<T> {
     /**
      * builds a custom UI for the dropdown menu that includes a custom arrow button and a custom popup menu with specific styling for the list items,
      * providing a cohesive and visually appealing user interface consistent with the overall design of the game
+     *
      * @return a BasicComboBoxUI with custom implementations for the arrow button and popup menu, as well as an overridden method to prevent drawing the default background of the selected item in the combo box, allowing for a fully customized appearance of the dropdown menu
      */
     // AI
@@ -115,8 +119,8 @@ public class DropdownMenu<T> extends JComboBox<T> {
 
                         int cx = getWidth() / 2;
                         int cy = getHeight() / 2;
-                        int[] px = { cx - 5, cx + 5, cx };
-                        int[] py = { cy - 3, cy - 3, cy + 4 };
+                        int[] px = {cx - 5, cx + 5, cx};
+                        int[] py = {cy - 3, cy - 3, cy + 4};
                         g2.setColor(Color.WHITE);
                         g2.fillPolygon(px, py, 3);
 
@@ -152,7 +156,8 @@ public class DropdownMenu<T> extends JComboBox<T> {
             }
 
             @Override
-            public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {}
+            public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {
+            }
         };
     }
 
@@ -165,6 +170,7 @@ public class DropdownMenu<T> extends JComboBox<T> {
     /**
      * builds a custom cell renderer for the dropdown menu that styles the list items with specific foreground and background colors, font, and padding,
      * ensuring that the items in the dropdown menu are visually consistent with the overall design of the game and provide a clear indication of which item is currently selected or hovered over by the user
+     *
      * @return a DefaultListCellRenderer that customizes the appearance of the list items in the dropdown menu, including foreground and background colors, font, and padding, to create a visually appealing and cohesive user interface for the dropdown menu
      */
     private DefaultListCellRenderer buildRenderer() {

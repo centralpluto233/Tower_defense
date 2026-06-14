@@ -4,8 +4,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -281,6 +279,10 @@ public class Config {
      */
     public void setMapTheme(String mapTheme) {
         this.set("map.theme", mapTheme);
+    }
+
+    public int getScreenIndex() {
+        return getInt("view.screenindex");
     }
 
 
