@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="luaj.jme" type="repository">
+    <properties maven-id="org.luaj:luaj-jme:LATEST" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/luaj/luaj-jme/3.0.1/luaj-jme-3.0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
