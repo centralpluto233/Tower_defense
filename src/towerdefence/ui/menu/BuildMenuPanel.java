@@ -47,6 +47,14 @@ public class BuildMenuPanel extends JPanel implements GameListener {
     };
     private Optional<Integer> selectedSpotIndex = Optional.empty();
 
+    /**
+     * Constructs the build menu panel.
+     * @param game The game instance to query for resources and listen to game events.
+     * @param inputMapping The input mapping to convert world coordinates to screen coordinates for menu positioning.
+     * @param assetManager The asset manager to load tower icons for the menu.
+     * @param hoverCursor The cursor to show when hovering over an affordable tower option.
+     * @param noMoneyCursor The cursor to show when hovering over an unaffordable tower option.
+     */
     public BuildMenuPanel(Game game, InputMapping inputMapping, AssetManager assetManager, Cursor hoverCursor, Cursor noMoneyCursor) {
         this.inputMapping = inputMapping;
         this.hoverCursor = hoverCursor;
@@ -75,6 +83,12 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         setVisible(false);
     }
 
+    /**
+     * Creates a JButton representing a tower option in the build menu, with custom rendering to show the tower icon, name, and cost, as well as visual feedback for affordability and hover state.
+     * @param option The tower option to create a button for.
+     * @param assets The asset manager to load the tower icon sprite.
+     * @return A JButton configured to represent the tower option in the build menu.
+     */
     private JButton createTowerCard(TowerOption option, AssetManager assets) {
         java.awt.image.BufferedImage sprite = assets.getSprite(option.spritePath());
         Image icon = scaleForMenu(sprite, option, 40);
@@ -86,6 +100,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                 boolean canAfford = game.getResources() >= option.cost();
+                // mouse over model
                 boolean rollover = getModel().isRollover();
 
                 if (!canAfford) {
@@ -131,6 +146,7 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         btn.setBorderPainted(false);
         btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
+        // custom cursors
         btn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -146,6 +162,13 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         return btn;
     }
 
+    /**
+     * Scales the given source image to fit within a specified box size for display in the build menu, maintaining the aspect ratio based on the tower's game height.
+     * @param src the source to scale
+     * @param option the tower option to scale for
+     * @param boxSize the size of the box to fit the image into
+     * @return a scaled Image instance that fits within the specified box size while maintaining the aspect ratio
+     */
     private Image scaleForMenu(BufferedImage src, TowerOption option, int boxSize) {
         double tallest = towerOptions.stream()
                 .mapToDouble(TowerOption::gameHeight)
@@ -156,6 +179,10 @@ public class BuildMenuPanel extends JPanel implements GameListener {
         return src.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
     }
 
+    /**
+     * Shows the build menu at the specified screen position, adjusting its location to ensure it remains fully visible within the parent panel's bounds.
+     * @param screenPos the screen position where the build menu should be displayed, typically corresponding to the location of a tower spot in the game world
+     */
     public void showAt(Point screenPos) {
         towerOptionPanel.setSize(towerOptionPanel.getPreferredSize());
 

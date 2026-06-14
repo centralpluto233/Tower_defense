@@ -25,6 +25,13 @@ public class J2dEntityHelper {
         poisonOverlayAnimation = new SpriteAnimation(sheet, 6, 20);
     }
 
+    /**
+     * Draws an enemy entity with its animation, health bar, and status effects.
+     * @param deltaTime Time elapsed since the last frame, used to update animations smoothly.
+     * @param animation The SpriteAnimation instance for the enemy's main animation.
+     * @param graphicsContext The J2dGraphicsContext to draw on.
+     * @param entity The EnemyEntity to be drawn, which contains its position, health, and status effects.
+     */
     public static void drawEnemy(double deltaTime, SpriteAnimation animation, J2dGraphicsContext graphicsContext, EnemyEntity entity) {
         animation.update(deltaTime);
         BufferedImage frame = animation.getCurrentFrame();
@@ -33,6 +40,7 @@ public class J2dEntityHelper {
         double y = entity.getDrawPosition().y();
 
         if (entity.isHitFlashing()) {
+            // Create a temporary image to apply the red tint without modifying the original frame
             BufferedImage scaled = new BufferedImage((int) entity.getWidth(), (int) entity.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D tmp = scaled.createGraphics();
             tmp.drawImage(frame, 0, 0, (int) entity.getWidth(), (int) entity.getHeight(), null);
@@ -48,6 +56,7 @@ public class J2dEntityHelper {
             g2d.drawImage(frame, (int) x, (int) y, (int) entity.getWidth(), (int) entity.getHeight(), null);
         }
 
+        // Draw poison overlay if the entity is poisoned
         if (entity.isPoisoned() && poisonOverlayAnimation != null) {
             poisonOverlayAnimation.update(deltaTime);
             BufferedImage poisonFrame = poisonOverlayAnimation.getCurrentFrame();
@@ -65,6 +74,12 @@ public class J2dEntityHelper {
         J2dGamePanel.drawEntityHealthBar(g2d, entity.getX(), entity.getY(), entity.getWidth(), entity.getHealth(), entity.getMaxHealth());
     }
 
+    /**
+     * Draws a projectile entity with its sprite, rotated according to its velocity direction.
+     * @param graphicsContext The J2dGraphicsContext to draw on.
+     * @param projectile The Projectile entity to be drawn, which contains its position, size, and velocity.
+     * @param sprite The BufferedImage representing the projectile's sprite.
+     */
     public static void drawProjectile(J2dGraphicsContext graphicsContext, Projectile projectile, BufferedImage sprite) {
         Graphics2D g2d = graphicsContext.getGraphics2D();
 
@@ -84,6 +99,11 @@ public class J2dEntityHelper {
         g2dcopy.dispose();
     }
 
+    /**
+     * Creates a BufferedImage representing the attack range of a tower. The image is a transparent circle with a yellow outline.
+     * @param range The radius of the circle, which corresponds to the tower's attack range.
+     * @return A BufferedImage that can be drawn to represent the tower's attack range. The image is sized to fit the circle with a small margin.
+     */
     public static BufferedImage buildRangeImage(int range) {
         int size = range * 2 + 2;
         BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
@@ -98,6 +118,13 @@ public class J2dEntityHelper {
         return img;
     }
 
+    /**
+     * Draws a tower entity with its cannon sprite and range indicator. The range indicator is drawn first, followed by the cannon sprite on top.
+     * @param graphicsContext The J2dGraphicsContext to draw on.
+     * @param tower The Tower entity to be drawn, which contains its position, size, and attack range.
+     * @param cannonImage The BufferedImage representing the tower's cannon sprite.
+     * @param rangeImage The BufferedImage representing the tower's attack range, which should be pre-generated using the buildRangeImage method with the tower's range.
+     */
     public static void drawTower(J2dGraphicsContext graphicsContext, Tower tower, BufferedImage cannonImage, BufferedImage rangeImage) {
         Graphics2D g2d = graphicsContext.getGraphics2D();
         int r = (int) Math.round(tower.getRange());

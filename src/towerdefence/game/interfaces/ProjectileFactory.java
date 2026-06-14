@@ -3,6 +3,7 @@ package towerdefence.game.interfaces;
 import towerdefence.game.entities.projectile.Projectile;
 import towerdefence.util.Vector2D;
 
+// used to create different projectiles from different types of towers
 public interface ProjectileFactory {
     /**
      * Creates a new Projectile with the specified position, damage, and target position.

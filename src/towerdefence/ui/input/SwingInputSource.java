@@ -32,7 +32,8 @@ public class SwingInputSource implements InputSource {
     private final Cursor selectCursor;
 
     /**
-     * Creates a new SwingInputSource with the given game, config, input mapping, and component. The input source will listen for mouse clicks on the component and translate them into game commands based on the input mapping and game state.
+     * Creates a new SwingInputSource with the given game, config, input mapping, and component.
+     * The input source will listen for mouse clicks on the component and translate them into game commands based on the input mapping and game state.
      *
      * @param game         the Game instance to which this input source will send commands based on user input
      * @param config       the Config instance containing game configuration values such as game width and tower spot radius, which may be used for translating input coordinates to game commands

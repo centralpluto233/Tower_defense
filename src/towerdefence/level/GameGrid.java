@@ -5,6 +5,7 @@ import towerdefence.util.Vector2D;
 import java.util.List;
 import java.util.Optional;
 
+// Represents the grid of tiles for a level, where each tile can be of a specific type (e.g., grass, path, corner).
 public class GameGrid {
     private final int cols;
     private final int rows;
@@ -63,23 +64,23 @@ public class GameGrid {
      * @return the TileType that represents the path segment at the current coordinate, taking into account the direction of the path before and after this point
      */
     private TileType determineTileType(Optional<Vector2D> prev, Vector2D cur, Optional<Vector2D> next) {
+        // Calculate the direction of the path coming into and going out of the current tile as bitmasks
         int dxIn = prev.map(v -> (int) Math.signum(cur.x() - v.x())).orElse(0);
         int dyIn = prev.map(v -> (int) Math.signum(cur.y() - v.y())).orElse(0);
         int dxOut = next.map(v -> (int) Math.signum(v.x() - cur.x())).orElse(0);
         int dyOut = next.map(v -> (int) Math.signum(v.y() - cur.y())).orElse(0);
 
-        // doorlopend rechtdoor
+        // straight
         if (dxIn != 0 && dxOut != 0) return TileType.PATH_H;
         if (dyIn != 0 && dyOut != 0) return TileType.PATH_V;
 
-        // startpunt
+        // start
         if (prev.isEmpty()) return dxOut != 0 ? TileType.PATH_H : TileType.PATH_V;
 
-        // eindpunt: geef alleen de inkomende richting terug als bitmask-fragment
-        // de merge in buildFromPath combineert dit met wat er al ligt
+        // endpoint: only give incoming direction as bitmask
         if (next.isEmpty()) return dxIn != 0 ? TileType.PATH_H : TileType.PATH_V;
 
-        // bochten
+        // turns
         if (dxIn > 0 && dyOut > 0) return TileType.CORNER_SW;
         if (dxIn > 0 && dyOut < 0) return TileType.CORNER_NW;
         if (dxIn < 0 && dyOut > 0) return TileType.CORNER_SE;
@@ -100,13 +101,18 @@ public class GameGrid {
      * @param to   the ending coordinate of the segment
      */
     private void fillSegment(Vector2D from, Vector2D to) {
-        int x0 = (int) from.x(), y0 = (int) from.y();
-        int x1 = (int) to.x(), y1 = (int) to.y();
+        // Calculate the direction of the segment as a step of -1, 0, or 1 for both x and y
+        int x0 = (int) from.x();
+        int y0 = (int) from.y();
+        int x1 = (int) to.x();
+        int y1 = (int) to.y();
         int dx = (int) Math.signum(x1 - x0);
         int dy = (int) Math.signum(y1 - y0);
         TileType straight = dx != 0 ? TileType.PATH_H : TileType.PATH_V;
 
-        int x = x0 + dx, y = y0 + dy;
+        // step through segment, merging tiles if necessary (in case of diagonal segments)
+        int x = x0 + dx;
+        int y = y0 + dy;
         while (x != x1 || y != y1) {
             if (x >= 0 && x < cols && y >= 0 && y < rows)
                 tiles[y][x] = mergeTile(tiles[y][x], straight);
@@ -127,11 +133,13 @@ public class GameGrid {
      * @param incoming the incoming TileType that represents a new path segment to be merged with the existing tile
      * @return the resulting TileType that represents the combined connections of both the existing and incoming tile types, ensuring that the path is correctly represented in the grid
      */
+    // AI used
     private TileType mergeTile(TileType existing, TileType incoming) {
         int mask = toBitmask(existing) | toBitmask(incoming);
         return fromBitmask(mask);
     }
 
+    // AI used
     private int toBitmask(TileType t) {
         return switch (t) {
             case PATH_H -> 0b1010; // W+E
@@ -149,6 +157,7 @@ public class GameGrid {
         };
     }
 
+    // AI used
     private TileType fromBitmask(int mask) {
         return switch (mask) {
             case 0b1010 -> TileType.PATH_H;

@@ -13,6 +13,7 @@ public class Main {
         Logger logger = null;
 
         try {
+            // config to setup logging levels
             Config config = new Config();
 
             GameLogger.setup(config.getLogLevelFile(), config.getLogLevelConsole());
@@ -21,7 +22,7 @@ public class Main {
             logger.info("Startup complete.");
             logger.info("Selected level: " + config.getSelectedLevel());
 
-
+            // create factory and pass to game
             J2dFactory factory = new J2dFactory();
 
             Game game = Game.getInstance();

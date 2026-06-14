@@ -50,8 +50,10 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         this.damage = damage;
         this.offset = computeOffset();
 
+        // Apply the offset to the initial position and path waypoints to prevent perfect overlap of enemies spawning at the same location.
         setX(x + offset[0]);
         setY(y + offset[1]);
+        // We create a new list of waypoints with the offset applied, rather than modifying the original list, to avoid side effects on other enemies that might use the same path.
         this.path = path.stream()
                 .map(wp -> new Vector2D(wp.x() + offset[0], wp.y() + offset[1]))
                 .toList();
@@ -83,7 +85,9 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
      */
     @Override
     public void update(double dt) {
+        // effects update
         poisonTick(dt);
+
         if (hitFlashTimer > 0.0) {
             hitFlashTimer -= dt;
         }
@@ -315,6 +319,10 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
         return 0.0;
     }
 
+    /**
+     * returns the progress of the enemy along its path as a value between 0.0 and the number of waypoints in the path.
+     * @return the progress of the enemy along its path
+     */
     public double getPathProgress() {
         return getCurrentWaypointIndex() -
                 getPosition().distanceTo(getPath().get(

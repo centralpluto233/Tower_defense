@@ -19,6 +19,7 @@ public abstract class SkeletonEnemy extends EnemyEntity {
         super(x, y, WIDTH, HEIGHT, SPEED, HEALTH, SCORE_VALUE, BASE_DAMAGE, path);
     }
 
+    // skeleton is fully resistant to poison, so we override the getPoisonResistance method to return 1.0
     @Override
     public double getPoisonResistance() {
         return 1.0;

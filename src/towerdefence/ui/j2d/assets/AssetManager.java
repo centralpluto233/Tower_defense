@@ -12,7 +12,7 @@ public class AssetManager {
     private final Map<String, BufferedImage> cache = new HashMap<>();
 
     /**
-     * Retrieves a sprite from the cache. If the sprite is not found, an exception is thrown.
+     * Retrieves a sprite from the cache. If the sprite is not found, an exception is thrown. (all sprites must be preloaded)
      *
      * @param path the path to the sprite image, relative to the classpath. This should match the path used when preloading the sprite with loadAll().
      * @return the BufferedImage of the sprite

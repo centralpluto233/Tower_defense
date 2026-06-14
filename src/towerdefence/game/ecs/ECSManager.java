@@ -46,7 +46,6 @@ public class ECSManager {
 
     /**
      * Gets a copy of the set of all active entity IDs in the ECS.
-     * This method returns an unmodifiable copy of the set to prevent external modification of the internal state of the ECSManager.
      *
      * @return an unmodifiable copy of the set of all active entity IDs in the ECS
      */

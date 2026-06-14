@@ -168,6 +168,7 @@ public class EntityManager {
 
             boolean impacted = false;
 
+            // check for direct hit on enemies
             for (EnemyEntity e : enemies) {
                 if (!e.isMarkedForRemoval() && p.overlaps(e)) {
                     p.dealDamage(e);
@@ -176,10 +177,12 @@ public class EntityManager {
                 }
             }
 
+            // check for splash damage if projectile has reached target position and has not already impacted an enemy
             if (!impacted && p.hasReachedTarget()) {
                 impacted = true;
             }
 
+            // if the projectile has impacted an enemy or reached its target position, apply splash damage if it has a SplashComponent and mark the projectile for removal
             if (!impacted) continue;
 
             p.getSplashComponent().ifPresent(sc ->
@@ -216,8 +219,6 @@ public class EntityManager {
 
         enemies.removeIf(Entity::isMarkedForRemoval);
         projectiles.removeIf(Entity::isMarkedForRemoval);
-
-        // normally don't get marked for removal
         towers.removeIf(Entity::isMarkedForRemoval);
 
         return isDefeated;

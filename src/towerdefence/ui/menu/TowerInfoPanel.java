@@ -27,9 +27,9 @@ public class TowerInfoPanel extends JPanel implements GameListener {
     private Optional<Tower>        selectedTower      = Optional.empty();
     private Optional<Integer>      selectedTowerIndex = Optional.empty();
 
-    // -------------------------------------------------------------------------
+    // ---------------------------
     // Construction
-    // -------------------------------------------------------------------------
+    // ---------------------------
 
     /**
      * creates a towerInfoPanel where you can select targeting mode and sell the tower
@@ -81,9 +81,9 @@ public class TowerInfoPanel extends JPanel implements GameListener {
         setVisible(false);
     }
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
+    // -------------------------------------------
+    // public methods
+    // -------------------------------------------
 
     /**
      * shows the tower info panel for the given tower, positioned near the tower on screen
@@ -125,9 +125,9 @@ public class TowerInfoPanel extends JPanel implements GameListener {
         this.commandSink = sink;
     }
 
-    // -------------------------------------------------------------------------
+    // ---------------------------
     // Hit testing
-    // -------------------------------------------------------------------------
+    // ---------------------------
 
     /**
      * overrides the contains method to check if the given point is within the towerOptionPanel, allowing for proper hit testing of mouse events when the panel is visible

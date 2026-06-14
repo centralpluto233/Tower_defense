@@ -47,6 +47,11 @@ public class LuaEngine {
         return globals.get(name).checktable();
     }
 
+    /**
+     * load a Lua script from the given path and set up the globals for reading level data. If loading fails, an exception is thrown with details about the error and the path of the script that was attempted to be loaded.
+     * @param levelPath the path to the Lua script to load, relative to the levels directory (e.g. "level1.lua")
+     * @throws Exception if there is an error loading the Lua script, including details about the error and the path of the script that was attempted to be loaded
+     */
     private void loadScript(String levelPath) throws Exception {
         try {
             globals = JmePlatform.standardGlobals();
@@ -96,12 +101,22 @@ public class LuaEngine {
         return new LevelData(levelName, levelFile, lives, resources, paths, towerSpots, waves, grid);
     }
 
+    /**
+     * Load level data from a Lua script with the given name. The method constructs the path to the Lua script based on the provided level name and attempts to load it.
+     * @return a LevelData object containing the data loaded from the Lua script, including level name, level file, lives, resources, paths, tower spots, waves, and game grid.
+     * @throws Exception if there is an error loading the Lua script, including details about the error and the path of the script that was attempted to be loaded
+     */
     public LevelData loadLevelData(String levelName) throws Exception {
         String levelPath = Constants.Paths.LEVELS + levelName;
         loadScript(levelPath);
         return loadLevelDataFromLoadedScript();
     }
 
+    /**
+     * reads a table and converts it to a list of Vector2D points
+     * @param tableName the name of the Lua table to read, which should contain an array of points with 'x' and 'y' fields (e.g. "tower_spots" or "path0")
+     * @return a list of Vector2D objects representing the points defined in the specified Lua table, where each point is constructed from the 'x' and 'y' fields of the table entries.
+     */
     private List<Vector2D> readVectorTable(String tableName) {
         LuaTable table = getTable(tableName);
         List<Vector2D> result = new ArrayList<>();
@@ -117,8 +132,10 @@ public class LuaEngine {
     }
 
     /**
-     * @param pathCount aantal beschikbare paden, voor validatie van pathIndex
-     * @param levelName naam van het level, voor duidelijke log-berichten
+     * reads the "waves" table from the lua script and converts it to a list of WaveData objects
+     * @param pathCount the number of paths defined in the level, used to validate the pathIndex for each wave and log a warning if an invalid pathIndex is found, defaulting to 0 if necessary
+     * @param levelName the name of the level being loaded, used for logging purposes to provide context in case of warnings about invalid pathIndex values in the waves table
+     * @return a list of WaveData objects
      */
     private List<WaveData> readWaveTable(int pathCount, String levelName) {
         LuaTable table = getTable("waves");

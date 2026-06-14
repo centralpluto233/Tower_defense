@@ -51,6 +51,7 @@ public class InputHandler {
 
                 if (entityManager.isTowerSpotOccupied(spot)) return;
 
+                // open buildmenu or place new tower
                 if (command.towerType().isEmpty()) {
                     game.notifyBuildMenuRequested(spotIndex, spot);
                 } else {
@@ -77,6 +78,7 @@ public class InputHandler {
      *
      * @param spotIndex the index of the tower spot where the player wants to place the tower, which is used to look up the actual position of the spot from the level data
      * @param towerType the type of tower the player wants to place (e.g., "Crossbow", "Archer"), which is used to determine which specific tower entity to create using the factory
+     * @throws Exception if there is an error during tower creation
      */
     private void handlePlaceTower(int spotIndex, String towerType) throws Exception {
         var spot = levelData.towerSpots().get(spotIndex);

@@ -1,5 +1,6 @@
 package towerdefence.game.interfaces;
 
+// represents the view component of the game, responsible for rendering the game state to the screen and updating the display based on game events
 public interface GameView {
     /**
      * Renders the game state to the screen. This method should be called once per frame, and should update the display based on the current game state.

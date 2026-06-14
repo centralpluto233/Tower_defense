@@ -24,13 +24,12 @@ public class WaveSpawnSystem {
     private List<Double> distinctStartDelays = new ArrayList<>();
 
     /**
-     * System to manage spawning of enemies based on spawn schedules, counts, paths, and types defined in the ECS components.
-     * It checks each spawn job every update cycle, spawns enemies when their schedule is due, and removes spawn jobs that are completed.
-     *
-     * @param dt      the time in seconds since the last update, used to tick down spawn schedules
-     * @param ecs     the ECSManager that holds all entities and their components, used to access spawn schedules, counts, paths, and types
-     * @param game    the Game instance, used to add new enemy entities when they spawn
-     * @param factory the AbstractGameFactory, used to create new enemy entities based on their type when they spawn
+     * updates the wavespawnsystem with all of its components
+     * @param dt time passed since last update
+     * @param ecs the ECSManager to access spawn jobs and their components, allowing the system to manage enemy spawning based on the defined waves
+     * @param game the game to add new entities
+     * @param factory the factory to create new entities
+     * @throws Exception if an unknown spawn type is encountered in the SpawnTypeComponent, indicating a configuration error in the lua levels
      */
     public void update(double dt, ECSManager ecs, Game game, AbstractGameFactory factory) throws Exception {
         List<Integer> toRemove = new ArrayList<>();
@@ -66,6 +65,7 @@ public class WaveSpawnSystem {
                 continue;
             }
 
+            // Spawpoint is first point of path
             Vector2D spawnPoint = path.getFirst();
 
             String type = (typeComp != null) ? typeComp.enemyType() : "goblin";
@@ -77,9 +77,11 @@ public class WaveSpawnSystem {
                 default -> throw new Exception("Unknown spawn type: " + type);
             });
 
+            // spawned one enemy, update count and schedule
             countComp.consumeOne();
             scheduleComp.resetToInterval();
         }
+        // calculate next wave countdown as the minimum time left among all spawn schedules that haven't started yet
         nextWaveCountdown = ecs.getAllEntities().stream()
                 .filter(id -> {
                     SpawnCountComponent count = ecs.getSpawnCounts().get(id);
@@ -93,6 +95,7 @@ public class WaveSpawnSystem {
                 .min()
                 .orElse(0);
 
+        // remove entities that are done spawning
         for (Integer id : toRemove) {
             ecs.removeEntity(id);
         }
@@ -119,6 +122,7 @@ public class WaveSpawnSystem {
                 .map(id -> ecsManager.getSpawnSchedules().get(id).getStartDelay())
                 .collect(java.util.stream.Collectors.toSet());
 
+        // count how many distinct startDelays are still in the notStartedDelays set
         long notStartedGroups = distinctStartDelays.stream()
                 .filter(notStartedDelays::contains)
                 .count();
@@ -153,7 +157,7 @@ public class WaveSpawnSystem {
     public void init(LevelData levelData, ECSManager ecs) {
         this.ecsManager = ecs;
 
-        distinctStartDelays = levelData.waves().stream()
+        this.distinctStartDelays = levelData.waves().stream()
                 .map(WaveData::startDelaySeconds)
                 .distinct()
                 .sorted()

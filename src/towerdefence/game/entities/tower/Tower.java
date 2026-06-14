@@ -158,12 +158,10 @@ public abstract class Tower extends Entity implements Attacker {
 
 
     /**
-     * Finds the first enemy within the Tower's attack range from the provided list of enemies.
-     * The method checks each enemy's distance from the Tower and returns the first one that is within the specified range.
-     *
-     * @param enemies the list of enemy entities to search through for a target within range.
-     *                The Tower will iterate through this list to find an enemy that is close enough to attack based on the Tower's range attribute.
-     * @return an Optional containing the first EnemyEntity found within range, or an empty Optional if no enemies are within range.
+     * Finds a target enemy within the Tower's attack range based on the current targeting strategy.
+     * The method filters the list of enemies to those that are within range and then selects one based on the targeting strategy (e.g., first, strongest, fastest).
+     * @param enemies the list of enemy entities currently in the game. The Tower will search through this list to find a target within its attack range.
+     * @return an Optional containing the selected target enemy if one is found within range, or an empty Optional if no enemies are within range.
      */
     private Optional<EnemyEntity> findTargetInRange(List<EnemyEntity> enemies) {
         List<EnemyEntity> inRange = enemies.stream()
@@ -174,6 +172,7 @@ public abstract class Tower extends Entity implements Attacker {
         if (inRange.isEmpty()) return Optional.empty();
 
         return switch (targetingStrategy) {
+            // The FIRST strategy targets the enemy that is furthest along its path (i.e., closest to the exit), which is determined by comparing the path progress of each enemy.
             case FIRST -> inRange.stream().max(Comparator.comparingDouble(EnemyEntity::getPathProgress));
             case STRONGEST -> inRange.stream().max(Comparator.comparingInt(EnemyEntity::getMaxHealth));
             case FASTEST -> inRange.stream().max(Comparator.comparingDouble(EnemyEntity::getSpeed));
@@ -199,27 +198,30 @@ public abstract class Tower extends Entity implements Attacker {
         double maxTime = Constants.Timing.TOWER_AIM_MAX_LOOKAHEAD_SECONDS;
         double elapsed = 0;
 
+        // Simulate the enemy's movement along its path for a short duration to predict its future position. The simulation continues until the maximum lookahead time is reached or the enemy reaches the end of its path.
         while (elapsed < maxTime) {
             double remaining = enemySpeed * timeStep;
-            while (remaining > 0 && waypointIndex < path.size()) {
+            while (remaining > 0 && waypointIndex < path.size()) { // Check if there are more waypoints to follow
                 Vector2D wp = path.get(waypointIndex);
-                double dx = wp.x() - ex;
+                double dx = wp.x() - ex; // Calculate the difference in x and y coordinates between the enemy's current position and the next waypoint to determine the direction of movement.
                 double dy = wp.y() - ey;
                 double dist = Math.hypot(dx, dy);
 
+                // If the distance to the next waypoint is very small (below a certain epsilon threshold), we consider the enemy to have reached that waypoint and move on to the next one in the path without consuming any of the remaining movement for this time step.
                 if (dist < Constants.Gameplay.PATH_POINT_EPSILON) {
                     waypointIndex++;
                     continue;
                 }
 
+                // check if enemy can reach the next waypoint or not
                 if (remaining >= dist) {
-                    ex = wp.x();
+                    ex = wp.x(); // set waypoint as new position and move to next waypoint
                     ey = wp.y();
                     remaining -= dist;
                     waypointIndex++;
                 } else {
                     double t = remaining / dist;
-                    ex += dx * t;
+                    ex += dx * t; // move towards the next waypoint based on remaining movement this step
                     ey += dy * t;
                     remaining = 0;
                 }
@@ -227,12 +229,14 @@ public abstract class Tower extends Entity implements Attacker {
 
             elapsed += timeStep;
 
+            // check if predicted point is within range of tower, if it is we can aim at it, otherwise we keep predicting further until max lookahead time is reached
             double distToArrow = Math.hypot(ex - this.getX(), ey - this.getY());
             if (distToArrow <= projectileSpeed * elapsed) {
                 return new Vector2D(ex, ey);
             }
         }
 
+        // fallback
         return enemy.getPosition();
     }
 

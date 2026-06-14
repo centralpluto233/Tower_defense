@@ -311,6 +311,7 @@ public class Game {
         }
 
         try {
+            // tries to process all commands, if any command causes an exception, log it and exit the game to prevent crashes or undefined behavior
             for (InputCommand command : commands) {
                 inputHandler.handleCommand(command, this);
             }

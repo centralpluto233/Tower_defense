@@ -25,6 +25,10 @@ public class J2dArcherTower extends ArcherTower {
         this.animation = new SpriteAnimation(sprite, 2, 30);
     }
 
+    /**
+     * ArcherTower's projectiles should spawn slightly above the tower's center to create a more natural shooting effect.
+     * @return The spawn position for projectiles, adjusted to be slightly above the tower's center.
+     */
     @Override
     public Vector2D getSpawnPosition() {
         return new Vector2D(this.getX(), this.getY() - getHeight() / 4);
@@ -33,15 +37,7 @@ public class J2dArcherTower extends ArcherTower {
     @Override
     public void draw(double deltaTime) {
         animation.update(deltaTime);
-        Graphics2D g2d = graphicsContext.getGraphics2D();
-        int r = (int) Math.round(getRange());
-
-        g2d.drawImage(rangeImage,
-                (int) (getX() - r - 1),
-                (int) (getY() - r - 1),
-                null);
-
-        g2d.drawImage(animation.getCurrentFrame(), (int) getDrawPosition().x(), (int) getDrawPosition().y(), (int) getWidth(), (int) getHeight(), null);
+        J2dEntityHelper.drawTower(graphicsContext, this, animation.getCurrentFrame(), rangeImage);
     }
 
 

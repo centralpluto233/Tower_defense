@@ -3,6 +3,10 @@ package towerdefence.game;
 import towerdefence.game.entities.tower.Tower;
 import towerdefence.util.Vector2D;
 
+/**
+ * Interface for listening to game events (used by menus)
+ * Used to show correct menus in the correct place
+ */
 public interface GameListener {
     void onGameStarted();
 

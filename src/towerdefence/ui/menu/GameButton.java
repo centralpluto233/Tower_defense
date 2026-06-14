@@ -68,6 +68,10 @@ public class GameButton extends JButton {
         return btn;
     }
 
+    // ---------------------------------------------------------------------------
+    // ready to use button types
+    // ---------------------------------------------------------------------------
+
     public static GameButton primary(String text) {
         return new GameButton(text, new Color(52, 120, 246));
     }
@@ -99,6 +103,10 @@ public class GameButton extends JButton {
     public static GameButton muted(String text, int width, int height, int fontSize) {
         return new GameButton(text, new Color(80, 85, 100), width, height, fontSize);
     }
+
+    // -----------------------------------------------------------------------
+    // render
+    // -----------------------------------------------------------------------
 
     @Override
     protected void paintComponent(Graphics g) {

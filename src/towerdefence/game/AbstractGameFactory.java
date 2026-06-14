@@ -63,6 +63,7 @@ public abstract class AbstractGameFactory {
      * @param type the type of tower to create (e.g., "Crossbow", "Archer")
      * @param spot the position where the tower should be created, represented as a Vector2D object containing x and y coordinates
      * @return a new Tower instance of the specified type at the given position
+     * @throws Exception if the provided tower type is unknown or unsupported, exits the game and gives a warning
      */
     public Tower createTower(String type, Vector2D spot) throws Exception {
         return switch (type) {

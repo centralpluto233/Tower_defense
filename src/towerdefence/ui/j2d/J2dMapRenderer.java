@@ -76,8 +76,7 @@ public class J2dMapRenderer {
     }
 
     public void drawTowerSpots(Graphics2D g2d) {
-        BufferedImage spot = assets.getSprite(
-                "sprites/map/" + currentTheme.folder() + "/towerspot.png");
+        BufferedImage spot = assets.getSprite("sprites/map/" + currentTheme.folder() + "/towerspot.png");
         List<Vector2D> spots = game.getTowerSpots();
         if (spots == null || spots.isEmpty()) return;
 
@@ -92,7 +91,8 @@ public class J2dMapRenderer {
         castle.update(deltaTime);
         BufferedImage frame = castle.getCurrentFrame();
         Vector2D end = game.getPaths().getFirst().getLast();
-        int w = (int) CASTLE_W, h = (int) CASTLE_H;
+        int w = (int) CASTLE_W;
+        int h = (int) CASTLE_H;
         g2d.drawImage(frame,
                 (int) end.x() - w / 2,
                 (int) end.y() - 5 * h / 6,
@@ -204,7 +204,9 @@ public class J2dMapRenderer {
     }
 
     private void drawDecorations(Graphics2D g) {
-        for (Decoration d : decorations) g.drawImage(d.sprite(), d.x(), d.y(), null);
+        for (Decoration d : decorations) {
+            g.drawImage(d.sprite(), d.x(), d.y(), null);
+        }
     }
 
     /**
@@ -227,7 +229,7 @@ public class J2dMapRenderer {
     }
 
     /**
-     * Generates random tree positions and types while ensuring they are not placed too close to the path.
+     * Generates random tree positions (with fixed seed) and types while ensuring they are not placed too close to the path.
      * The number of trees and their distribution is determined by a fixed seed for consistency across runs.
      */
     private void generateTrees() {
@@ -236,6 +238,7 @@ public class J2dMapRenderer {
             int x = rng.nextInt(config.getGameWidth());
             int y = rng.nextInt(config.getGameHeight());
             if (isTooCloseToPath(x, y)) continue;
+            // pick between 2 three types
             trees.add(new Tree(x, y, rng.nextInt(2), TREE_SCALE_BASE + rng.nextDouble()));
         }
     }
@@ -278,9 +281,13 @@ public class J2dMapRenderer {
      * @param b segment end point
      * @return the shortest distance from (px, py) to the line segment ab
      */
+    // AI
     private double distToSegment(double px, double py, Vector2D a, Vector2D b) {
-        double dx = b.x() - a.x(), dy = b.y() - a.y();
-        if (dx == 0 && dy == 0) return Math.hypot(px - a.x(), py - a.y());
+        double dx = b.x() - a.x();
+        double dy = b.y() - a.y();
+        if (dx == 0 && dy == 0) {
+            return Math.hypot(px - a.x(), py - a.y());
+        }
         double t = Math.clamp(((px - a.x()) * dx + (py - a.y()) * dy) / (dx * dx + dy * dy), 0, 1);
         return Math.hypot(px - (a.x() + t * dx), py - (a.y() + t * dy));
     }

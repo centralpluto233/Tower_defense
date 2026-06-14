@@ -41,6 +41,14 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
 
     private BufferedImage background;
 
+    /**
+     * Constructor for the menu overlay panel, which displays the main menu, pause menu, game over screen, and level won screen.
+     * @param game the game, used to control game state and listen for game events
+     * @param config the config, used to read and write settings
+     * @param hover the cursor to use when hovering over buttons
+     * @param onThemeChanged callback for when the map theme is changed in the settings, used to update the background image
+     * @param assetManager the asset manager, used to load sprites for the background and buttons
+     */
     public MenuOverlayPanel(Game game, Config config, Cursor hover, Consumer<MapTheme> onThemeChanged, AssetManager assetManager) {
         this.game = game;
         this.hoverCursor = hover;
@@ -71,7 +79,9 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         applyCustomCursors(this);
     }
 
+    // ----------------------------------------------------------
     // factory methods voor herbruikbare buttons
+    // ----------------------------------------------------------
 
     private GameButton makeSettingsButton() {
         GameButton btn = GameButton.muted(" Settings ");
@@ -94,27 +104,9 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         return btn;
     }
 
-    private void applyCustomCursors(Container container) {
-        for (Component c: container.getComponents()) {
-            if (c instanceof AbstractButton btn) {
-                btn.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        btn.setCursor(hoverCursor);
-                    }
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        btn.setCursor(null);
-                    }
-                });
-            }
-            if (c instanceof Container sub) {
-                applyCustomCursors(sub);
-            }
-        }
-    }
-
+    // ----------------------------------
     // top bar
+    // ----------------------------------
 
     private void buildTopBar() {
         topBar.setOpaque(false);
@@ -128,7 +120,9 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         });
     }
 
+    // ---------------------------------------
     // cards
+    // ---------------------------------------
 
     private void buildCenterPanel() {
         centerPanel.setOpaque(false);
@@ -264,7 +258,29 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         this.background = assets.getSprite("sprites/map/" + theme.folder() + "/background.png");
     }
 
+    // --------------------------------------------
     // helpers
+    // --------------------------------------------
+
+    private void applyCustomCursors(Container container) {
+        for (Component c: container.getComponents()) {
+            if (c instanceof AbstractButton btn) {
+                btn.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        btn.setCursor(hoverCursor);
+                    }
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        btn.setCursor(null);
+                    }
+                });
+            }
+            if (c instanceof Container sub) {
+                applyCustomCursors(sub);
+            }
+        }
+    }
 
     private JPanel column(String title, GameButton... buttons) {
         JPanel panel = emptyColumn();
@@ -303,8 +319,13 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         if (parent != null) parent.requestFocusInWindow();
     }
 
+
+
     // refresh
 
+    /**
+     * Refreshes the menu overlay based on the current game state, showing or hiding components and switching cards as necessary.
+     */
     public void refresh() {
         GameState state = game.getGameState();
         boolean running = state == GameState.RUNNING;
@@ -355,6 +376,13 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         g2.dispose();
     }
 
+    /**
+     * Overrides the contains method to block input to the game when the menu overlay is visible, while still allowing interaction with the menu components. It checks if the current game state is one where the menu should be active, and if so, it returns true to indicate that the overlay should consume mouse events.
+     * If the game is running, it checks if any child components of the overlay contain the point, allowing interaction with buttons and other UI elements.
+     * @param x   the <i>x</i> coordinate of the point
+     * @param y   the <i>y</i> coordinate of the point
+     * @return
+     */
     @Override
     public boolean contains(int x, int y) {
         GameState state = game.getGameState();
@@ -370,7 +398,9 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         return false;
     }
 
+    // ----------------------------------------
     // GameListener
+    // ----------------------------------------
 
     @Override
     public void onGameStarted() {

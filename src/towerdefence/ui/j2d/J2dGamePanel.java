@@ -56,6 +56,13 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     // Construction
     // -------------------------------------------------------------------------
 
+    /**
+     * constructs a new J2dGamePanel, orchestrator of all rendering and menu input handling
+     * @param game the game instance to render and listen to for updates
+     * @param config the game configuration, used to determine view scaling and other settings
+     * @param graphicsContext the graphics context to use for rendering entities and other game elements
+     * @param assets the asset manager to load sprites and other assets from for rendering the game
+     */
     public J2dGamePanel(Game game, Config config, J2dGraphicsContext graphicsContext, AssetManager assets) {
         this.game            = game;
         this.config          = config;
@@ -180,11 +187,16 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
      */
     @Override
     public Optional<Vector2D> screenToWorld(Point p) {
-        double vw = config.getViewWidth(),   vh = config.getViewHeight();
-        double sw = getWidth(),              sh = getHeight();
+        // calculate the scaling and offset of the view based on the current configuration and panel size
+        double vw = config.getViewWidth();
+        double vh = config.getViewHeight();
+        double sw = getWidth();
+        double sh = getHeight();
         double scale = Math.min(sw / vw, sh / vh);
-        double ox = (sw - vw * scale) / 2,  oy = (sh - vh * scale) / 2;
+        double ox = (sw - vw * scale) / 2;
+        double oy = (sh - vh * scale) / 2;
 
+        // check if the point is outside the view
         if (p.x < ox || p.y < oy || p.x > ox + vw * scale || p.y > oy + vh * scale)
             return Optional.empty();
 
@@ -210,6 +222,10 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     // Cursor / thema
     // -------------------------------------------------------------------------
 
+    /**
+     * Sets the command sink for the build menu and tower info panel, allowing them to send input commands to the game when the user interacts with the UI.
+     * @param sink a consumer that accepts inputcommands (inputsource)
+     */
     public void setCommandSink(Consumer<InputCommand> sink) {
         buildMenuPanel.setCommandSink(sink);
         towerInfoPanel.setCommandSink(sink);
@@ -253,8 +269,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
     // static helpers used by entity draw methods
     // -------------------------------------------------------------------------
 
-    public static void drawEntityHealthBar(Graphics2D g2d, double x, double y,
-                                           double entityWidth, int health, int maxHealth) {
+    public static void drawEntityHealthBar(Graphics2D g2d, double x, double y, double entityWidth, int health, int maxHealth) {
         int bw  = (int) Math.max(entityWidth, 20);
         int bh  = 3;
         int bx  = (int) (x - bw / 2.0);
@@ -273,6 +288,7 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
      * @param pct the percentage of health remaining, as a value between 0 and 1
      * @return a Color object representing the color of the health bar, where 1.0 is green and 0.0 is red
      */
+    // AI
     private static Color healthColor(double pct) {
         if (pct < 0.5) {
             return new Color(255, (int) (165 * pct * 2), 0);
@@ -332,10 +348,13 @@ public class J2dGamePanel extends JPanel implements GameView, InputMapping {
      * @return a new Graphics2D context that is scaled and translated to fit the game view according to the configuration settings
      */
     private Graphics2D scaledContext(Graphics2D g2d) {
-        double vw = config.getViewWidth(),  vh = config.getViewHeight();
-        double sw = getWidth(),             sh = getHeight();
+        double vw = config.getViewWidth();
+        double vh = config.getViewHeight();
+        double sw = getWidth();
+        double sh = getHeight();
         double scale = Math.min(sw / vw, sh / vh);
-        double ox = (sw - vw * scale) / 2, oy = (sh - vh * scale) / 2;
+        double ox = (sw - vw * scale) / 2;
+        double oy = (sh - vh * scale) / 2;
 
         Graphics2D ctx = (Graphics2D) g2d.create();
         ctx.translate(ox, oy);

@@ -4,6 +4,7 @@ import towerdefence.system.logging.GameLogger;
 
 import java.util.logging.Logger;
 
+// Tracks the player's performance during a run, including kills, escapes, lives, and resources. Provides methods to update stats based on game events and to check if the player has been defeated.
 public class RunStats {
     private static final Logger logger = GameLogger.getLogger();
     private final int maxLives;

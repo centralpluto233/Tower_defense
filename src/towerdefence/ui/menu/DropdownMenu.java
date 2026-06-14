@@ -7,6 +7,7 @@ import javax.swing.plaf.basic.ComboPopup;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
+// create a dropdownmenu of parameter T
 public class DropdownMenu<T> extends JComboBox<T> {
 
     private static final int    ARC         = 18;
@@ -79,6 +80,7 @@ public class DropdownMenu<T> extends JComboBox<T> {
         g2.dispose();
     }
 
+    // not needed cause is drawn in paintcomponent
     @Override
     protected void paintBorder(Graphics g) {}
 
@@ -95,9 +97,11 @@ public class DropdownMenu<T> extends JComboBox<T> {
      * providing a cohesive and visually appealing user interface consistent with the overall design of the game
      * @return a BasicComboBoxUI with custom implementations for the arrow button and popup menu, as well as an overridden method to prevent drawing the default background of the selected item in the combo box, allowing for a fully customized appearance of the dropdown menu
      */
+    // AI
     private BasicComboBoxUI buildUI() {
         return new BasicComboBoxUI() {
 
+            // override arrowbutton
             @Override
             protected JButton createArrowButton() {
                 JButton btn = new JButton() {
@@ -127,6 +131,7 @@ public class DropdownMenu<T> extends JComboBox<T> {
                 return btn;
             }
 
+            // override popup
             @Override
             protected ComboPopup createPopup() {
                 BasicComboPopup popup = new BasicComboPopup(comboBox) {

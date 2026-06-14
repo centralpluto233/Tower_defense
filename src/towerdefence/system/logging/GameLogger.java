@@ -34,6 +34,7 @@ public class GameLogger {
             private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
 
             @Override
+            // AI
             public String format(LogRecord record) {
                 String sourceClass = record.getSourceClassName();
                 String sourceMethod = record.getSourceMethodName();

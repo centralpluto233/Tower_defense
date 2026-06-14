@@ -12,6 +12,11 @@ public class ToggleButton extends JToggleButton {
 
     private Shape shape;
 
+    /**
+     * Creates a toggle button with the specified label and initial state.
+     * @param label the text to display on the button
+     * @param initialState the initial selected state of the button (true for on, false for off)
+     */
     public ToggleButton(String label, boolean initialState) {
         super(label, initialState);
         setFocusPainted(false);
@@ -57,6 +62,7 @@ public class ToggleButton extends JToggleButton {
         g2.setColor(new Color(255, 255, 255, 180));
         g2.drawRoundRect(boxX, boxY, boxSize, boxSize, 4, 4);
 
+        // AI
         if (on) {
             g2.setColor(new Color(100, 255, 120));
             g2.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));

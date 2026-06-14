@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+// Responsible for drawing the HUD (health, resources, wave info, floating texts)
 public class J2dHudRenderer {
 
     private record FloatingText(String text, Color color, double x, double y,
@@ -32,6 +33,12 @@ public class J2dHudRenderer {
     private final List<FloatingText> floatingTexts = new ArrayList<>();
     private double shakeTimer = 0.0;
 
+    /**
+     * initializes the HUD renderer with necessary assets and references
+     * @param game reference to the main game object to access game state (lives, resources, waves)
+     * @param config reference to the configuration for layout settings (like spawn margin)
+     * @param assets asset manager to load necessary sprites for the HUD (hearts, coin, box)
+     */
     public J2dHudRenderer(Game game, Config config, AssetManager assets) {
         this.game   = game;
         this.config = config;
