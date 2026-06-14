@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class WaveSpawnSystem {
-    Logger logger = Logger.getLogger(WaveSpawnSystem.class.getName());
+    private final Logger logger = Logger.getLogger(WaveSpawnSystem.class.getName());
     private double nextWaveCountdown = 0;
     private ECSManager ecsManager;
     private List<Double> distinctStartDelays = new ArrayList<>();

@@ -13,7 +13,7 @@ public class Main {
         Logger logger = null;
 
         try {
-            // config to setup logging levels
+            // config to set up logging levels
             Config config = new Config();
 
             GameLogger.setup(config.getLogLevelFile(), config.getLogLevelConsole());

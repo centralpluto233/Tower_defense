@@ -23,7 +23,7 @@ public abstract class EnemyEntity extends MovingEntity implements Damageable {
     private final int scoreValue;
     private final int damage;
     private final double[] offset;
-    protected List<Vector2D> path;
+    protected final List<Vector2D> path;
     protected int currentWaypointIndex = 0;
     private int health;
     private double hitFlashTimer = 0.0;
