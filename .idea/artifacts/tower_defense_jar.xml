@@ -7,6 +7,8 @@
       </element>
       <element id="module-output" name="tower-defense" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/luaj/luaj-jme/3.0.1/luaj-jme-3.0.1.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/config/config.properties" />
+      <element id="dir-copy" path="$PROJECT_DIR$/config" />
     </root>
   </artifact>
 </component>
