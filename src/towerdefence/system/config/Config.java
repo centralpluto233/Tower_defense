@@ -1,10 +1,6 @@
 package towerdefence.system.config;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Objects;
+import java.io.*;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -12,21 +8,20 @@ import java.util.logging.Level;
  * Loads configuration properties from a file and provides access to them.
  */
 public class Config {
+    private static final File CONFIG_FILE = new File("config/config.properties");
+
     private final Properties properties;
 
     /**
-     * Constructs a ConfigLoader and loads the config file from resources.
+     * Constructs a ConfigLoader and loads the config file from the external location.
+     * Falls back to the bundled resource if the external file does not exist yet.
      */
     public Config() {
         properties = new Properties();
-
-        try (InputStream input = Config.class.getResourceAsStream(Constants.Paths.CONFIG)) {
-            if (input == null) {
-                throw new RuntimeException("config.properties not found in resources.");
-            }
+        try (InputStream input = new FileInputStream(CONFIG_FILE)) {
             properties.load(input);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load config: " + e.getMessage());
+            throw new RuntimeException("Failed to load config: " + CONFIG_FILE.getAbsolutePath() + " - " + e.getMessage());
         }
     }
 
@@ -119,10 +114,10 @@ public class Config {
      * Saves the current config back to the file.
      */
     public void save() {
-        try (OutputStream output = new FileOutputStream(Objects.requireNonNull(Config.class.getResource(Constants.Paths.CONFIG)).getPath())) {
+        try (OutputStream output = new FileOutputStream(CONFIG_FILE)) {
             properties.store(output, "Updated config");
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save config: " + e.getMessage());
+            throw new RuntimeException("Failed to save config: " + CONFIG_FILE.getAbsolutePath() + " - " + e.getMessage());
         }
     }
 
