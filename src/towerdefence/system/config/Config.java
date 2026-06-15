@@ -119,9 +119,15 @@ public class Config {
      * Saves the current config back to the file.
      */
     public void save() {
-        try (OutputStream output = new FileOutputStream(Objects.requireNonNull(Config.class.getResource(Constants.Paths.CONFIG)).getPath())) {
-            properties.store(output, "Updated config");
-        } catch (IOException e) {
+        try {
+            java.net.URL url = Config.class.getResource(Constants.Paths.CONFIG);
+            java.io.File file = new java.io.File(
+                    Objects.requireNonNull(url).toURI()
+            );
+            try (OutputStream output = new FileOutputStream(file)) {
+                properties.store(output, "Updated config");
+            }
+        } catch (Exception e) {
             throw new RuntimeException("Failed to save config: " + e.getMessage());
         }
     }
