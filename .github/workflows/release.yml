@@ -1,0 +1,76 @@
+name: Build Windows release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Compile game
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force out/artifacts/tower_defense_jar | Out-Null
+          New-Item -ItemType Directory -Force out/classes | Out-Null
+
+          Get-ChildItem -Recurse src -Filter *.java |
+            ForEach-Object { $_.FullName } | Set-Content sources.txt
+
+          javac -d out/classes -encoding UTF-8 @sources.txt
+
+      - name: Put resources in JAR input
+        shell: pwsh
+        run: |
+          Copy-Item -Recurse -Force resources out/classes/resources
+
+      - name: Create tower-defense.jar
+        shell: pwsh
+        run: |
+          $artifacts = "out/artifacts/tower_defense_jar"
+          jar --create `
+            --file "$artifacts/tower-defense.jar" `
+            --main-class towerdefence.Main `
+            -C out/classes .
+
+      - name: Build TowerDefense.exe with jpackage
+        shell: pwsh
+        run: |
+          $projectRoot = $PWD.Path
+          $artifacts = "$projectRoot/out/artifacts/tower_defense_jar"
+
+          Remove-Item -Recurse -Force "$artifacts/TowerDefense" -ErrorAction SilentlyContinue
+
+          jpackage `
+            --input $artifacts `
+            --name TowerDefense `
+            --main-jar tower-defense.jar `
+            --main-class towerdefence.Main `
+            --type app-image `
+            --dest $artifacts
+
+          Copy-Item -Recurse -Force "$projectRoot/config" "$artifacts/TowerDefense/config"
+
+      - name: Zip only the game
+        shell: pwsh
+        run: |
+          Compress-Archive `
+            -Path "out/artifacts/tower_defense_jar/TowerDefense" `
+            -DestinationPath "TowerDefense-windows.zip"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: TowerDefense-windows.zip
+          generate_release_notes: true

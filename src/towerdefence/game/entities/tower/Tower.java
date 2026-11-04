@@ -175,7 +175,7 @@ public abstract class Tower extends Entity implements Attacker {
         return switch (targetingStrategy) {
             // The FIRST strategy targets the enemy that is furthest along its path (i.e., closest to the exit), which is determined by comparing the path progress of each enemy.
             case FIRST -> inRange.stream().max(Comparator.comparingDouble(EnemyEntity::getPathProgress));
-            case STRONGEST -> inRange.stream().max(Comparator.comparingInt(EnemyEntity::getMaxHealth));
+            case STRONGEST -> inRange.stream().max(Comparator.comparingInt(EnemyEntity::getHealth));
             case FASTEST -> inRange.stream().max(Comparator.comparingDouble(EnemyEntity::getSpeed));
         };
     }
