@@ -53,7 +53,11 @@ jobs:
       - name: Put resources in JAR input
         shell: pwsh
         run: |
-          Copy-Item -Recurse -Force resources out/classes/resources
+          Copy-Item -Path "resources/*" -Destination "out/classes" -Recurse -Force
+
+          if (-not (Test-Path "out/classes/sprites/map/foliage/grass.png")) {
+            throw "Verwachte sprite ontbreekt in de build-output."
+          }
 
       - name: Create tower-defense.jar
         shell: pwsh
