@@ -18,7 +18,14 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
+      - name: Download LuaJ
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force libs | Out-Null
 
+          Invoke-WebRequest `
+            -Uri "https://repo.maven.apache.org/maven2/org/luaj/luaj-jme/3.0.1/luaj-jme-3.0.1.jar" `
+            -OutFile "libs/luaj-jme-3.0.1.jar"
       - name: Compile game
         shell: pwsh
         run: |
