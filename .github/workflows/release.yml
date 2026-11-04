@@ -29,13 +29,23 @@ jobs:
       - name: Compile game
         shell: pwsh
         run: |
+          New-Item -ItemType Directory -Force libs | Out-Null
           New-Item -ItemType Directory -Force out/artifacts/tower_defense_jar | Out-Null
           New-Item -ItemType Directory -Force out/classes | Out-Null
 
-          Get-ChildItem -Recurse src -Filter *.java |
-            ForEach-Object { $_.FullName } | Set-Content sources.txt
+          Invoke-WebRequest `
+            -Uri "https://repo.maven.apache.org/maven2/org/luaj/luaj-jme/3.0.1/luaj-jme-3.0.1.jar" `
+            -OutFile "libs/luaj-jme-3.0.1.jar"
 
-          javac -d out/classes -encoding UTF-8 "@sources.txt"
+          Get-ChildItem -Recurse src -Filter *.java |
+            ForEach-Object { $_.FullName } |
+            Set-Content sources.txt
+
+          javac -cp "libs/luaj-jme-3.0.1.jar" -d out/classes -encoding UTF-8 "@sources.txt"
+
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
 
       - name: Put resources in JAR input
         shell: pwsh
