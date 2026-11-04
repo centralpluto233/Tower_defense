@@ -28,7 +28,7 @@ jobs:
           Get-ChildItem -Recurse src -Filter *.java |
             ForEach-Object { $_.FullName } | Set-Content sources.txt
 
-          javac -d out/classes -encoding UTF-8 @sources.txt
+          javac -d out/classes -encoding UTF-8 "@sources.txt"
 
       - name: Put resources in JAR input
         shell: pwsh
