@@ -59,14 +59,38 @@ jobs:
             throw "Verwachte sprite ontbreekt in de build-output."
           }
 
-      - name: Create tower-defense.jar
+      - name: Create tower-defense.jar with LuaJ
         shell: pwsh
         run: |
           $artifacts = "out/artifacts/tower_defense_jar"
+          $luaJar = (Resolve-Path "libs/luaj-jme-3.0.1.jar").Path
+
+          Push-Location "out/classes"
+          try {
+            jar --extract --file "$luaJar"
+
+            if ($LASTEXITCODE -ne 0) {
+              throw "Uitpakken van LuaJ is mislukt."
+            }
+
+            Remove-Item "META-INF/MANIFEST.MF" -ErrorAction SilentlyContinue
+          }
+          finally {
+            Pop-Location
+          }
+
+          if (-not (Test-Path "out/classes/org/luaj/vm2/Globals.class")) {
+            throw "LuaJ ontbreekt in de build-output."
+          }
+
           jar --create `
             --file "$artifacts/tower-defense.jar" `
             --main-class towerdefence.Main `
             -C out/classes .
+
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
 
       - name: Build TowerDefense.exe with jpackage
         shell: pwsh
