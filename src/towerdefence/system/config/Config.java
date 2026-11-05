@@ -151,6 +151,15 @@ public class Config {
     }
 
     /**
+     * Sets the level to load on the next startup.
+     *
+     * @param level the level file name
+     */
+    public void setSelectedLevel(String level) {
+        set("selected.level", level);
+    }
+
+    /**
      * Calculates the total game width by adding the view width and twice the spawn margin.
      *
      * @return the total game width

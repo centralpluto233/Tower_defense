@@ -18,6 +18,7 @@ import towerdefence.level.LuaEngine;
 import towerdefence.system.config.Config;
 import towerdefence.system.config.Constants;
 import towerdefence.system.logging.GameLogger;
+import towerdefence.system.save.ProgressStore;
 import towerdefence.system.time.Stopwatch;
 import towerdefence.util.Vector2D;
 
@@ -45,6 +46,7 @@ public class Game {
     private InputHandler inputHandler;
     private Stopwatch renderStopwatch;
     private LuaEngine luaEngine;
+    private ProgressStore progressStore;
 
     // ---------------------------------------------------------------------
     // Singleton / construction
@@ -80,10 +82,14 @@ public class Game {
         logger.info("Creating Game with factory: " + factory.getClass().getSimpleName());
         this.factory = factory;
         this.config = config;
+        this.progressStore = new ProgressStore(logger);
 
         this.luaEngine = new LuaEngine(config);
         try {
-            this.currentLevel = luaEngine.loadLevelData();
+            String selectedLevel = progressStore.getSelectedLevel(config.getSelectedLevel());
+            this.currentLevel = luaEngine.loadLevelData(selectedLevel);
+            config.setSelectedLevel(this.currentLevel.levelFile());
+            config.save();
         } catch (Exception e) {
             logger.warning("Failed to load default level: " + e.getMessage());
             throw new RuntimeException(e);
@@ -147,11 +153,21 @@ public class Game {
      * @param levelName the name of the level to load, which should correspond to a Lua level script file that can be loaded by the LuaEngine
      */
     public void loadLevel(String levelName) {
+        if (!Constants.LevelConstants.LEVEL_NAMES.contains(levelName)) {
+            logger.warning("Ignoring unknown level: " + levelName);
+            return;
+        }
+        if (!progressStore.isUnlocked(levelName)) {
+            logger.warning("Ignoring locked level: " + levelName);
+            return;
+        }
         if (gameState != GameState.MENU) stop();
         try {
             LevelData newLevel = luaEngine.loadLevelData(levelName);
             if (!newLevel.levelName().equals(currentLevel.levelName())) {
                 currentLevel = newLevel;
+                config.setSelectedLevel(currentLevel.levelFile());
+                config.save();
                 view.reset();
                 waveSpawnSystem.reset();
             }
@@ -172,6 +188,10 @@ public class Game {
             return Optional.of(levels.get(currentIndex + 1));
         }
         return Optional.empty();
+    }
+
+    public boolean isLevelUnlocked(String levelName) {
+        return progressStore.isUnlocked(levelName);
     }
 
     // ---------------------------------------------------------------------
@@ -291,6 +311,8 @@ public class Game {
 
         if (manager.getAllEntities().isEmpty() && entityManager.hasNoEnemies()) {
             gameState = GameState.LEVEL_WON;
+            progressStore.unlock(currentLevel.levelFile());
+            getNextLevel().ifPresent(progressStore::unlock);
             notifyListeners(GameListener::onLevelWon);
         }
     }
