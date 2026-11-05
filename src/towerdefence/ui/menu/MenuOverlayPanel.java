@@ -231,7 +231,7 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         panel.add(Box.createVerticalStrut(24));
 
         for (String level : Constants.LevelConstants.LEVEL_NAMES) {
-            GameButton btn = GameButton.primary(level.substring(0, level.lastIndexOf('.')));
+            GameButton btn = GameButton.primary(game.getLevelDisplayName(level));
             btn.setEnabled(game.isLevelUnlocked(level));
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
             btn.addActionListener(_ -> {

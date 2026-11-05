@@ -67,14 +67,19 @@ public class LuaEngine {
         return paths;
     }
 
-    private LevelData loadLevelDataFromLoadedScript() {
+    private LevelData loadLevelDataFromLoadedScript(String expectedLevelFile) {
         String levelName = globals.get("level_name").checkjstring();
         String levelFile = globals.get("level_file").checkjstring();
         int lives = globals.get("lives").checkint();
         int resources = globals.get("resources").checkint();
         List<List<Vector2D>> paths = readPathsTable();
+        validateLevel(expectedLevelFile, levelName, levelFile, lives, resources, paths);
 
         List<Vector2D> towerSpots = this.toWorld(this.readVectorTable("tower_spots"));
+        if (towerSpots.isEmpty()) {
+            throw new IllegalArgumentException("Level '" + expectedLevelFile
+                    + "' must contain at least one tower spot");
+        }
 
         GameGrid grid = new GameGrid(config.getViewHeight() / config.getTileSize(),
                 config.getViewWidth() / config.getTileSize());
@@ -88,6 +93,9 @@ public class LuaEngine {
                 .toList();
 
         List<WaveData> waves = this.readWaveTable(paths.size(), levelName);
+        if (waves.isEmpty()) {
+            throw new IllegalArgumentException("Level '" + expectedLevelFile + "' must contain at least one wave");
+        }
 
         return new LevelData(levelName, levelFile, lives, resources, paths, towerSpots, waves, grid);
     }
@@ -101,7 +109,33 @@ public class LuaEngine {
     public LevelData loadLevelData(String levelName) throws Exception {
         String levelPath = Constants.Paths.LEVELS + levelName;
         loadScript(levelPath);
-        return loadLevelDataFromLoadedScript();
+        return loadLevelDataFromLoadedScript(levelName);
+    }
+
+    private void validateLevel(String expectedLevelFile, String levelName, String levelFile, int lives,
+                               int resources, List<List<Vector2D>> paths) {
+        if (levelName.isBlank()) {
+            throw new IllegalArgumentException("Level '" + expectedLevelFile + "' has an empty level_name");
+        }
+        if (!expectedLevelFile.equals(levelFile)) {
+            throw new IllegalArgumentException("Level '" + expectedLevelFile
+                    + "' declares level_file='" + levelFile + "'");
+        }
+        if (lives <= 0) {
+            throw new IllegalArgumentException("Level '" + expectedLevelFile + "' must have positive lives");
+        }
+        if (resources < 0) {
+            throw new IllegalArgumentException("Level '" + expectedLevelFile + "' cannot have negative resources");
+        }
+        if (paths.isEmpty()) {
+            throw new IllegalArgumentException("Level '" + expectedLevelFile + "' must contain at least one path");
+        }
+        for (int i = 0; i < paths.size(); i++) {
+            if (paths.get(i).size() < 2) {
+                throw new IllegalArgumentException("Level '" + expectedLevelFile
+                        + "' path" + i + " must contain at least two points");
+            }
+        }
     }
 
     /**
@@ -144,10 +178,13 @@ public class LuaEngine {
             String enemyType = wave.get("enemyType").optjstring(Constants.Gameplay.DEFAULT_ENEMY_TYPE);
             int pathIndex = wave.get("pathIndex").checkint();
 
+            if (!List.of("bat", "goblin", "bigslime", "skeleton").contains(enemyType)) {
+                throw new IllegalArgumentException("waves[" + i + "] in level '" + levelName
+                        + "' has unknown enemyType='" + enemyType + "'");
+            }
             if (pathIndex < 0 || pathIndex >= pathCount) {
-                logger.warning("waves[" + i + "] in level '" + levelName + "' gebruikt pathIndex=" + pathIndex
-                        + " maar het level heeft maar " + pathCount + " pad(en). Fallback naar pad 0.");
-                pathIndex = 0;
+                throw new IllegalArgumentException("waves[" + i + "] in level '" + levelName
+                        + "' has invalid pathIndex=" + pathIndex + " for " + pathCount + " path(s)");
             }
 
             waves.add(new WaveData(count, interval, startDelay, enemyType, pathIndex));

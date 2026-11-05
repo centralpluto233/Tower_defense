@@ -1,9 +1,9 @@
-level_name = "The Catacombs"
+level_name = "The Haunted Grove"
 level_file = "Level4.lua"
 lives = 20
 resources = 120
 
--- Slingerend pad door de catacomben
+-- Slingerend pad door het spookachtige bos
 path0 = {
     {x=-1, y=3},
     {x=8,  y=3},

@@ -24,6 +24,8 @@ import towerdefence.util.Vector2D;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -47,6 +49,7 @@ public class Game {
     private Stopwatch renderStopwatch;
     private LuaEngine luaEngine;
     private ProgressStore progressStore;
+    private final Map<String, String> levelDisplayNames = new HashMap<>();
 
     // ---------------------------------------------------------------------
     // Singleton / construction
@@ -86,6 +89,10 @@ public class Game {
 
         this.luaEngine = new LuaEngine(config);
         try {
+            for (String level : Constants.LevelConstants.LEVEL_NAMES) {
+                LevelData levelData = luaEngine.loadLevelData(level);
+                levelDisplayNames.put(level, levelData.levelName());
+            }
             String startupLevel = config.getDebug()
                     ? config.getDebugLevel()
                     : progressStore.getLastUnlockedLevel();
@@ -190,6 +197,10 @@ public class Game {
 
     public boolean isLevelUnlocked(String levelName) {
         return progressStore.isUnlocked(levelName);
+    }
+
+    public String getLevelDisplayName(String levelName) {
+        return levelDisplayNames.getOrDefault(levelName, levelName);
     }
 
     // ---------------------------------------------------------------------
