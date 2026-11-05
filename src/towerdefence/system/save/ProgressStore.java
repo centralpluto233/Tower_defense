@@ -17,7 +17,6 @@ import java.util.logging.Logger;
  * Stores progress alongside the game's external configuration file.
  */
 public final class ProgressStore {
-    private static final String SELECTED_LEVEL = "selected.level";
     private static final String UNLOCKED_LEVELS = "unlocked.levels";
 
     private final Path file = Path.of("config", "progress.properties");
@@ -30,21 +29,15 @@ public final class ProgressStore {
         ensureFirstLevelUnlocked();
     }
 
-    public String getSelectedLevel(String fallback) {
-        String selected = properties.getProperty(SELECTED_LEVEL, fallback);
-        if (isKnownLevel(selected) && isUnlocked(selected)) {
-            return selected;
-        }
-        if (isKnownLevel(fallback) && isUnlocked(fallback)) {
-            return fallback;
+    public String getLastUnlockedLevel() {
+        Set<String> unlocked = getUnlockedLevels();
+        for (int i = Constants.LevelConstants.LEVEL_NAMES.size() - 1; i >= 0; i--) {
+            String level = Constants.LevelConstants.LEVEL_NAMES.get(i);
+            if (unlocked.contains(level)) {
+                return level;
+            }
         }
         return Constants.LevelConstants.LEVEL_NAMES.get(0);
-    }
-
-    public void setSelectedLevel(String level) {
-        requireKnownLevel(level);
-        properties.setProperty(SELECTED_LEVEL, level);
-        save();
     }
 
     public boolean isUnlocked(String level) {

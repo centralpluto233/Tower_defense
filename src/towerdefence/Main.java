@@ -20,8 +20,6 @@ public class Main {
             logger = GameLogger.getLogger();
 
             logger.info("Startup complete.");
-            logger.info("Selected level: " + config.getSelectedLevel());
-
             // create factory and pass to game
             J2dFactory factory = new J2dFactory();
 

@@ -159,7 +159,13 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
             requestFocusForGame();
         });
 
-        return column("Paused", resumeButton, makeSettingsButton(), makeExitButton());
+        GameButton menuButton = GameButton.muted(" Main Menu ");
+        menuButton.addActionListener(_ -> {
+            game.stop();
+            refresh();
+        });
+
+        return column("Paused", resumeButton, menuButton, makeSettingsButton(), makeExitButton());
     }
 
     private JPanel buildGameOverCard() {
@@ -186,15 +192,6 @@ public class MenuOverlayPanel extends JPanel implements GameListener {
         JPanel panel = emptyColumn();
         panel.add(styledLabel("Settings", 32));
         panel.add(Box.createVerticalStrut(24));
-
-        ToggleButton fpsToggle = new ToggleButton("Debugmode", config.getDebug());
-        fpsToggle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        fpsToggle.addActionListener(_ -> {
-            config.setDebug(fpsToggle.isSelected());
-            config.save();
-        });
-        panel.add(fpsToggle);
-        panel.add(Box.createVerticalStrut(16));
 
         panel.add(styledLabel("Map Theme", 16));
         panel.add(Box.createVerticalStrut(8));

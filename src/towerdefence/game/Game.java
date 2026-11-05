@@ -86,10 +86,10 @@ public class Game {
 
         this.luaEngine = new LuaEngine(config);
         try {
-            String selectedLevel = progressStore.getSelectedLevel(config.getSelectedLevel());
-            this.currentLevel = luaEngine.loadLevelData(selectedLevel);
-            config.setSelectedLevel(this.currentLevel.levelFile());
-            config.save();
+            String startupLevel = config.getDebug()
+                    ? config.getDebugLevel()
+                    : progressStore.getLastUnlockedLevel();
+            this.currentLevel = luaEngine.loadLevelData(startupLevel);
         } catch (Exception e) {
             logger.warning("Failed to load default level: " + e.getMessage());
             throw new RuntimeException(e);
@@ -166,8 +166,6 @@ public class Game {
             LevelData newLevel = luaEngine.loadLevelData(levelName);
             if (!newLevel.levelName().equals(currentLevel.levelName())) {
                 currentLevel = newLevel;
-                config.setSelectedLevel(currentLevel.levelFile());
-                config.save();
                 view.reset();
                 waveSpawnSystem.reset();
             }

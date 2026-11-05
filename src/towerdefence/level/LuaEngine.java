@@ -23,16 +23,6 @@ public class LuaEngine {
         this.config = config;
     }
 
-    private void loadSelectedLevel() throws Exception {
-        String levelPath = Constants.Paths.LEVELS + config.getSelectedLevel();
-        loadScript(levelPath);
-    }
-
-    public LevelData loadLevelData() throws Exception {
-        loadSelectedLevel();
-        return loadLevelDataFromLoadedScript();
-    }
-
     private List<Vector2D> toWorld(List<Vector2D> points) {
         int ts = config.getTileSize();
         int margin = config.getSpawnmargin();

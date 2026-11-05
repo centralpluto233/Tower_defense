@@ -142,24 +142,6 @@ public class Config {
     }
 
     /**
-     * Gets the selected level from the config.
-     *
-     * @return the selected level
-     */
-    public String getSelectedLevel() {
-        return get("selected.level");
-    }
-
-    /**
-     * Sets the level to load on the next startup.
-     *
-     * @param level the level file name
-     */
-    public void setSelectedLevel(String level) {
-        set("selected.level", level);
-    }
-
-    /**
      * Calculates the total game width by adding the view width and twice the spawn margin.
      *
      * @return the total game width
@@ -220,6 +202,15 @@ public class Config {
      */
     public boolean getDebug() {
         return getBoolean("debugmode.enabled");
+    }
+
+    /**
+     * Gets the level file to load when debug mode is enabled.
+     *
+     * @return the debug level file name
+     */
+    public String getDebugLevel() {
+        return get("debug.level");
     }
 
     /**
